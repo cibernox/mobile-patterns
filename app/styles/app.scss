@@ -1,1 +1,33 @@
 @import 'reset';
+@import 'defaults';
+@import 'utility-classes';
+
+
+// Constants
+$app-header-height: 3rem;
+
+// App header
+#app-header {
+  background-color: red;
+  color: white;
+  height: $app-header-height;
+  display: flex;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.3);
+  > * { flex: 1 }
+}
+
+#app-title {
+  line-height: 2.65rem;
+  padding: 0 0.5rem;
+}
+
+#toggle-main-menu, #toggle-search-menu {
+  max-width: $app-header-height;
+}
+
+// App content
+#app-content {
+  padding: 0.333rem;
+  min-height: calc(100vh - #{$app-header-height});
+}
+
