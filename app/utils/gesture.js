@@ -1,15 +1,22 @@
 class Gesture {
-  constructor(event){
-    this.events = [event];
-    this.first  = event;
-    this.last   = event;
-    this.length = 1;
+  constructor(event = null){
+    this.events = [];
+    if (event) {
+      this.push(event);
+    }
   }
 
   push(event) {
     this.events.push(event);
     this.last = event;
-    this.length++;
+  }
+
+  get length(){
+    return this.events.length;
+  }
+
+  get first(){
+    return this.events[0];
   }
 
   get pageX(){

@@ -8,7 +8,7 @@ export default Ember.Component.extend({
 
   // Computed properties
   style: function() {
-    if (this.element && this.width) {
+    if (this.width) {
       var translate = (this.get('progress') - 1) * this.width;
       return 'transform: translateX('+ translate +'px);';
     }
@@ -17,7 +17,7 @@ export default Ember.Component.extend({
   // Events
   setupEventListeners: function(){
     this.width = this.element.offsetWidth;
-    var rootNode = document.querySelector('#' + this.get('observer-element'));
+    var rootNode = document.querySelector('#' + this.get('observed-element'));
     var self = this;
 
     function handleTouchStart(evt){
@@ -42,6 +42,7 @@ export default Ember.Component.extend({
       rootNode.removeEventListener('touchend', handleTouchEnd);
       self.completeExpansion();
     }
+
     rootNode.addEventListener('touchstart', handleTouchStart);
   }.on('didInsertElement'),
 
@@ -67,11 +68,11 @@ export default Ember.Component.extend({
 
     if (gestureSpeed < -500 || gestureSpeed <= 500 && progress < 0.5) {
       newProgress = Math.max(progress - this.defaultSpeed, 0);
-      this.set('progress', newProgress);
     } else {
       newProgress = Math.min(progress + this.defaultSpeed, 1);
-      this.set('progress', newProgress);
     }
+
+    this.set('progress', newProgress);
     if (newProgress > 0 && newProgress < 1) {
       requestAnimationFrame(this.completeExpansion.bind(this));
     }
