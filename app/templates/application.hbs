@@ -1,10 +1,12 @@
 <header id="app-header">
+  <toggle-menu id="toggle-main-menu" progress={{progress}} action="updateProgress"></toggle-menu>
   <h1 id="app-title">Mobile Patterns</h1>
 </header>
-<slide-menu id="app-menu" observed-element="mobile-patterns">
+<slide-menu id="app-menu" observed-element="mobile-patterns" progress={{progress}} action="updateProgress">
   <div class="menu-item">Section 1</div>
   <div class="menu-item">Section 2</div>
 </slide-menu>
 <div id="app-content">
   {{outlet}}
 </div>
+<content-overlay id="content-overlay" progress={{progress}}></content-overlay>

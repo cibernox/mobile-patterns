@@ -53,7 +53,8 @@ export default Ember.Component.extend({
 
   updateProgress: function(){
     var newProgress = Math.min((this.gesture.pageX + this.offset) / this.width, 1);
-    this.set('progress', newProgress);
+    // this.set('progress', newProgress);
+    this.sendAction('action', newProgress);
     this.tick = false;
   },
 
