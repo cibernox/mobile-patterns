@@ -23,7 +23,7 @@ export default Ember.Component.extend({
 
   click: function(){
     this.delta = this.get('progress') === 1 ? -0.04 : 0.04;
-    requestAnimationFrame(this.updateProgress.bind(this))
+    requestAnimationFrame(this.updateProgress.bind(this));
   },
 
   updateProgress: function(){
