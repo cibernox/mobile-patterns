@@ -59,8 +59,8 @@ export default Ember.Component.extend({
   },
 
   completeExpansion: function(){
-    var newProgress, gestureSpeed;
     var progress = this.get('progress');
+    var gestureSpeed;
 
     if (progress === 0 || progress === 1) {
       return;
