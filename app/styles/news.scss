@@ -1,0 +1,22 @@
+#news {
+  padding: 5px;
+}
+.article {
+  background-color: white;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.article-header {
+  background-color: white;
+  color: black;
+  font-family: "Impact";
+  font-style: bold;
+  padding: 0 18px;
+}
+.article-thumbnail {
+  display: block;
+  margin: 0 auto;
+  max-width:100%;
+  max-height:100%;
+}
