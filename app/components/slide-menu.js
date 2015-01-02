@@ -3,7 +3,8 @@ import Gesture from 'mobile-patterns/utils/gesture';
 
 export default Ember.Component.extend({
   progress: 0,
-  defaultSpeed: 0.04,
+  collapseMenuAction: 'collapseMenu',
+  expandMenuAction: 'expandMenu',
   attributeBindings: ['style'],
 
   // Computed properties
@@ -53,29 +54,24 @@ export default Ember.Component.extend({
 
   updateProgress: function(){
     var newProgress = Math.min((this.gesture.pageX + this.offset) / this.width, 1);
-    // this.set('progress', newProgress);
     this.sendAction('action', newProgress);
     this.tick = false;
   },
 
   completeExpansion: function(){
+    var newProgress, gestureSpeed;
     var progress = this.get('progress');
+
     if (progress === 0 || progress === 1) {
       return;
     }
 
-    var gestureSpeed = this.gesture.speedX;
-    var newProgress;
+    gestureSpeed = this.gesture.speedX;
 
     if (gestureSpeed < -500 || gestureSpeed <= 500 && progress < 0.5) {
-      newProgress = Math.max(progress - this.defaultSpeed, 0);
+      this.sendAction('collapseMenuAction');
     } else {
-      newProgress = Math.min(progress + this.defaultSpeed, 1);
-    }
-
-    this.set('progress', newProgress);
-    if (newProgress > 0 && newProgress < 1) {
-      requestAnimationFrame(this.completeExpansion.bind(this));
+      this.sendAction('expandMenuAction');
     }
   }
 });

@@ -22,15 +22,6 @@ export default Ember.Component.extend({
   }.property('progress'),
 
   click: function(){
-    this.delta = this.get('progress') === 1 ? -0.04 : 0.04;
-    requestAnimationFrame(this.updateProgress.bind(this));
-  },
-
-  updateProgress: function(){
-    var newProgress = Math.min(Math.max(0, this.get('progress') + this.delta), 1);
-    this.sendAction('action', newProgress);
-    if (newProgress !== 0 && newProgress !== 1) {
-      requestAnimationFrame(this.updateProgress.bind(this));
-    }
+    this.sendAction();
   }
 });

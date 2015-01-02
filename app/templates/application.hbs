@@ -1,9 +1,9 @@
 <header id="app-header">
-  <toggle-menu id="toggle-main-menu" progress={{progress}} action="updateProgress"></toggle-menu>
-  <h1 id="app-title">Mobile Patterns</h1>
+  <toggle-menu id="toggle-main-menu" progress={{progress}} action="toggleMenu"></toggle-menu>
+  {{#link-to 'application'}}<h1 id="app-title">Mobile Patterns</h1>{{/link-to}}
 </header>
 <slide-menu id="app-menu" observed-element="mobile-patterns" progress={{progress}} action="updateProgress">
-  <div class="menu-item">Section 1</div>
+  <div class="menu-item">{{link-to "Newspaper" "news"}}</div>
   <div class="menu-item">Section 2</div>
 </slide-menu>
 <div id="app-content">
