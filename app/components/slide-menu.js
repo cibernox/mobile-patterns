@@ -44,7 +44,7 @@ export default Ember.Component.extend({
       self.completeExpansion();
     }
 
-    rootNode.addEventListener('touchstart', handleTouchStart);
+    rootNode.addEventListener('touchstart', handleTouchStart, true);
   }.on('didInsertElement'),
 
   // Methods

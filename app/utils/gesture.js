@@ -11,7 +11,7 @@ class Gesture {
     this.last = event;
   }
 
-  get length(){
+  get eventsCount(){
     return this.events.length;
   }
 
@@ -23,15 +23,31 @@ class Gesture {
     return this.last.touches[0].pageX;
   }
 
+  get pageY(){
+    return this.last.touches[0].pageY;
+  }
+
   get initPageX() {
     return this.first.touches[0].pageX;
   }
 
-  get lastEvents() {
-    return this.events.slice(Math.max(this.length - 5, 0), this.length);
+  get initPageY() {
+    return this.first.touches[0].pageY;
   }
 
-  get speedX(){
+  get lastEvents() {
+    return this.events.slice(Math.max(this.eventsCount - 5, 0), this.eventsCount);
+  }
+
+  get deltaX() {
+    return this.pageX - this.initPageX;
+  }
+
+  get deltaY() {
+    return this.pageY - this.initPageY;
+  }
+
+  get speedX() {
     var lastEvents = this.lastEvents;
     var initX    = lastEvents[0].touches[0].pageX;
     var initTime = lastEvents[0].timeStamp;
@@ -39,6 +55,16 @@ class Gesture {
     var lastTime = lastEvents[lastEvents.length - 1].timeStamp;
 
     return (lastX - initX) / (lastTime - initTime) * 1000 || 0;
+  }
+
+  get speedY() {
+    var lastEvents = this.lastEvents;
+    var initY    = lastEvents[0].touches[0].pageY;
+    var initTime = lastEvents[0].timeStamp;
+    var lastY    = lastEvents[lastEvents.length - 1].touches[0].pageY;
+    var lastTime = lastEvents[lastEvents.length - 1].timeStamp;
+
+    return (lastY - initY) / (lastTime - initTime) * 1000 || 0;
   }
 }
 
