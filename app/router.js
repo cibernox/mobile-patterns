@@ -7,7 +7,7 @@ var Router = Ember.Router.extend({
 
 Router.map(function() {
   this.resource("news", function(){
-
+    this.route("show", { path: "/:article_id" });
   });
 });
 

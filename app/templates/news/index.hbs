@@ -1,6 +1,8 @@
-{{#each model as |article|}}
-  <article class="article">
-    <img class="article-thumbnail" src="{{article.thumbnailUrl}}">
-    <header class="article-header"><h2>{{article.header}}</h2></header>
-  </article>
-{{/each}}
+<div class="news-content">
+  {{#each model as |article|}}
+    {{#link-to "news.show" article class="article-summary"}}
+      <img class="article-summary-thumbnail" src="{{article.thumbnailUrl}}">
+      <header class="article-summary-header"><h2>{{article.header}}</h2></header>
+    {{/link-to}}
+  {{/each}}
+</div>

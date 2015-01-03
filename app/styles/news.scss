@@ -1,22 +1,57 @@
+// App container
 #news {
-  padding: 5px;
+  background: url(/images/cloth-pattern.png);
+  margin-top: -3px;
 }
-.article {
+.news-content {
+  background-color: #eee;
+  padding: 10px;
+}
+
+.article-summary {
   background-color: white;
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  display: block;
 }
-.article-header {
+
+.article-body {
+  text-align: justify;
+  img {
+    display: block;
+    width: 100%;
+  }
+}
+
+.article-summary-header {
   background-color: white;
   color: black;
   font-family: "Impact";
   font-style: bold;
   padding: 0 18px;
 }
-.article-thumbnail {
+.article-summary-thumbnail {
   display: block;
   margin: 0 auto;
   max-width:100%;
   max-height:100%;
 }
+
+.article-detail {
+  // transform: scale(0);
+  background-color: #eee;
+  z-index: 1;
+  padding: 10px;
+}
+
+// Notes for 3D animation
+// .cards-container {
+//   -webkit-perspective: 700px;
+//   -webkit-perspective-origin-x: $device-width / 2;
+//   -webkit-perspective-origin-y: "Not sure, probably also vertically centered"
+// }
+
+// .card {
+//   -webkit-transform: translate3d(0, 0, valor-z);
+// }
