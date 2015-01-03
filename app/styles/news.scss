@@ -1,9 +1,13 @@
-// App container
+// Section wrapper
 #news {
   background: url(/images/cloth-pattern.png);
-  margin-top: -3px;
+  min-height: 100%;
+  width: 100vw;
+  overflow-x: hidden;
 }
-.news-content {
+
+// News index
+#news-index {
   background-color: #eee;
   padding: 10px;
 }
@@ -14,6 +18,39 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   display: block;
+  .header {
+    background-color: white;
+    color: black;
+    font-family: "Impact";
+    font-style: bold;
+    padding: 0 18px;
+  }
+  .thumbnail {
+    display: block;
+    margin: 0 auto;
+    max-width:100%;
+    max-height:100%;
+  }
+}
+
+// News show
+#news-show {
+  width: 300vw;
+  margin-left: -100%;
+}
+
+.article-detail {
+  width: 33.3333333%;
+  float: left;
+  // transform: scale(0.94) translateX(-30px);
+  background-color: #eee;
+  padding: 10px;
+  &.previous-article {
+
+  }
+  &.next-article {
+
+  }
 }
 
 .article-body {
@@ -22,27 +59,6 @@
     display: block;
     width: 100%;
   }
-}
-
-.article-summary-header {
-  background-color: white;
-  color: black;
-  font-family: "Impact";
-  font-style: bold;
-  padding: 0 18px;
-}
-.article-summary-thumbnail {
-  display: block;
-  margin: 0 auto;
-  max-width:100%;
-  max-height:100%;
-}
-
-.article-detail {
-  // transform: scale(0);
-  background-color: #eee;
-  z-index: 1;
-  padding: 10px;
 }
 
 // Notes for 3D animation

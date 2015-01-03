@@ -1,4 +1,16 @@
-<article class="article-detail">
-  <header><h2>{{model.header}}</h2></header>
-  <div class="article-body">{{{model.body}}}</div>
-</article>
+<div id="news-show" class="clearfix">
+  <article class="article-detail previous-article">
+    <header><h2>{{model.header}}</h2></header>
+    <div class="article-body">{{{model.body}}}</div>
+  </article>
+
+  <article class="article-detail">
+    <header><h2>{{model.header}}</h2></header>
+    <div class="article-body">{{{model.body}}}</div>
+  </article>
+
+  <article class="article-detail next-article">
+    <header><h2>{{model.header}}</h2></header>
+    <div class="article-body">{{{model.body}}}</div>
+  </article>
+</div>
