@@ -70,6 +70,22 @@ class Gesture {
 
     return (lastY - initY) / (lastTime - initTime) * 1000 || 0;
   }
+
+  get direction() {
+    var x = this.deltaX;
+    var y = -this.deltaY;
+    var radians = Math.acos(Math.abs(y) / Math.sqrt(x*x + y*y));
+    var degrees = radians * 180 / Math.PI;
+    if (x >= 0 && y >= 0) {
+      return degrees;         // 1st cuadrant
+    } else if (x >= 0 && y < 0) {
+      return 180 - degrees;   // 2nd cuadrant
+    } else if (x < 0 && y < 0) {
+      return 180 + degrees;   // 3rd cuadrant
+    } else {
+      return 360 - degrees;   // 4th cuadrant
+    }
+  }
 }
 
 export default Gesture;

@@ -92,3 +92,25 @@ test('`Gesture#deltaY` contains the X delta between the beginning and the end of
   gesture.push(thirdEvent);
   equal(gesture.deltaY, 40);
 });
+
+test('`Gesture#direction` returns the direction of the gesture in degrees (0-360)', function() {
+  // Gesture to the 1st cuandrant
+  var gesture1 = new Gesture({ touches: [{pageX: 100, pageY: 270}] });
+  gesture1.push({ touches: [{pageX: 110, pageY: 250}] });
+  equal(gesture1.direction, 26.56505117707799);
+
+  // Gesture to the 2st cuandrant
+  var gesture2 = new Gesture({ touches: [{pageX: 100, pageY: 250}] });
+  gesture2.push({ touches: [{pageX: 110, pageY: 270}] });
+  equal(gesture2.direction, 153.43494882292202);
+
+  // Gesture to the 3rd cuandrant
+  var gesture3 = new Gesture({ touches: [{pageX: 110, pageY: 250}] });
+  gesture3.push({ touches: [{pageX: 100, pageY: 270}] });
+  equal(gesture3.direction, 206.56505117707799);
+
+  // Gesture to the 4th cuandrant
+  var gesture4 = new Gesture({ touches: [{pageX: 110, pageY: 270}] });
+  gesture4.push({ touches: [{pageX: 100, pageY: 250}] });
+  equal(gesture4.direction, 333.43494882292202);
+});
