@@ -10,76 +10,83 @@ module('Gesture', {
   }
 });
 
-test('The `eventsCount` property returns the number of captured events', function() {
+test('`Gesture#eventsCount` contains the number of captured events', function() {
   var gesture = new Gesture('event');
   gesture.push('other event');
   equal(gesture.eventsCount, 2, 'This gesture contains 2 events');
 });
 
-test('The `last` property contains the last captured event', function() {
+test('`Gesture#last` contains the last captured event', function() {
   var gesture = new Gesture('event');
   gesture.push('other event');
   equal(gesture.last, 'other event');
 });
 
-test('The `first` property contains the first captured event', function() {
+test('`Gesture#first` contains the first captured event', function() {
   var gesture = new Gesture('event');
   gesture.push('other event');
   equal(gesture.first, 'event');
 });
 
-test('The `events` property contains all the captured events', function() {
+test('`Gesture#events` contains all the captured events', function() {
   var gesture = new Gesture('event');
   gesture.push('other event');
   deepEqual(gesture.events, ['event', 'other event']);
 });
 
-test('The `pageX` method returns the pageX of the last event', function() {
+test('`Gesture#duration` contains the duration of the gesture in milliseconds', function() {
+  var gesture = new Gesture(firstEvent);
+  equal(gesture.duration, 0);
+  gesture.push(secondEvent);
+  equal(gesture.duration, 10);
+});
+
+test('`Gesture#pageX` contains the pageX of the last event', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   equal(gesture.pageX, 110);
 });
 
-test('The `pageY` method returns the pageY of the last event', function() {
+test('`Gesture#pageY` contains the pageY of the last event', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   equal(gesture.pageY, 270);
 });
 
-test('The `initPageX` method returns the pageX of the first event', function() {
+test('`Gesture#initPageX` contains the pageX of the first event', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   equal(gesture.initPageX, 100);
 });
 
-test('The `initPageY` method returns the pageX of the first event', function() {
+test('`Gesture#initPageY` contains the pageX of the first event', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   equal(gesture.initPageY, 250);
 });
 
-test('The `speedX` method returns the speed of the gesture in the X axis', function() {
+test('`Gesture#speedX` contains the speed of the gesture in the X axis', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   gesture.push(thirdEvent);
   equal(gesture.speedX, 1000);
 });
 
-test('The `speedY` method returns the speed of the gesture in the X axis', function() {
+test('`Gesture#speedY` contains the speed of the gesture in the X axis', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   gesture.push(thirdEvent);
   equal(gesture.speedY, 2000);
 });
 
-test('The `deltaX` method returns the X delta between the beginning and the end of the gesture', function() {
+test('`Gesture#deltaX` contains the X delta between the beginning and the end of the gesture', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   gesture.push(thirdEvent);
   equal(gesture.deltaX, 20);
 });
 
-test('The `deltaY` method returns the X delta between the beginning and the end of the gesture', function() {
+test('`Gesture#deltaY` contains the X delta between the beginning and the end of the gesture', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   gesture.push(thirdEvent);

@@ -11,8 +11,12 @@ class Gesture {
     this.last = event;
   }
 
-  get eventsCount(){
+  get eventsCount() {
     return this.events.length;
+  }
+
+  get duration() {
+    return this.last.timeStamp - this.first.timeStamp;
   }
 
   get first(){
