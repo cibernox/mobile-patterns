@@ -1,16 +1,24 @@
 <div id="news-show" class="clearfix">
-  <article class="article-detail previous-article">
-    <header><h2>{{model.header}}</h2></header>
-    <div class="article-body">{{{model.body}}}</div>
-  </article>
+  {{#if model.previousArticle}}
+    <article class="article-detail previous-article">
+      <header><h2>{{model.previousArticle.header}}</h2></header>
+      <div class="article-body">{{{model.previousArticle.body}}}</div>
+    </article>
+  {{else}}
+    <article class="article-detail previous-article placeholder"></article>
+  {{/if}}
 
   <article class="article-detail">
     <header><h2>{{model.header}}</h2></header>
     <div class="article-body">{{{model.body}}}</div>
   </article>
 
-  <article class="article-detail next-article">
-    <header><h2>{{model.header}}</h2></header>
-    <div class="article-body">{{{model.body}}}</div>
-  </article>
+  {{#if model.nextArticle}}
+    <article class="article-detail next-article">
+      <header><h2>{{model.nextArticle.header}}</h2></header>
+      <div class="article-body">{{{model.nextArticle.body}}}</div>
+    </article>
+  {{else}}
+    <article class="article-detail next-article placeholder"></article>
+  {{/if}}
 </div>
