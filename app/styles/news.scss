@@ -45,6 +45,7 @@
   // transform: scale(0.94) translateX(-35px);
   transform-origin: 50% 400px;
   padding: 10px;
+  will-change: transform;
   &:not(.placeholder) {
     background-color: #eee;
   }
