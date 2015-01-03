@@ -1,0 +1,56 @@
+// Constants
+$app-header-height: 3rem;
+
+// App container
+#mobile-patterns {
+  // No styles yet
+}
+
+// App header
+#app-header {
+  background-color: red;
+  color: white;
+  height: $app-header-height;
+  display: flex;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.3);
+  > * { flex: 1 }
+}
+
+#app-title {
+  line-height: 2.65rem;
+  padding: 0 0.3rem;
+}
+
+#toggle-main-menu {
+  max-width: $app-header-height;
+  width: 28px;
+  padding: 8px;
+  cursor: pointer;
+
+  .stroke {
+    width: 100%;
+    height: 5px;
+    background-color: white;
+    margin: 4px 0;
+    will-change: transform;
+  }
+}
+
+// App content
+#app-content {
+  min-height: calc(100vh - #{$app-header-height});
+}
+
+// Content overlay
+#content-overlay {
+  background-color: rgba(black, 0.4);
+  position: fixed;
+  left: 0;
+  top: $app-header-height;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity;
+}
