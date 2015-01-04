@@ -1,3 +1,5 @@
+@import 'utility-mixins';
+
 // Section wrapper
 #news {
   background: url(/images/cloth-pattern.png);
@@ -35,6 +37,7 @@
 
 // News show
 #news-show {
+  @include clearfix;
   width: 300vw;
   margin-left: -100%;
 }

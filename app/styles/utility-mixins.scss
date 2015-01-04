@@ -1,0 +1,10 @@
+// Some very common utility mixins
+@mixin clearfix {
+  *zoom: 1;
+
+  &:after { clear: both; }
+  &:before, &:after {
+    content: " ";
+    display: table;
+  }
+}
