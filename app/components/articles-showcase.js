@@ -1,8 +1,7 @@
 import Ember from 'ember';
 import Gesture from 'mobile-patterns/utils/gesture';
 
-export default Ember.View.extend({
-  elementId: 'news-show',
+export default Ember.Component.extend({
   progress: 0, // Progress varies between -1 and +1
   defaultSpeed: 0.045,
   ignoreGesture: false,
@@ -25,7 +24,7 @@ export default Ember.View.extend({
     }
     for (var i = 0, l = images.length; i < l; i++) {
       images[i].addEventListener('load', resizeOtherArticles);
-    };
+    }
   }.on('didInsertElement'),
 
   touchStart: function(evt) {
@@ -44,6 +43,7 @@ export default Ember.View.extend({
     this.finishAnimation();
     this.ignoreGesture = false;
     this.trackGesture = false;
+    this.set('progress', 0);
   },
 
   handleGesture: function() {
@@ -56,8 +56,6 @@ export default Ember.View.extend({
       this.trackGesture = true;
       this.gesture.last.preventDefault();
       requestAnimationFrame(this.updateProgress.bind(this));
-    } else {
-      // console.log('Gesture not trackeable: ', this.gesture.deltaX);
     }
   },
 
@@ -72,7 +70,7 @@ export default Ember.View.extend({
     var speedX, targetValue, delta, min, max;
 
     if (progress === 0 || progress === 1 || progress === -1) {
-      return;
+      return this._notifyFinish();
     }
 
     speedX = this.gesture.speedX;
@@ -98,6 +96,8 @@ export default Ember.View.extend({
       self._updateStyles();
       if (newProgress !== targetValue) {
         requestAnimationFrame(iterate);
+      } else {
+        self._notifyFinish();
       }
     }
 
@@ -120,13 +120,18 @@ export default Ember.View.extend({
   },
 
   _isTrackeableGesture: function() {
-    var direction;
-    if (Math.abs(this.gesture.deltaX) < 15) {
-      return false;
-    }
+    return Math.abs(this.gesture.deltaX) >= 15 && this.gesture.isHorizontal();
+  },
 
-    direction = this.gesture.direction;
-    return (direction > 70 && direction < 110) || (direction > 250 && direction < 290);
+  _notifyFinish: function(){
+    var progress = this.get('progress');
+    if (progress === 0) {
+      return;
+    } else if (progress === 1) {
+      console.log('goToNext')
+    } else if (progress === -1) {
+      console.log('goToPrevious')
+    }
   },
 
   _updateStyles: function(){
