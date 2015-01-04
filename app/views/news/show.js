@@ -2,14 +2,30 @@ import Ember from 'ember';
 import Gesture from 'mobile-patterns/utils/gesture';
 
 export default Ember.View.extend({
+  elementId: 'news-show',
   progress: 0, // Progress varies between -1 and +1
   defaultSpeed: 0.045,
   ignoreGesture: false,
   trackGesture: false,
 
-  cacheDOM: function(){
-    this.width = this.element.offsetWidth;
+  cacheDom: function(){
     this.articles = this.element.querySelectorAll('.article-detail');
+    this.viewportWidth = this.element.offsetWidth / 3;
+  }.on('didInsertElement'),
+
+  addImageListeners: function() {
+    var currentArticle = this.element.querySelector('.article-detail.current-article');
+    var images = currentArticle.querySelectorAll('img');
+    var self = this;
+
+    function resizeOtherArticles(){
+      Ember.run.scheduleOnce('afterRender', function(){
+        self.element.style.height = ''+currentArticle.offsetHeight+'px';
+      });
+    }
+    for (var i = 0, l = images.length; i < l; i++) {
+      images[i].addEventListener('load', resizeOtherArticles);
+    };
   }.on('didInsertElement'),
 
   touchStart: function(evt) {
@@ -46,7 +62,7 @@ export default Ember.View.extend({
   },
 
   updateProgress: function() {
-    this.set('progress', -Math.min(Math.max(this.gesture.deltaX / (this.width * 0.75), -1), 1));
+    this.set('progress', -Math.min(Math.max(this.gesture.deltaX / (this.viewportWidth * 0.75), -1), 1));
     this._updateStyles();
   },
 
@@ -100,7 +116,7 @@ export default Ember.View.extend({
   },
 
   _calculateTranslate: function(progress){
-    return Math.sign(-progress) * Math.max(Math.min(Math.abs(progress) * (1 / 0.8) - (1 / 0.8) / 10, 1), 0) * this.width;
+    return Math.sign(-progress) * Math.max(Math.min(Math.abs(progress) * (1 / 0.8) - (1 / 0.8) / 10, 1), 0) * this.viewportWidth;
   },
 
   _isTrackeableGesture: function() {

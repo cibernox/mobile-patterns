@@ -40,6 +40,7 @@
   @include clearfix;
   width: 300vw;
   margin-left: -100%;
+  overflow-y: hidden;
 }
 
 .article-detail {
