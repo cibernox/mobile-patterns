@@ -10,6 +10,26 @@ module('Gesture', {
   }
 });
 
+// Methods
+test('`Gesture#push` appends the given event to the gesture', function() {
+  var gesture = new Gesture();
+  equal(gesture.eventsCount, 0);
+  equal(gesture.last, null);
+  gesture.push(firstEvent);
+  equal(gesture.eventsCount, 1);
+  equal(gesture.last, firstEvent);
+});
+
+test('`Gesture#isHorizontal` returns true if the gesture is horizontal with a error margin smaller than the given one', function() {
+  var gesture = new Gesture();
+  gesture.push({ touches: [{pageX: 100, pageY: 250}] });
+  gesture.push({ touches: [{pageX: 140, pageY: 255}] });
+  gesture.push({ touches: [{pageX: 180, pageY: 260}] });
+  ok(gesture.isHorizontal()); // The error margin defalts to ± 15°
+  ok(!gesture.isHorizontal(2)); // The error margin is set to ± 2°
+});
+
+// Getters
 test('`Gesture#eventsCount` contains the number of captured events', function() {
   var gesture = new Gesture('event');
   gesture.push('other event');

@@ -6,11 +6,18 @@ class Gesture {
     }
   }
 
+  // Methods
   push(event) {
     this.events.push(event);
     this.last = event;
   }
 
+  isHorizontal(margin = 15) {
+    var mod = this.direction % 90;
+    return mod < margin || mod > (90 - margin);
+  }
+
+  // Getters
   get eventsCount() {
     return this.events.length;
   }
