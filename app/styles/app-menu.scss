@@ -8,8 +8,12 @@ $menu-width: 320px;
   transform: translateX(-$menu-width);
   will-change: transform;
   z-index: 100;
+  a.active, a:active {
+    background-color: #666;
+  }
 }
 .menu-item {
   padding: 0.3333rem;
-  a { display: block; }
+  display: block;
+  line-height: 250%;
 }

@@ -3,7 +3,8 @@
   {{#link-to 'application'}}<h1 id="app-title">Mobile Patterns</h1>{{/link-to}}
 </header>
 <slide-menu id="app-menu" observed-element="mobile-patterns" progress={{progress}} action="updateProgress">
-  <div class="menu-item">{{link-to "Newspaper" "news"}}</div>
+  {{link-to "Landing" "index" class="menu-item"}}
+  {{link-to "Newspaper" "news" class="menu-item"}}
   <div class="menu-item">Section 2</div>
 </slide-menu>
 <div id="app-content">
