@@ -11,8 +11,11 @@ export default Ember.Controller.extend({
 
   actions: {
     changeArticle: function(articlePosition) {
-      this.transitionToRoute('news.show', this.get('model.'+articlePosition+'Article'));
-      this.set('progress', 0);
+      var article = this.get('model.'+articlePosition+'Article');
+      if (article) {
+        this.transitionToRoute('news.show', article);
+        this.set('progress', 0);
+      }
     }
   }
 });

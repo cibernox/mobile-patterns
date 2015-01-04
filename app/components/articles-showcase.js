@@ -56,12 +56,17 @@ export default Ember.Component.extend({
         this.animationStartOffset = this.gesture.deltaX;
       }
       this.gesture.last.preventDefault();
-      requestAnimationFrame(this.updateProgress.bind(this));
+      this.gesture.last.stopPropagation();
+      if (!this.tick) {
+        this.tick = true;
+        requestAnimationFrame(this.updateProgress.bind(this));
+      }
     }
   },
 
   updateProgress: function() {
     this.set('progress', -Math.min(Math.max((this.gesture.deltaX - this.animationStartOffset) / (this.viewportWidth * 0.75), -1), 1));
+    this.tick = false;
   },
 
   finishAnimation: function() {
@@ -88,6 +93,11 @@ export default Ember.Component.extend({
       max = Math.max(targetValue, progress);
       min = Math.min(targetValue, progress);
     }
+    if (targetValue === -1 && !this.get('attrs.previousArticle') || targetValue === 1 && !this.get('attrs.nextArticle')) {
+      targetValue = 0;
+      max = Math.max(targetValue, progress);
+      min = Math.min(targetValue, progress);
+    }
     delta = Math.sign(targetValue - progress) * this.defaultSpeed;
 
     function iterate() {
@@ -103,8 +113,8 @@ export default Ember.Component.extend({
     iterate();
   },
 
-  _calculateScale: function(progress){
-    var value = Math.abs(progress);
+  _calculateScale: function(progress) {
+    var value = Math.abs(progress) || 0;
     if (value < 0.1) {
       return 1 - value;
     } else if (value > 0.9) {
@@ -114,7 +124,7 @@ export default Ember.Component.extend({
     }
   },
 
-  _calculateTranslate: function(progress){
+  _calculateTranslate: function(progress) {
     return Math.sign(-progress) * Math.max(Math.min(Math.abs(progress) * (1 / 0.8) - (1 / 0.8) / 10, 1), 0) * this.viewportWidth;
   },
 
@@ -132,7 +142,7 @@ export default Ember.Component.extend({
   articleStyle: function(){
     var progress = this.get('progress');
     var scale = this._calculateScale(progress);
-    var translateX = this._calculateTranslate(progress);
+    var translateX = this._calculateTranslate(progress) || 0;
     return 'transform: scale('+scale+') translateX('+translateX+'px)';
   }.property('progress')
 });
