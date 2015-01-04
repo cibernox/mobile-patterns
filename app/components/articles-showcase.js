@@ -43,7 +43,6 @@ export default Ember.Component.extend({
     this.finishAnimation();
     this.ignoreGesture = false;
     this.trackGesture = false;
-    this.set('progress', 0);
   },
 
   handleGesture: function() {
@@ -61,7 +60,6 @@ export default Ember.Component.extend({
 
   updateProgress: function() {
     this.set('progress', -Math.min(Math.max(this.gesture.deltaX / (this.viewportWidth * 0.75), -1), 1));
-    this._updateStyles();
   },
 
   finishAnimation: function() {
@@ -93,7 +91,6 @@ export default Ember.Component.extend({
     function iterate() {
       var newProgress = Math.min(max, Math.max(min, self.get('progress') + delta));
       self.set('progress', newProgress);
-      self._updateStyles();
       if (newProgress !== targetValue) {
         requestAnimationFrame(iterate);
       } else {
@@ -125,23 +122,15 @@ export default Ember.Component.extend({
 
   _notifyFinish: function(){
     var progress = this.get('progress');
-    if (progress === 0) {
-      return;
-    } else if (progress === 1) {
-      console.log('goToNext')
-    } else if (progress === -1) {
-      console.log('goToPrevious')
+    if (Math.abs(progress) === 1) {
+      this.sendAction('action', progress === 1 ? 'next' : 'previous');
     }
   },
 
-  _updateStyles: function(){
+  articleStyle: function(){
     var progress = this.get('progress');
     var scale = this._calculateScale(progress);
     var translateX = this._calculateTranslate(progress);
-    var transform = 'scale('+scale+') translateX('+translateX+'px)';
-
-    for (var i = 0, l = this.articles.length; i < l; i++) {
-      this.articles[i].style.transform = transform;
-    }
-  }
+    return 'transform: scale('+scale+') translateX('+translateX+'px)';
+  }.property('progress')
 });

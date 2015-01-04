@@ -46,7 +46,7 @@
 .article-detail {
   width: 33.3333333%;
   float: left;
-  // transform: scale(0.94) translateX(-35px);
+  min-height: calc(100vh - 3rem);
   transform-origin: 50% 400px;
   padding: 10px;
   will-change: transform;

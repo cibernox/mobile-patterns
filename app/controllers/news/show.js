@@ -6,15 +6,13 @@ export default Ember.Controller.extend({
       previousArticle: this.get('model.previousArticle'),
       currentArticle: this.get('model'),
       nextArticle: this.get('model.nextArticle')
-    }
+    };
   }.property('model'),
 
   actions: {
-    goToNext: function() {
-      this.transitionToRoute('news.show', this.get('model.nextArticle'));
-    },
-    goToPrevious: function(){
-      this.transitionToRoute('news.show', this.get('model.previousArticle'));
+    changeArticle: function(articlePosition) {
+      this.transitionToRoute('news.show', this.get('model.'+articlePosition+'Article'));
+      this.set('progress', 0);
     }
   }
 });

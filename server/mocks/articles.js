@@ -24,8 +24,24 @@ module.exports = function(app) {
       body: 'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi lacinia molestie dui. <img src="http://us.123rf.com/450wm/happyroman/happyroman1112/happyroman111201430/11503991-vector-rounded-maze.jpg"></img> <p>Praesent blandit dolor. Sed non quam. In vel mi sit amet augue congue elementum. Morbi in ipsum sit amet pede facilisis laoreet.</p> <p>Donec lacus nunc, viverra nec, blandit vel, egestas et, augue. Vestibulum tincidunt malesuada tellus. Ut ultrices ultrices enim. Curabitur sit amet mauris. Morbi in dui quis est pulvinar ullamcorper. Nulla facilisi. Integer lacinia sollicitudin massa. Cras metus. Sed aliquet risus a tortor.</p>',
       thumbnailUrl: 'http://us.123rf.com/450wm/happyroman/happyroman1112/happyroman111201430/11503991-vector-rounded-maze.jpg',
       previousArticle: 2,
+      nextArticle: 4
+    },
+    {
+      id: 4,
+      header: 'Breaking: HTMLBars are the parents',
+      body: 'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi lacinia molestie dui. <img src="http://static.boredpanda.com/blog/wp-content/uuuploads/national-beard-moustache-championships-greg-anderson/national-beard-moustache-championships-greg-anderson-16.jpg"></img> <p>Praesent blandit dolor. Sed non quam. In vel mi sit amet augue congue elementum. Morbi in ipsum sit amet pede facilisis laoreet.</p> <p>Donec lacus nunc, viverra nec, blandit vel, egestas et, augue. Vestibulum tincidunt malesuada tellus. Ut ultrices ultrices enim.</p> <img src="http://static.boredpanda.com/blog/wp-content/uuuploads/national-beard-moustache-championships-greg-anderson/national-beard-moustache-championships-greg-anderson-12.jpg"/> <p> Curabitur sit amet mauris. Morbi in dui quis est pulvinar ullamcorper. Nulla facilisi. Integer lacinia sollicitudin massa. Cras metus. Sed aliquet risus a tortor.</p>',
+      thumbnailUrl: 'http://static.boredpanda.com/blog/wp-content/uuuploads/national-beard-moustache-championships-greg-anderson/national-beard-moustache-championships-greg-anderson-16.jpg',
+      previousArticle: 3,
+      nextArticle: 5
+    },
+    {
+      id: 5,
+      header: 'Gorbypuff: "I am forking Node.js"',
+      body: '<img src="https://c2.staticflickr.com/6/5460/6899160246_685ed0b9a0_z.jpg"></img> <p> Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi lacinia molestie dui.</p> <p>Praesent blandit dolor. Sed non quam. In vel mi sit amet augue congue elementum. Morbi in ipsum sit amet pede facilisis laoreet.</p> <p>Donec lacus nunc, viverra nec, blandit vel, egestas et, augue. Vestibulum tincidunt malesuada tellus. Ut ultrices ultrices enim.</p> <img src="https://pbs.twimg.com/media/A9qTTTGCcAAqZ3l.jpg"/> <p> Curabitur sit amet mauris. Morbi in dui quis est pulvinar ullamcorper. Nulla facilisi. Integer lacinia sollicitudin massa. Cras metus. Sed aliquet risus a tortor.</p>',
+      thumbnailUrl: 'https://c2.staticflickr.com/6/5460/6899160246_685ed0b9a0_z.jpg',
+      previousArticle: 4,
       nextArticle: null
-    }
+    },
   ]
 
 
