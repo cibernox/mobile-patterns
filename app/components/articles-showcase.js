@@ -1,11 +1,17 @@
 import Ember from 'ember';
 import Gesture from 'mobile-patterns/utils/gesture';
+import addEventListenerList from 'mobile-patterns/utils/add-event-listener-list';
 
 export default Ember.Component.extend({
   progress: 0, // Progress varies between -1 and +1
   defaultSpeed: 0.045,
   ignoreGesture: false,
   trackGesture: false,
+  attributeBindings: ['style'],
+
+  style: function() {
+    return 'height: ' + this.get('height') + 'px';
+  }.property('height'),
 
   cacheDom: function(){
     this.articles = this.element.querySelectorAll('.article-detail');
@@ -13,18 +19,12 @@ export default Ember.Component.extend({
   }.on('didInsertElement'),
 
   addImageListeners: function() {
-    var currentArticle = this.element.querySelector('.article-detail.current-article');
-    var images = currentArticle.querySelectorAll('img');
+    var article = this.element.querySelector('.current-article');
     var self = this;
 
-    function resizeOtherArticles(){
-      Ember.run.scheduleOnce('afterRender', function(){
-        self.element.style.height = ''+currentArticle.offsetHeight+'px';
-      });
-    }
-    for (var i = 0, l = images.length; i < l; i++) {
-      images[i].addEventListener('load', resizeOtherArticles);
-    }
+    addEventListenerList(article.querySelectorAll('img'), 'load', function() {
+      self.set('height', article.offsetHeight);
+    });
   }.on('didInsertElement'),
 
   touchStart: function(evt) {
