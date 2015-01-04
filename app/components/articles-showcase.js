@@ -47,19 +47,21 @@ export default Ember.Component.extend({
 
   handleGesture: function() {
     if (this.gesture.initPageX < 20) {
-      this.ignoreGesture = false;
+      this.ignoreGesture = true;
       return;
     }
-
     if (this.trackGesture || this._isTrackeableGesture()) {
-      this.trackGesture = true;
+      if (!this.trackGesture) {
+        this.trackGesture = true;
+        this.animationStartOffset = this.gesture.deltaX;
+      }
       this.gesture.last.preventDefault();
       requestAnimationFrame(this.updateProgress.bind(this));
     }
   },
 
   updateProgress: function() {
-    this.set('progress', -Math.min(Math.max(this.gesture.deltaX / (this.viewportWidth * 0.75), -1), 1));
+    this.set('progress', -Math.min(Math.max((this.gesture.deltaX - this.animationStartOffset) / (this.viewportWidth * 0.75), -1), 1));
   },
 
   finishAnimation: function() {
