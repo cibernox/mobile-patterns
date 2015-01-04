@@ -40,9 +40,9 @@ export default Ember.Component.extend({
   },
 
   touchEnd: function() {
-    this.finishAnimation();
     this.ignoreGesture = false;
     this.trackGesture = false;
+    this.finishAnimation();
   },
 
   handleGesture: function() {
@@ -94,7 +94,7 @@ export default Ember.Component.extend({
       if (newProgress !== targetValue) {
         requestAnimationFrame(iterate);
       } else {
-        self._notifyFinish();
+        requestAnimationFrame(self._notifyFinish.bind(self));
       }
     }
 
