@@ -5,5 +5,15 @@
     "/tests": "tests/index.html",
     "/tests/**": "tests/index.html",
     "/**": "index.html"
+  },
+  "proxy": {
+    "api": {
+      "origin":"https://immense-ocean-7154.herokuapp.com/api/",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "cookies": false,
+      "timeout": 30
+    }
   }
 }

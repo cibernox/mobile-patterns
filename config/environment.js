@@ -5,6 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'mobile-patterns',
     environment: environment,
     baseURL: '/',
+    apiNamespace: environment === 'development' ? 'api' : '__/proxy/api',
     locationType: 'auto',
     contentSecurityPolicy: {
       'style-src': "'self' 'unsafe-inline'",
