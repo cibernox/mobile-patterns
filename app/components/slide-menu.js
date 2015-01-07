@@ -26,7 +26,10 @@ export default Ember.Component.extend({
 
     function handleTouchStart(evt){
       var gesture = new Gesture(evt);
-      if (self.mustTrack(gesture)) {
+      var mustTrack = gesture.adquire(function(g) {
+        return self.get('progress') === 1 || g.initPageX <= 20
+      });
+      if (mustTrack) {
         self.gesture = gesture;
         self.offset = Math.max(0, self.get('progress') * self.width - gesture.initPageX);
         rootNode.addEventListener('touchmove', handleTouchMove);
@@ -34,7 +37,6 @@ export default Ember.Component.extend({
       }
     }
     function handleTouchMove(evt){
-      evt.preventDefault();
       self.gesture.push(event);
       if (!self.tick) {
         self.tick = true;
@@ -51,10 +53,6 @@ export default Ember.Component.extend({
   }.on('didInsertElement'),
 
   // Methods
-  mustTrack: function(gesture) {
-    return this.get('progress') === 1 || gesture.initPageX <= 20;
-  },
-
   updateProgress: function(){
     var newProgress = Math.min((this.gesture.pageX + this.offset) / this.width, 1);
     this.sendAction('action', this.reverseEasing(newProgress));
