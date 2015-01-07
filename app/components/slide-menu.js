@@ -7,8 +7,8 @@ export default Ember.Component.extend({
   collapseMenuAction: 'collapseMenu',
   expandMenuAction: 'expandMenu',
   attributeBindings: ['style'],
-  easing: BezierEasing(0.42, 0.0, 0.58, 1.0),
-  reverseEasing: BezierEasing(0.0, 0.42, 1.0, 0.58),
+  easing: new BezierEasing(0.42, 0.0, 0.58, 1.0),
+  reverseEasing: new BezierEasing(0.0, 0.42, 1.0, 0.58),
 
   // Computed properties
   style: function() {
@@ -35,7 +35,7 @@ export default Ember.Component.extend({
       }
     }
     function handleTouchMove(evt){
-      self.gesture.push(event);
+      self.gesture.push(evt);
       if (!self.tick) {
         self.tick = true;
         requestAnimationFrame(self.updateProgress.bind(self));
@@ -59,14 +59,11 @@ export default Ember.Component.extend({
 
   completeExpansion: function(){
     var progress = this.get('progress');
-    var gestureSpeed;
-
     if (progress === 0 || progress === 1) {
       return;
     }
 
-    gestureSpeed = this.gesture.speedX;
-
+    var gestureSpeed = this.gesture.speedX;
     if (gestureSpeed < -500 || gestureSpeed <= 500 && progress < 0.5) {
       this.sendAction('collapseMenuAction');
     } else {
