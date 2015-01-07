@@ -2,22 +2,116 @@ import Gesture from 'mobile-patterns/utils/gesture';
 
 var firstEvent, secondEvent, thirdEvent;
 
-module('Gesture', {
-  setup: function(){
-    firstEvent  = { touches: [{pageX: 100, pageY: 250}], timeStamp: 1419263004600 };
-    secondEvent = { touches: [{pageX: 110, pageY: 270}], timeStamp: 1419263004610 };
-    thirdEvent  = { touches: [{pageX: 120, pageY: 290}], timeStamp: 1419263004620 };
-  }
-});
+module('Gesture - methods');
 
-// Methods
 test('`Gesture#push` appends the given event to the gesture', function() {
   var gesture = new Gesture();
+
   equal(gesture.eventsCount, 0);
   equal(gesture.last, null);
-  gesture.push(firstEvent);
+  gesture.push('sample-event');
   equal(gesture.eventsCount, 1);
-  equal(gesture.last, firstEvent);
+  equal(gesture.last, 'sample-event');
+});
+
+test('`Gesture#push` calls preventDefault on the given element when defaultPrevented is set to true', function() {
+  var gesture = new Gesture();
+  var evtNotPrevented = {
+    preventDefault: function() {
+      ok(false, 'This event must not be prevented');
+    }
+  };
+  gesture.push(evtNotPrevented);
+
+  gesture.defaultPrevented = true;
+  var evtPrevented = {
+    preventDefault: function() {
+      ok(true, 'This event must be prevented');
+    }
+  };
+  gesture.push(evtPrevented);
+});
+
+test('`Gesture#push` calls stopPropagation on the given element when propagationStopped is set to true', function() {
+  var gesture = new Gesture();
+  var evtNotStopped = {
+    stopPropagation: function() {
+      ok(false, 'The propagation of this event must not be stopped');
+    }
+  };
+  gesture.push(evtNotStopped);
+
+  gesture.propagationStopped = true;
+  var evtStopped = {
+    stopPropagation: function() {
+      ok(true, 'The propagation of this event must be stopped');
+    }
+  };
+  gesture.push(evtStopped);
+});
+
+test('`Gesture#preventDefault` sets the defaultPrevented flag to true if the given condition is met', function() {
+  var conditionFn = function(g) {
+    ok(g.constructor === Gesture, 'The condition function receives the gesture');
+    return true;
+  };
+  var falseyConditionFn = function(g) {
+    return false;
+  };
+  var gesture = new Gesture();
+  ok(!gesture.defaultPrevented, 'Newly created gestures are not default prevented');
+  gesture.preventDefault();
+  ok(gesture.defaultPrevented, 'When not condition is passed, preventDefault() sets the the flag to true');
+
+  var gesture2 = new Gesture();
+  ok(!gesture2.preventDefault(falseyConditionFn), 'preventDefault() returns false if the gesture was not prevented');
+  ok(!gesture2.defaultPrevented, 'When the condition function returns false, the gesture is not prevented');
+  ok(gesture2.preventDefault(conditionFn), 'preventDefault() returns true if the gesture was prevented');
+  ok(gesture2.defaultPrevented, 'When the condition function returns true, the gesture is prevented');
+});
+
+test('`Gesture#stopPropagation` sets the propagationStopped flag to true if the given condition is met', function() {
+  var conditionFn = function(g) {
+    ok(g.constructor === Gesture, 'The condition function receives the gesture');
+    return true;
+  };
+  var falseyConditionFn = function(g) {
+    return false;
+  };
+  var gesture = new Gesture();
+  ok(!gesture.propagationStopped, 'Newly created gestures have not its propagation stopped');
+  gesture.stopPropagation();
+  ok(gesture.propagationStopped, 'When not condition is passed, stopPropagation() sets the flag to true');
+
+  var gesture2 = new Gesture();
+  ok(!gesture2.stopPropagation(falseyConditionFn), 'stopPropagation() returns false if the gesture propagation was not stopped');
+  ok(!gesture2.propagationStopped, 'When the condition function returns false, the gesture ipropagation s not stopped');
+  ok(gesture2.stopPropagation(conditionFn), 'stopPropagation() returns true if the gesture propagation was stopped');
+  ok(gesture2.propagationStopped, 'When the condition function returns true, the gesture propagation is stopped');
+});
+
+test('`Gesture#adquire` sets both `defaultPrevented` and `propagationStopped` to true if the given condition is met', function() {
+  var counter = 0;
+  var conditionFn = function(g) {
+    ok(g.constructor === Gesture, 'The condition function receives the gesture');
+    ok(++counter < 2, 'This method is only invoked once');
+    return true;
+  };
+  var falseyConditionFn = function(g) {
+    return false;
+  };
+  var gesture = new Gesture();
+  gesture.adquire();
+  ok(gesture.defaultPrevented, 'When not condition is passed, adquire() sets the flags to true');
+  ok(gesture.propagationStopped, 'When not condition is passed, adquire() sets the flags to true');
+
+  var gesture2 = new Gesture();
+  ok(!gesture2.adquire(falseyConditionFn), 'adquire() returns false if the gesture propagation was not stopped');
+  ok(!gesture2.defaultPrevented, 'When the condition function returns false, the gesture is default not prevented');
+  ok(!gesture2.propagationStopped, 'When the condition function returns false, the gesture propagation is not stopped');
+  ok(gesture2.adquire(conditionFn), 'adquire() returns true if the gesture propagation was stopped');
+  ok(gesture2.defaultPrevented, 'When the condition function returns true, the gesture is default prevented');
+  ok(gesture2.propagationStopped, 'When the condition function returns true, the gesture propagation is stopped');
 });
 
 test('`Gesture#isHorizontal` returns true if the gesture is horizontal with a error margin smaller than the given one', function() {
@@ -29,7 +123,14 @@ test('`Gesture#isHorizontal` returns true if the gesture is horizontal with a er
   ok(!gesture.isHorizontal(2)); // The error margin is set to ± 2°
 });
 
-// Getters
+module('Gesture - getters', {
+  setup: function(){
+    firstEvent  = { touches: [{pageX: 100, pageY: 250}], timeStamp: 1419263004600 };
+    secondEvent = { touches: [{pageX: 110, pageY: 270}], timeStamp: 1419263004610 };
+    thirdEvent  = { touches: [{pageX: 120, pageY: 290}], timeStamp: 1419263004620 };
+  }
+});
+
 test('`Gesture#eventsCount` contains the number of captured events', function() {
   var gesture = new Gesture('event');
   gesture.push('other event');

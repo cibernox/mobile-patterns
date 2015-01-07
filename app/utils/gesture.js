@@ -1,6 +1,8 @@
 class Gesture {
   constructor(event = null){
     this.events = [];
+    this.defaultPrevented = false;
+    this.propagationStopped = false;
     if (event) {
       this.push(event);
     }
@@ -10,6 +12,31 @@ class Gesture {
   push(event) {
     this.events.push(event);
     this.last = event;
+    if (this.defaultPrevented) {
+      event.preventDefault();
+    }
+    if (this.propagationStopped) {
+      event.stopPropagation();
+    }
+  }
+
+  preventDefault(condFn) {
+    var result = condFn ? condFn(this) : true;
+    this.defaultPrevented = result;
+    return result;
+  }
+
+  stopPropagation(condFn) {
+    var result = condFn ? condFn(this) : true;
+    this.propagationStopped = result;
+    return result;
+  }
+
+  adquire(condFn) {
+    var result = condFn ? condFn(this) : true;
+    this.defaultPrevented = result;
+    this.propagationStopped = result;
+    return result;
   }
 
   isHorizontal(margin = 15) {
