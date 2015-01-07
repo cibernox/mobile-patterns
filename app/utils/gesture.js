@@ -20,20 +20,23 @@ class Gesture {
     }
   }
 
-  preventDefault(condFn) {
-    var result = condFn ? condFn(this) : true;
+  preventDefault(thisArg, condFn) {
+    var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
+    var result = func ? func(this) : true;
     this.defaultPrevented = result;
     return result;
   }
 
-  stopPropagation(condFn) {
-    var result = condFn ? condFn(this) : true;
+  stopPropagation(thisArg, condFn) {
+    var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
+    var result = func ? func(this) : true;
     this.propagationStopped = result;
     return result;
   }
 
-  adquire(condFn) {
-    var result = condFn ? condFn(this) : true;
+  adquire(thisArg, condFn) {
+    var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
+    var result = func ? func(this) : true;
     this.defaultPrevented = result;
     this.propagationStopped = result;
     return result;

@@ -51,67 +51,85 @@ test('`Gesture#push` calls stopPropagation on the given element when propagation
 });
 
 test('`Gesture#preventDefault` sets the defaultPrevented flag to true if the given condition is met', function() {
-  var conditionFn = function(g) {
-    ok(g.constructor === Gesture, 'The condition function receives the gesture');
-    return true;
-  };
-  var falseyConditionFn = function(g) {
-    return false;
-  };
   var gesture = new Gesture();
   ok(!gesture.defaultPrevented, 'Newly created gestures are not default prevented');
   gesture.preventDefault();
   ok(gesture.defaultPrevented, 'When not condition is passed, preventDefault() sets the the flag to true');
 
   var gesture2 = new Gesture();
-  ok(!gesture2.preventDefault(falseyConditionFn), 'preventDefault() returns false if the gesture was not prevented');
-  ok(!gesture2.defaultPrevented, 'When the condition function returns false, the gesture is not prevented');
-  ok(gesture2.preventDefault(conditionFn), 'preventDefault() returns true if the gesture was prevented');
-  ok(gesture2.defaultPrevented, 'When the condition function returns true, the gesture is prevented');
-});
-
-test('`Gesture#stopPropagation` sets the propagationStopped flag to true if the given condition is met', function() {
   var conditionFn = function(g) {
-    ok(g.constructor === Gesture, 'The condition function receives the gesture');
+    equal(g.constructor, Gesture, 'The condition function receives the gesture');
     return true;
   };
   var falseyConditionFn = function(g) {
     return false;
   };
+  ok(!gesture2.preventDefault(falseyConditionFn), 'preventDefault() returns false if the gesture was not prevented');
+  ok(!gesture2.defaultPrevented, 'When the condition function returns false, the gesture is not prevented');
+  ok(gesture2.preventDefault(conditionFn), 'preventDefault() returns true if the gesture was prevented');
+  ok(gesture2.defaultPrevented, 'When the condition function returns true, the gesture is prevented');
+
+  var gesture3 = new Gesture();
+  gesture3.preventDefault('given-context', function(g) {
+    equal(this, 'given-context', 'Inside the function, the context has been bound correctly');
+    equal(g.constructor, Gesture, 'The condition function receives the gesture');
+  });
+});
+
+test('`Gesture#stopPropagation` sets the propagationStopped flag to true if the given condition is met', function() {
   var gesture = new Gesture();
   ok(!gesture.propagationStopped, 'Newly created gestures have not its propagation stopped');
   gesture.stopPropagation();
   ok(gesture.propagationStopped, 'When not condition is passed, stopPropagation() sets the flag to true');
 
   var gesture2 = new Gesture();
-  ok(!gesture2.stopPropagation(falseyConditionFn), 'stopPropagation() returns false if the gesture propagation was not stopped');
-  ok(!gesture2.propagationStopped, 'When the condition function returns false, the gesture ipropagation s not stopped');
-  ok(gesture2.stopPropagation(conditionFn), 'stopPropagation() returns true if the gesture propagation was stopped');
-  ok(gesture2.propagationStopped, 'When the condition function returns true, the gesture propagation is stopped');
-});
-
-test('`Gesture#adquire` sets both `defaultPrevented` and `propagationStopped` to true if the given condition is met', function() {
-  var counter = 0;
   var conditionFn = function(g) {
-    ok(g.constructor === Gesture, 'The condition function receives the gesture');
-    ok(++counter < 2, 'This method is only invoked once');
+    equal(g.constructor, Gesture, 'The condition function receives the gesture');
     return true;
   };
   var falseyConditionFn = function(g) {
     return false;
   };
+  ok(!gesture2.stopPropagation(falseyConditionFn), 'stopPropagation() returns false if the gesture propagation was not stopped');
+  ok(!gesture2.propagationStopped, 'When the condition function returns false, the gesture ipropagation s not stopped');
+  ok(gesture2.stopPropagation(conditionFn), 'stopPropagation() returns true if the gesture propagation was stopped');
+  ok(gesture2.propagationStopped, 'When the condition function returns true, the gesture propagation is stopped');
+
+  var gesture3 = new Gesture();
+  gesture3.stopPropagation('given-context', function(g) {
+    equal(this, 'given-context', 'Inside the function, the context has been bound correctly');
+    equal(g.constructor, Gesture, 'The condition function receives the gesture');
+  });
+});
+
+test('`Gesture#adquire` sets both `defaultPrevented` and `propagationStopped` to true if the given condition is met', function() {
   var gesture = new Gesture();
   gesture.adquire();
   ok(gesture.defaultPrevented, 'When not condition is passed, adquire() sets the flags to true');
   ok(gesture.propagationStopped, 'When not condition is passed, adquire() sets the flags to true');
 
   var gesture2 = new Gesture();
+  var counter = 0;
+  var conditionFn = function(g) {
+    equal(g.constructor, Gesture, 'The condition function receives the gesture');
+    ok(++counter < 2, 'This method is only invoked once');
+    return true;
+  };
+  var falseyConditionFn = function(g) {
+    return false;
+  };
   ok(!gesture2.adquire(falseyConditionFn), 'adquire() returns false if the gesture propagation was not stopped');
   ok(!gesture2.defaultPrevented, 'When the condition function returns false, the gesture is default not prevented');
   ok(!gesture2.propagationStopped, 'When the condition function returns false, the gesture propagation is not stopped');
   ok(gesture2.adquire(conditionFn), 'adquire() returns true if the gesture propagation was stopped');
   ok(gesture2.defaultPrevented, 'When the condition function returns true, the gesture is default prevented');
   ok(gesture2.propagationStopped, 'When the condition function returns true, the gesture propagation is stopped');
+
+  var gesture3 = new Gesture();
+  gesture3.adquire('given-context', function(g) {
+    equal(this, 'given-context', 'Inside the function, the context has been bound correctly');
+    equal(g.constructor, Gesture, 'The condition function receives the gesture');
+  });
 });
 
 test('`Gesture#isHorizontal` returns true if the gesture is horizontal with a error margin smaller than the given one', function() {
