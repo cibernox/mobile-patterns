@@ -1,2 +1,2 @@
  /* global BezierEasing */
-export default window.BezierEasing;
+export default BezierEasing;
