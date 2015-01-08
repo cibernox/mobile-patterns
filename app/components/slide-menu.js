@@ -1,19 +1,16 @@
 import Ember from 'ember';
 import Gesture from 'mobile-patterns/utils/gesture';
-import BezierEasing from 'mobile-patterns/utils/bezier-easing';
 
 export default Ember.Component.extend({
   progress: 0,
   collapseMenuAction: 'collapseMenu',
   expandMenuAction: 'expandMenu',
   attributeBindings: ['style'],
-  easing: new BezierEasing(0.42, 0.0, 0.58, 1.0),
-  reverseEasing: new BezierEasing(0.0, 0.42, 1.0, 0.58),
 
   // Computed properties
   style: function() {
     if (this.width) {
-      var translate = (this.easing(this.get('progress')) - 1) * this.width;
+      var translate = (this.get('progress') - 1) * this.width;
       return 'transform: translateX('+ translate +'px);';
     }
   }.property('progress'),
@@ -53,7 +50,7 @@ export default Ember.Component.extend({
   // Methods
   updateProgress: function(){
     var newProgress = Math.min((this.gesture.pageX + this.offset) / this.width, 1);
-    this.sendAction('action', this.reverseEasing(newProgress));
+    this.sendAction('action', newProgress);
     this.tick = false;
   },
 
