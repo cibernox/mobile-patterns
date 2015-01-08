@@ -1,2 +1,2 @@
- /* global BezierEasing */
+/* global BezierEasing */
 export default BezierEasing;

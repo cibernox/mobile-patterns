@@ -1,26 +1,28 @@
 import BezierEasing from 'mobile-patterns/utils/bezier-easing';
 
-var linearEasing = x => x;
-
 class Animator {
 
-  constructor(config) {
-    this.origin   = config.origin;
-    this.target   = config.target;
-    this.value    = config.value || config.origin;
-    this.progress = (this.value - this.origin) / (this.target - this.origin);
-    this.duration = config.duration;
-    if (config.speed) {
-      this.duration = 1 / config.speed;
-    }
-    var easing = config.easing || linearEasing;
+  constructor({origin, target, value, duration, speed, easing}) {
+    this.easing = (typeof easing === 'function' ? easing : BezierEasing.css[easing || 'linear']);
+    this.origin = origin;
+    this.target = target;
+    this.value  = value || origin;
+    this.progress = this.inverseEasing((this.value - origin) / (target - origin));
+    this.duration = duration || 1 / speed;
     this.remainingFrames = Math.round(this.duration * (1 - this.progress) * 60);
     this.progressDelta   = (1 - this.progress) / this.remainingFrames;
-    this.easing          = typeof easing === 'function' ? easing : BezierEasing.css[easing];
   }
 
   get nextProgress() {
     return Math.max(0, Math.min(1, this.progress + this.progressDelta));
+  }
+
+  get inverseEasing() {
+    if (!this._inverseEasing) {
+      var [{x: x1, y:y1}, {x: x2, y: y2}] = this.easing.getControlPoints();
+      this._inverseEasing = new BezierEasing(y1, x1, y2, x2);
+    }
+    return this._inverseEasing;
   }
 
   play(thisArg, callback, ...args) {
@@ -32,7 +34,7 @@ class Animator {
     var self = this;
     function fn() {
       self.progress = self.nextProgress;
-      self.value = self.easing(self.progress) * (self.target - self.origin) + self.origin;
+      self.value    = self.easing(self.progress) * (self.target - self.origin) + self.origin;
       callback(self.value);
 
       if (self.value !== self.target) {
