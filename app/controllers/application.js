@@ -19,8 +19,11 @@ export default Ember.Controller.extend({
     },
 
     collapseMenu: function(speed) {
-      var animator = new Animator({origin: 1, target: 0, value: this.get('progress'), speed: Math.max(-speed, this.minSpeed), easing: 'ease-in-out'});
-      animator.play(this, this.set, 'progress');
+      var progress = this.get('progress');
+      if (progress !== 0) {
+        var animator = new Animator({origin: 1, target: 0, value: progress, speed: Math.max(-speed, this.minSpeed), easing: 'ease-in-out'});
+        animator.play(this, this.set, 'progress');
+      }
     },
 
     updateProgress: function(newProgress) {
