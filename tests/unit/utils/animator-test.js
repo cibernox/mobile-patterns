@@ -26,25 +26,24 @@ test('Animator#duration is initialized in the constructor if provided, or infere
   equal(animator2.duration, 2);
 });
 
+test('Animator#progress is the progress of the animation expressed between 0 (not started) and 1 (finished)', function() {
+  ok(false, 'Not implemented');
+});
+
+test('Animator#remainingFrames', function() {
+  ok(false, 'Not implemented');
+});
+
+test('Animator#progressDelta', function() {
+  ok(false, 'Not implemented');
+});
+
+test('Animator#easing', function() {
+  ok(false, 'Not implemented');
+});
+
 module('Animator - getters');
 
-test('Animator#progress is the progress of the animation expressed between 0 (not started) and 1 (finished)', function() {
-  var animator = new Animator({origin: 100, target: 1100, value: 200});
-  equal(animator.progress, 0.1);
-  var animator2 = new Animator({origin: -1100, target: -100, value: -200});
-  equal(animator2.progress, 0.9);
-});
-
-test('Animator#remainingFrames returns the number of frames needed to complete the animation', function() {
-  var animator = new Animator({origin: 0, target: 1000, value: 0, duration: 1});
-  equal(animator.remainingFrames, 60);
-  var animator2 = new Animator({origin: -1100, target: -100, value: -200, duration: 1});
-  equal(animator2.remainingFrames , 6, 'There is 6 frames remaining');
-});
-
-test('Animator#delta returns the increment of the progress per frame', function() {
-  var animator = new Animator({origin: 0, target: 1000, value: 0, duration: 0.33333333});
-  equal(animator.delta, 50, 'The value will be incremented in 50 each frame');
-  var animator2 = new Animator({origin: 100, target: -900, value: 100, duration: 0.6666666});
-  equal(animator2.delta, -25, 'The value will be decremented in 25 each frame');
+test('Animator#nextProgress is the progress of the animation expressed between 0 (not started) and 1 (finished)', function() {
+  ok(false, 'Not implemented');
 });

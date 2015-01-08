@@ -8,8 +8,8 @@ class Animator {
     this.origin   = config.origin;
     this.target   = config.target;
     this.value    = config.value || config.origin;
-    this.duration = config.duration;
     this.progress = (this.value - this.origin) / (this.target - this.origin);
+    this.duration = config.duration;
     if (config.speed) {
       this.duration = 1 / config.speed;
     }
