@@ -1,35 +1,30 @@
 import Ember from 'ember';
+import Animator from 'mobile-patterns/utils/animator';
 
 export default Ember.Controller.extend({
   progress: 0,
+  minSpeed: 3.333,
 
   actions: {
     toggleMenu: function(){
-      this.delta = this.get('progress') === 1 ? -0.04 : 0.04;
-      requestAnimationFrame(this.animateProgress.bind(this));
+      var progress = this.get('progress');
+      var target = progress === 1 ? 0 : 1;
+      var animator = new Animator({origin: progress, target: target, duration: 0.3333});
+      animator.play(this, this.set, 'progress');
     },
 
-    expandMenu: function() {
-      this.delta = 0.04;
-      requestAnimationFrame(this.animateProgress.bind(this));
+    expandMenu: function(speed) {
+      var animator = new Animator({origin: 0, target: 1, value: this.get('progress'), speed: Math.max(speed, this.minSpeed)});
+      animator.play(this, this.set, 'progress');
     },
 
-    collapseMenu: function() {
-      this.delta = -0.04;
-      requestAnimationFrame(this.animateProgress.bind(this));
+    collapseMenu: function(speed) {
+      var animator = new Animator({origin: 1, target: 0, value: this.get('progress'), speed: Math.max(-speed, this.minSpeed)});
+      animator.play(this, this.set, 'progress');
     },
 
     updateProgress: function(newProgress) {
       this.set('progress', newProgress);
-    }
-  },
-
-  // Methods
-  animateProgress: function(){
-    var newProgress = Math.min(Math.max(0, this.get('progress') + this.delta), 1);
-    this.set('progress', newProgress);
-    if (newProgress !== 0 && newProgress !== 1) {
-      requestAnimationFrame(this.animateProgress.bind(this));
     }
   }
 });

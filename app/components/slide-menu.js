@@ -63,11 +63,11 @@ export default Ember.Component.extend({
       return;
     }
 
-    var gestureSpeed = this.gesture.speedX;
-    if (gestureSpeed < -500 || gestureSpeed <= 500 && progress < 0.5) {
-      this.sendAction('collapseMenuAction');
+    var speed = this.gesture.speedX / this.width;
+    if (speed < -1 || speed <= 1 && progress < 0.5) {
+      this.sendAction('collapseMenuAction', speed);
     } else {
-      this.sendAction('expandMenuAction');
+      this.sendAction('expandMenuAction', speed);
     }
   }
 });
