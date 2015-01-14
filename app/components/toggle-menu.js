@@ -6,11 +6,11 @@ export default Ember.Component.extend({
     var translateX = progress * 5;
     var translateY = translateX;
     var rotation   = progress * 45;
-    return 'transform: rotate(' + rotation + 'deg) translate(' + translateX + 'px, ' + translateY + 'px);';
+    return `transform: rotate(${rotation}deg) translate(${translateX}px, ${translateY}px);`;
   }.property('progress'),
 
   middleStrokeStyle: function(){
-    return 'opacity: ' + (1 - this.get('progress')) + ';';
+    return `opacity: ${1 - this.get('progress')};`;
   }.property('progress'),
 
   bottomStrokeStyle: function(){
@@ -18,7 +18,7 @@ export default Ember.Component.extend({
     var translateX = progress * 7;
     var translateY = progress * -8;
     var rotation   = progress * -45;
-    return 'transform: rotate(' + rotation + 'deg) translate(' + translateX + 'px, ' + translateY + 'px);';
+    return `transform: rotate(${rotation}deg) translate(${translateX}px, ${translateY}px);`;
   }.property('progress'),
 
   click: function(){

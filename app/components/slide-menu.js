@@ -11,7 +11,7 @@ export default Ember.Component.extend({
   style: function() {
     if (this.width) {
       var translate = (this.get('progress') - 1) * this.width;
-      return 'transform: translateX('+ translate +'px);';
+      return `transform: translateX(${translate}px);`;
     }
   }.property('progress'),
 

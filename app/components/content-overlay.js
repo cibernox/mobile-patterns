@@ -6,6 +6,6 @@ export default Ember.Component.extend({
 
   style: function() {
     var progress = this.get('progress');
-    return 'opacity: ' + progress + '; visibility: ' + (progress === 0 ? 'hidden' : 'visible') + ';';
+    return `opacity: ${progress}; visibility: ${progress === 0 ? 'hidden' : 'visible'};`;
   }.property('progress')
 });
