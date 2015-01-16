@@ -49,7 +49,7 @@ export default Ember.Component.extend({
       return;
     }
 
-    var speed = this.gesture.speedX / this.width;
+    var speed = this.gesture.speedX * this.get('animation-duration') / this.width / 1000;
     if (speed < -1 || speed <= 1 && progress < 0.5) {
       this.player.playbackRate = Math.min(speed, -1);
     } else {
