@@ -4,7 +4,8 @@ var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 var app = new EmberApp();
 
-app.import('bower_components/bezier-easing/bezier-easing.js');
+app.import('bower_components/web-animations-js/web-animations-next.min.js');
+// app.import('bower_components/bezier-easing/bezier-easing.js');
 
 // Use `app.import` to add additional libraries to the generated
 // output files.

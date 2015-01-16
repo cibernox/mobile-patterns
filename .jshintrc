@@ -2,7 +2,9 @@
   "predef": [
     "document",
     "window",
-    "-Promise"
+    "-Promise",
+    "Animation",
+    "AnimationGroup"
   ],
   "browser": true,
   "boss": true,

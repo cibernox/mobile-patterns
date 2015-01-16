@@ -1,27 +1,33 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  topStrokeStyle: function() {
-    var progress = this.get('progress');
-    var translateX = progress * 5;
-    var translateY = translateX;
-    var rotation   = progress * 45;
-    return `transform: rotate(${rotation}deg) translate(${translateX}px, ${translateY}px);`;
-  }.property('progress'),
-
-  middleStrokeStyle: function(){
-    return `opacity: ${1 - this.get('progress')};`;
-  }.property('progress'),
-
-  bottomStrokeStyle: function(){
-    var progress = this.get('progress');
-    var translateX = progress * 7;
-    var translateY = progress * -8;
-    var rotation   = progress * -45;
-    return `transform: rotate(${rotation}deg) translate(${translateX}px, ${translateY}px);`;
-  }.property('progress'),
+  setupAnimation: function() {
+    var opts = { duration: this.get('animation-duration'), fill: 'both' };
+    var a1 = new Animation(
+      this.element.querySelector('#hamburger-stroke-top'),
+      [{ transform: 'rotate(0deg) translate(0,0)' }, { transform: 'rotate(45deg) translate(7px, 5.5px)' }],
+      opts
+    );
+    var a2 = new Animation(
+      this.element.querySelector('#hamburger-stroke-middle'),
+      [{ opacity: 1 }, { opacity: 0 }],
+      opts
+    );
+    var a3 = new Animation(
+      this.element.querySelector('#hamburger-stroke-bottom'),
+      [{ transform: 'rotate(0deg) translate(0,0)' }, { transform: 'rotate(-45deg) translate(7px, -5.5px)' }],
+      opts
+    );
+    this.sendAction('action', new AnimationGroup([a1, a2, a3]));
+  }.on('didInsertElement'),
 
   click: function(){
-    this.sendAction();
+    var player = this.get('player');
+    if (player.currentTime === 0) {
+      player.playbackRate = 1;
+    } else {
+      player.playbackRate = -1;
+    }
+    player.play();
   }
 });
