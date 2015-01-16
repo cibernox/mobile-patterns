@@ -5,7 +5,7 @@ $menu-width: 320px;
   position: fixed;
   width: $menu-width;
   height: 100%;
-  transform: translateX(-$menu-width);
+  left: -$menu-width;
   will-change: transform;
   z-index: 100;
   a.active, a:active {

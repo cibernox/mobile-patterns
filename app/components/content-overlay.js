@@ -1,11 +1,12 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  progress: 0,
-  attributeBindings: ['style'],
-
-  style: function() {
-    var progress = this.get('progress');
-    return `opacity: ${progress}; visibility: ${progress === 0 ? 'hidden' : 'visible'};`;
-  }.property('progress')
+  setupAnimation: function() {
+    var animation = new Animation(
+      this.element,
+      [{ opacity: 0, visibility: 'hidden' }, { opacity: 1, visibility: 'visible' }],
+      { duration: this.get('animation-duration'), fill: 'both' }
+    );
+    this.sendAction('action', animation);
+  }.on('didInsertElement')
 });
