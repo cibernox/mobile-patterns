@@ -4,19 +4,10 @@ export default Ember.Controller.extend({
   menuAnimations: [],
   menuAnimationDuration: 333,
 
-
   actions: {
     setupAnimation: function(animation) {
       this.menuAnimations.push(animation);
-      var self = this;
-      function joinAnimations(){
-        var group = new AnimationGroup(self.menuAnimations);
-        var player = document.timeline.play(group);
-        player.pause();
-        player.currentTime = 0; // Workaround for bug
-        self.set('menu-player', player);
-      }
-      Ember.run.scheduleOnce('afterRender', joinAnimations);
+      Ember.run.scheduleOnce('afterRender', this, this.createAnimationGroup);
     },
 
     collapseMenu: function() {
@@ -26,5 +17,14 @@ export default Ember.Controller.extend({
         player.play();
       }
     }
+  },
+
+  createAnimationGroup: function(){
+    var group = new AnimationGroup(this.menuAnimations);
+    var player = document.timeline.play(group);
+    player.pause();
+    player.currentTime = 0; // Workaround for bug
+    player.onfinish = () => player.pause();
+    this.set('menu-player', player);
   }
 });

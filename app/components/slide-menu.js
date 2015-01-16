@@ -31,7 +31,6 @@ export default Ember.Component.extend({
     function handleTouchMove(evt) {
       self.gesture.push(evt);
       var newProgress = Math.min((self.gesture.pageX + self.offset) / self.width, 1);
-      self.player.pause();
       self.player.currentTime = newProgress * self.get('animation-duration');
     }
     function handleTouchEnd() {
