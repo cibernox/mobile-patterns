@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   setupAnimation: function() {
-    var opts = { duration: this.get('animation-duration'), fill: 'both' };
+    var opts = { duration: this.duration, fill: 'both' };
     var a1 = new Animation(
       this.element.querySelector('#hamburger-stroke-top'),
       [{ transform: 'rotate(0deg) translate(0,0)' }, { transform: 'rotate(45deg) translate(7px, 5.5px)' }],

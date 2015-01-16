@@ -1,14 +1,16 @@
 import Ember from 'ember';
 import Gesture from 'mobile-patterns/utils/gesture';
+import BezierEasing from 'mobile-patterns/utils/bezier-easing';
 
 export default Ember.Component.extend({
+  inverseEasing: new BezierEasing(0, 0.42, 1, 0.58),
   // Events
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
     var animation = new Animation(
       this.element,
       [{ transform: 'translateX(0)' }, { transform: `translateX(${this.width}px)` }],
-      { duration: this.get('animation-duration'), fill: 'both' }
+      { duration: this.duration, fill: 'both', easing: 'cubic-bezier(0.42, 0, 0.58, 1)' }
     );
     this.sendAction('action', animation);
   }.on('didInsertElement'),
@@ -19,7 +21,7 @@ export default Ember.Component.extend({
     var self = this;
 
     function handleTouchStart(evt) {
-      var progress = self.player.currentTime / self.get('animation-duration');
+      var progress = self.player.currentTime / self.duration;
       self.gesture = new Gesture(evt);
       if (progress === 1 || self.gesture.initPageX <= 20) {
         self.gesture.adquire();
@@ -31,7 +33,7 @@ export default Ember.Component.extend({
     function handleTouchMove(evt) {
       self.gesture.push(evt);
       var newProgress = Math.min((self.gesture.pageX + self.offset) / self.width, 1);
-      self.player.currentTime = newProgress * self.get('animation-duration');
+      self.player.currentTime = self.inverseEasing(newProgress) * self.duration;
     }
     function handleTouchEnd() {
       rootNode.removeEventListener('touchmove', handleTouchMove);
@@ -43,12 +45,12 @@ export default Ember.Component.extend({
   }.on('didInsertElement'),
 
   completeExpansion: function(){
-    var progress = this.player.currentTime / this.get('animation-duration');
+    var progress = this.player.currentTime / this.duration;
     if (progress === 0 || progress === 1) {
       return;
     }
 
-    var speed = this.gesture.speedX * this.get('animation-duration') / this.width / 1000;
+    var speed = this.gesture.speedX * this.duration / this.width / 1000;
     if (speed < -1 || speed <= 1 && progress < 0.5) {
       this.player.playbackRate = Math.min(speed, -1);
     } else {

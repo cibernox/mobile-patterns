@@ -5,7 +5,7 @@ export default Ember.Component.extend({
     var animation = new Animation(
       this.element,
       [{ opacity: 0, visibility: 'hidden' }, { opacity: 1, visibility: 'visible' }],
-      { duration: this.get('animation-duration'), fill: 'both' }
+      { duration: this.duration, fill: 'both' }
     );
     this.sendAction('action', animation);
   }.on('didInsertElement')

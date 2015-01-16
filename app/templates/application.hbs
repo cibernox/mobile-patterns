@@ -1,8 +1,8 @@
 <header id="app-header">
-  <toggle-menu id="toggle-main-menu" action="setupAnimation" player={{menu-player}} animation-duration={{menuAnimationDuration}}></toggle-menu>
+  <toggle-menu id="toggle-main-menu" action="setupAnimation" player={{menu-player}} duration={{menuAnimationDuration}}></toggle-menu>
   {{#link-to 'application'}}<h1 id="app-title">Mobile Patterns</h1>{{/link-to}}
 </header>
-<slide-menu id="app-menu" observed-element="mobile-patterns" action="setupAnimation" player={{menu-player}} animation-duration={{menuAnimationDuration}}>
+<slide-menu id="app-menu" observed-element="mobile-patterns" action="setupAnimation" player={{menu-player}} duration={{menuAnimationDuration}}>
   {{link-to "Landing" "index" class="menu-item"}}
   {{link-to "Newspaper" "news" class="menu-item"}}
   <div class="menu-item">Section 2</div>
@@ -10,4 +10,4 @@
 <div id="app-content">
   {{outlet}}
 </div>
-<content-overlay id="content-overlay" animation-duration={{menuAnimationDuration}} action="setupAnimation"></content-overlay>
+<content-overlay id="content-overlay" duration={{menuAnimationDuration}} action="setupAnimation"></content-overlay>
