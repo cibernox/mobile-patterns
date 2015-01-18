@@ -1,14 +1,14 @@
-<article class="article-detail previous-article {{unless attrs.previousArticle "placeholder"}}" style="{{articleStyle}}">
+<article class="article-detail previous-article {{unless attrs.previousArticle "placeholder"}}">
   <header><h2>{{attrs.previousArticle.header}}</h2></header>
   <div class="article-body">{{{attrs.previousArticle.body}}}</div>
 </article>
 
-<article class="article-detail current-article" style="{{articleStyle}}">
+<article class="article-detail current-article">
   <header><h2>{{attrs.currentArticle.header}}</h2></header>
   <div class="article-body">{{{attrs.currentArticle.body}}}</div>
 </article>
 
-<article class="article-detail next-article {{unless attrs.nextArticle "placeholder"}}" style="{{articleStyle}}">
+<article class="article-detail next-article {{unless attrs.nextArticle "placeholder"}}">
   <header><h2>{{attrs.nextArticle.header}}</h2></header>
   <div class="article-body">{{{attrs.nextArticle.body}}}</div>
 </article>
