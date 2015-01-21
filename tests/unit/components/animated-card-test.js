@@ -3,7 +3,7 @@ import {
   test
 } from 'ember-qunit';
 
-moduleForComponent('articles-showcase', 'ArticlesShowcaseComponent', {
+moduleForComponent('animated-card', 'AnimatedCardComponent', {
   // specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar']
 });

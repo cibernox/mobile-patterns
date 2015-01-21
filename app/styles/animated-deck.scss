@@ -1,0 +1,23 @@
+@import 'utility-mixins';
+
+.animated-deck {
+  overflow-x: hidden;
+  background: url(/images/cloth-pattern.png);
+  &.effect-expose {
+    .cards {
+      @include clearfix;
+      width: 300%;
+      margin-left: -100%;
+    }
+  }
+}
+
+.animated-card {
+  background-color: #eee;
+  padding: 10px;
+  float: left;
+  width: 33.33333%;
+  .effect-expose & {
+    transform-origin: 50% 400px;
+  }
+}

@@ -1,1 +1,5 @@
-<articles-showcase id="news-show" attrs={{attrs}} progress={{progress}} action="changeArticle"></articles-showcase>
+<animated-deck items={{items}} current={{model}} animation="expose" onChange="transitionToSibling" as |card|>
+  <header><h2>{{card.content.header}}</h2></header>
+  <div class="article-body">{{{card.content.body}}}</div>
+</animated-deck>
+
