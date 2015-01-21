@@ -10,7 +10,6 @@ export default Ember.Component.extend({
 
   // Initializer
   setupAnimation: function() {
-    console.log('executed')
     this.width = this.element.offsetWidth;
     var cards = this.element.querySelectorAll('.animated-card');
     var opts = { duration: this.duration, fill: 'both' };
@@ -69,13 +68,13 @@ export default Ember.Component.extend({
     if (this.gesture.speedX > 0) {
       this.player.playbackRate = 1;
       this.player.onfinish = (e) => {
-        this.player.pause();
+        this.player.playbackRate = 0;
         this.sendAction('onChange', this.get('previous'));
       }
     } else if (this.gesture.speedX < 0) {
       this.player.playbackRate = -1;
       this.player.onfinish = (e) => {
-        this.player.pause();
+        this.player.playbackRate = 0;
         this.sendAction('onChange', this.get('next'));
       }
     }

@@ -7,12 +7,14 @@ export default Ember.Route.extend({
 
   setupController: function(controller, model) {
     this._super(controller, model);
-    controller.set('items', this.modelFor('news'));
+    controller.set('news', this.modelFor('news'));
   },
 
   actions: {
     transitionToSibling: function(article) {
-      this.transitionTo('news.show', article);
+      if (article) {
+        this.transitionTo('news.show', article);
+      }
     }
   }
 });

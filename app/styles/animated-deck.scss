@@ -19,5 +19,6 @@
   width: 33.33333%;
   .effect-expose & {
     transform-origin: 50% 400px;
+    will-change: transform;
   }
 }
