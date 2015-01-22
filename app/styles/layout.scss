@@ -11,12 +11,8 @@ $app-header-height: 3rem;
   background-color: red;
   color: white;
   height: $app-header-height;
-  display: -webkit-flex;
   display: flex;
-  > * {
-    flex: 1;
-    -webkit-flex: 1;
-  }
+  > * { flex: 1; }
 }
 
 #app-title {
