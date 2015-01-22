@@ -6,25 +6,25 @@ var computed = Ember.computed;
 export default Ember.Component.extend({
   classNames: ['animated-deck'],
   classNameBindings: ['effectClass'],
-  duration: 1000,
+  duration: 600,
 
   // Initializer
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
     var cards = this.element.querySelectorAll('.animated-card');
-    var opts = { duration: this.duration, fill: 'both' };
+    var opts = { duration: this.duration, fill: 'both', easing: 'ease-in-out' };
     var previousKeyframes = [
       { transform: `scale(1) translate(0px)` },
       { transform: `scale(0.9) translate(0px)` },
       { transform: `scale(0.9) translate(${this.width}px)` },
       { transform: `scale(1) translate(${this.width}px)` }
-    ]
+    ];
     var nextKeyframes = [
       { transform: `scale(1) translate(0px)` },
       { transform: `scale(0.9) translate(0px)` },
       { transform: `scale(0.9) translate(-${this.width}px)` },
       { transform: `scale(1) translate(-${this.width}px)` }
-    ]
+    ];
     var nextAnimations = [];
     var previousAnimations = [];
     for (let i = 0; i < cards.length; i++) {
@@ -55,6 +55,7 @@ export default Ember.Component.extend({
 
   // Observers
   resetAnimation: function() {
+    this.player.playbackRate = 0;
     this.player.currentTime = 0;
     this.player = null;
   }.observes('current'),
@@ -63,14 +64,16 @@ export default Ember.Component.extend({
   touchStart: function(e) {
     this.gesture = new Gesture(e.originalEvent);
   },
+
   touchMove: function(e) {
     this.gesture.push(e.originalEvent);
     if (this.gesture.isHorizontal()) {
       this.gesture.adquire();
       this.player = this.getPlayer();
-      this.player.currentTime = Math.abs(this.gesture.deltaX) / 320 * this.duration;
+      this.player.currentTime = Math.abs(this.gesture.deltaX) / this.width * this.duration;
     }
   },
+
   touchEnd: function(e) {
     e.preventDefault();
     this.finalizeAnimation();
@@ -94,15 +97,9 @@ export default Ember.Component.extend({
 
   finalizeAnimation: function() {
     if (this.gesture.speedX > 0) {
-      this.player.onfinish = e => {
-        this.player.playbackRate = 0;
-        this.sendAction('onChange', this.get('previous'));
-      }
+      this.player.onfinish = () => this.sendAction('onChange', this.get('previous'));
     } else if (this.gesture.speedX < 0) {
-      this.player.onfinish = e => {
-        this.player.playbackRate = 0;
-        this.sendAction('onChange', this.get('next'));
-      }
+      this.player.onfinish = () => this.sendAction('onChange', this.get('next'));
     }
     this.player.playbackRate = 1;
     this.player.play();
