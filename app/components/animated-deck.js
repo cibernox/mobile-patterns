@@ -36,6 +36,11 @@ export default Ember.Component.extend({
     window.debugComponent = this;
   }.on('didInsertElement'),
 
+  // Initializer
+  setupEventListeners: function() {
+    // TODO
+  }.on('didInsertElement'),
+
   // CPs
   effectClass: computed('effect', function() {
     return `effect-${this.effect}`;
@@ -62,10 +67,13 @@ export default Ember.Component.extend({
 
   // Event handling
   touchStart: function(e) {
+    console.log('start!!');
     this.gesture = new Gesture(e.originalEvent);
   },
 
   touchMove: function(e) {
+    console.log('move!!');
+    console.log('e', e);
     this.gesture.push(e.originalEvent);
     if (this.gesture.isHorizontal()) {
       this.gesture.adquire();
@@ -75,6 +83,7 @@ export default Ember.Component.extend({
   },
 
   touchEnd: function(e) {
+    console.log('end!!');
     e.preventDefault();
     this.finalizeAnimation();
     this.gesture = null;
