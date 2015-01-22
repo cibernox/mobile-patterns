@@ -11,9 +11,12 @@ $app-header-height: 3rem;
   background-color: red;
   color: white;
   height: $app-header-height;
+  display: -webkit-flex;
   display: flex;
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.3);
-  > * { flex: 1 }
+  > * {
+    flex: 1;
+    -webkit-flex: 1;
+  }
 }
 
 #app-title {
@@ -23,7 +26,6 @@ $app-header-height: 3rem;
 
 #toggle-main-menu {
   max-width: $app-header-height;
-  width: 28px;
   padding: 8px;
   cursor: pointer;
 
