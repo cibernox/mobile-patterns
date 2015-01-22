@@ -102,11 +102,14 @@ export default Ember.Component.extend({
     }
 
     var speed = -this.gesture.speedX * this.duration / this.width / 1000;
-
-    if (progress < 0.5 && Math.abs(speed) < 1) {
+    var targetArticle = this.get(this.player.source === this.nextAnimation ? 'next' : 'previous');
+    if (!targetArticle || progress < 0.5 && Math.abs(speed) < 1) {
       // abort animation
       this.player.playbackRate = -1;
-      this.player.onfinish = () => this.player.pause();
+      this.player.onfinish = () => {
+        this.player.pause();
+        this.player = null;
+      }
     } else if (this.player.source === this.nextAnimation && (speed > 1 || progress > 0.5)) {
       // Transition to next
       this.player.playbackRate = Math.max(speed, 1);

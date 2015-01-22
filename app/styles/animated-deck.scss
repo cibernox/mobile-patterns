@@ -17,6 +17,10 @@
   padding: 10px;
   float: left;
   width: 33.33333%;
+  &.placeholder {
+    visibility: hidden;
+  }
+  // Efects
   .effect-expose & {
     transform-origin: 50% 400px;
     will-change: transform;
