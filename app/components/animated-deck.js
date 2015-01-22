@@ -96,12 +96,37 @@ export default Ember.Component.extend({
   },
 
   finalizeAnimation: function() {
-    if (this.gesture.speedX > 0) {
-      this.player.onfinish = () => this.sendAction('onChange', this.get('previous'));
-    } else if (this.gesture.speedX < 0) {
-      this.player.onfinish = () => this.sendAction('onChange', this.get('next'));
+    var progress = this.player.currentTime / this.duration;
+    if (progress === 0) {
+      return;
     }
-    this.player.playbackRate = 1;
+
+    var speed = -this.gesture.speedX * this.duration / this.width / 1000;
+
+    if (this.player.source === this.nextAnimation) {
+      console.log('speed', speed);
+      console.log('progress', progress);
+      if (speed > 1 || progress > 0.5) {
+        // Transition to next
+        this.player.playbackRate = Math.max(speed, 1);
+        this.player.onfinish = () => this.sendAction('onChange', this.get('next'));
+      } else {
+        // Abort
+        this.player.playbackRate = -1;
+        this.player.onfinish = () => this.player.pause();
+      }
+    } else {
+      if (speed < -1 || progress > 0.5) {
+        // Transition to previous
+        this.player.playbackRate = Math.max(-speed, 1);
+        this.player.onfinish = () => this.sendAction('onChange', this.get('previous'));
+      } else {
+        // Abort
+        this.player.playbackRate = -1;
+        this.player.onfinish = () => this.player.pause();
+      }
+    }
+
     this.player.play();
   }
 });
