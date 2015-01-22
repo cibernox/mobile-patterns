@@ -14,16 +14,16 @@ export default Ember.Component.extend({
     var cards = this.element.querySelectorAll('.animated-card');
     var opts = { duration: this.duration, fill: 'both', easing: 'ease-in-out' };
     var previousKeyframes = [
-      { transform: `scale(1) translate(0px)` },
-      { transform: `scale(0.9) translate(0px)` },
-      { transform: `scale(0.9) translate(${this.width}px)` },
-      { transform: `scale(1) translate(${this.width}px)` }
+      { transform: `scale(1) translate(0px)`, offset: 0 },
+      { transform: `scale(0.9) translate(0px)`, offset: 0.15 },
+      { transform: `scale(0.9) translate(${this.width}px)`, offset: 0.85 },
+      { transform: `scale(1) translate(${this.width}px)`, offset: 1 }
     ];
     var nextKeyframes = [
-      { transform: `scale(1) translate(0px)` },
-      { transform: `scale(0.9) translate(0px)` },
-      { transform: `scale(0.9) translate(-${this.width}px)` },
-      { transform: `scale(1) translate(-${this.width}px)` }
+      { transform: `scale(1) translate(0px)`, offset: 0  },
+      { transform: `scale(0.9) translate(0px)`, offset: 0.15 },
+      { transform: `scale(0.9) translate(-${this.width}px)`, offset: 0.85 },
+      { transform: `scale(1) translate(-${this.width}px)`, offset: 1  }
     ];
     var nextAnimations = [];
     var previousAnimations = [];
@@ -103,28 +103,18 @@ export default Ember.Component.extend({
 
     var speed = -this.gesture.speedX * this.duration / this.width / 1000;
 
-    if (this.player.source === this.nextAnimation) {
-      console.log('speed', speed);
-      console.log('progress', progress);
-      if (speed > 1 || progress > 0.5) {
-        // Transition to next
-        this.player.playbackRate = Math.max(speed, 1);
-        this.player.onfinish = () => this.sendAction('onChange', this.get('next'));
-      } else {
-        // Abort
-        this.player.playbackRate = -1;
-        this.player.onfinish = () => this.player.pause();
-      }
+    if (progress < 0.5 && Math.abs(speed) < 1) {
+      // abort animation
+      this.player.playbackRate = -1;
+      this.player.onfinish = () => this.player.pause();
+    } else if (this.player.source === this.nextAnimation && (speed > 1 || progress > 0.5)) {
+      // Transition to next
+      this.player.playbackRate = Math.max(speed, 1);
+      this.player.onfinish = () => this.sendAction('onChange', this.get('next'));
     } else {
-      if (speed < -1 || progress > 0.5) {
-        // Transition to previous
-        this.player.playbackRate = Math.max(-speed, 1);
-        this.player.onfinish = () => this.sendAction('onChange', this.get('previous'));
-      } else {
-        // Abort
-        this.player.playbackRate = -1;
-        this.player.onfinish = () => this.player.pause();
-      }
+      // Transition to previous
+      this.player.playbackRate = Math.max(-speed, 1);
+      this.player.onfinish = () => this.sendAction('onChange', this.get('previous'));
     }
 
     this.player.play();
