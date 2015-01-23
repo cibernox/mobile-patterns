@@ -23,16 +23,16 @@ export default Ember.Component.extend({
     function handleTouchStart(evt) {
       var progress = self.player.currentTime / self.duration;
       self.gesture = new Gesture(evt);
-      if (progress === 1 || self.gesture.initPageX <= 20) {
+      if (progress === 1 || self.gesture.initX <= 20) {
         self.gesture.adquire();
-        self.offset = Math.max(0, progress * self.width - self.gesture.initPageX);
+        self.offset = Math.max(0, progress * self.width - self.gesture.initX);
         rootNode.addEventListener('touchmove', handleTouchMove);
         rootNode.addEventListener('touchend', handleTouchEnd);
       }
     }
     function handleTouchMove(evt) {
       self.gesture.push(evt);
-      var newProgress = Math.min((self.gesture.pageX + self.offset) / self.width, 1);
+      var newProgress = Math.min((self.gesture.x + self.offset) / self.width, 1);
       self.player.currentTime = self.inverseEasing(newProgress) * self.duration;
     }
     function handleTouchEnd() {

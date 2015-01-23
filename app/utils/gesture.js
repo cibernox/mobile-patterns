@@ -10,8 +10,10 @@ class Gesture {
 
   // Methods
   push(event) {
-    this.events.push(event);
-    this.last = event;
+    var touch = event.touches[0];
+    var summary = { timeStamp: event.timeStamp, x: touch.pageX, y: touch.pageY };
+    this.events.push(summary);
+    this.last = summary;
     if (this.defaultPrevented) {
       event.preventDefault();
     }
@@ -60,20 +62,20 @@ class Gesture {
     return this.events[0];
   }
 
-  get pageX(){
-    return this.last.touches[0].pageX;
+  get x(){
+    return this.last.x;
   }
 
-  get pageY(){
-    return this.last.touches[0].pageY;
+  get y(){
+    return this.last.y;
   }
 
-  get initPageX() {
-    return this.first.touches[0].pageX;
+  get initX() {
+    return this.first.x;
   }
 
-  get initPageY() {
-    return this.first.touches[0].pageY;
+  get initY() {
+    return this.first.y;
   }
 
   get lastEvents() {
@@ -81,18 +83,18 @@ class Gesture {
   }
 
   get deltaX() {
-    return this.pageX - this.initPageX;
+    return this.x - this.initX;
   }
 
   get deltaY() {
-    return this.pageY - this.initPageY;
+    return this.y - this.initY;
   }
 
   get speedX() {
     var lastEvents = this.lastEvents;
-    var initX    = lastEvents[0].touches[0].pageX;
+    var initX    = lastEvents[0].x;
     var initTime = lastEvents[0].timeStamp;
-    var lastX    = lastEvents[lastEvents.length - 1].touches[0].pageX;
+    var lastX    = lastEvents[lastEvents.length - 1].x;
     var lastTime = lastEvents[lastEvents.length - 1].timeStamp;
 
     return (lastX - initX) / (lastTime - initTime) * 1000 || 0;
@@ -100,9 +102,9 @@ class Gesture {
 
   get speedY() {
     var lastEvents = this.lastEvents;
-    var initY    = lastEvents[0].touches[0].pageY;
+    var initY    = lastEvents[0].y;
     var initTime = lastEvents[0].timeStamp;
-    var lastY    = lastEvents[lastEvents.length - 1].touches[0].pageY;
+    var lastY    = lastEvents[lastEvents.length - 1].y;
     var lastTime = lastEvents[lastEvents.length - 1].timeStamp;
 
     return (lastY - initY) / (lastTime - initTime) * 1000 || 0;

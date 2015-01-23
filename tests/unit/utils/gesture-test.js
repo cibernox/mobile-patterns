@@ -9,7 +9,7 @@ test('`Gesture#push` appends the given event to the gesture', function() {
 
   equal(gesture.eventsCount, 0);
   equal(gesture.last, null);
-  gesture.push('sample-event');
+  gesture.push({timestamp: 123, touches: [{pageX: 1, pageY: 2}]});
   equal(gesture.eventsCount, 1);
   equal(gesture.last, 'sample-event');
 });
@@ -180,28 +180,28 @@ test('`Gesture#duration` contains the duration of the gesture in milliseconds', 
   equal(gesture.duration, 10);
 });
 
-test('`Gesture#pageX` contains the pageX of the last event', function() {
+test('`Gesture#x` contains the pageX of the last event', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
-  equal(gesture.pageX, 110);
+  equal(gesture.x, 110);
 });
 
-test('`Gesture#pageY` contains the pageY of the last event', function() {
+test('`Gesture#y` contains the pageY of the last event', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
-  equal(gesture.pageY, 270);
+  equal(gesture.y, 270);
 });
 
-test('`Gesture#initPageX` contains the pageX of the first event', function() {
+test('`Gesture#initX` contains the pageX of the first event', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
-  equal(gesture.initPageX, 100);
+  equal(gesture.initX, 100);
 });
 
-test('`Gesture#initPageY` contains the pageX of the first event', function() {
+test('`Gesture#initY` contains the pageX of the first event', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
-  equal(gesture.initPageY, 250);
+  equal(gesture.initY, 250);
 });
 
 test('`Gesture#speedX` contains the speed of the gesture in the X axis', function() {
