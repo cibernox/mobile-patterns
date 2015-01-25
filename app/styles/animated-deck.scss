@@ -26,3 +26,29 @@
     will-change: transform;
   }
 }
+
+
+// .animated-deck {
+//   overflow-x: hidden;
+//   background: url(/images/cloth-pattern.png);
+//   .cards {
+//     overflow-x: hidden;
+//     @include clearfix;
+//     width: 100vw;
+//   }
+// }
+
+// .animated-card {
+//   background-color: #eee;
+//   padding: 10px;
+//   float: left;
+//   margin-right: -100%;
+//   width: inherit;
+//   &.placeholder {
+//     visibility: hidden;
+//   }
+// }
+
+// #next-card {
+//   transform-origin: 0 100%;
+// }

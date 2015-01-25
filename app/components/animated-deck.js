@@ -8,34 +8,6 @@ export default Ember.Component.extend({
   classNameBindings: ['effectClass'],
   duration: 600,
 
-  // Initializer
-  setupAnimation: function() {
-    this.width = this.element.offsetWidth;
-    var cards = this.element.querySelectorAll('.animated-card');
-    var opts = { duration: this.duration, fill: 'both', easing: 'ease-in-out' };
-    var previousKeyframes = [
-      { transform: `scale(1) translate(0px)`, offset: 0 },
-      { transform: `scale(0.9) translate(0px)`, offset: 0.15 },
-      { transform: `scale(0.9) translate(${this.width}px)`, offset: 0.85 },
-      { transform: `scale(1) translate(${this.width}px)`, offset: 1 }
-    ];
-    var nextKeyframes = [
-      { transform: `scale(1) translate(0px)`, offset: 0  },
-      { transform: `scale(0.9) translate(0px)`, offset: 0.15 },
-      { transform: `scale(0.9) translate(-${this.width}px)`, offset: 0.85 },
-      { transform: `scale(1) translate(-${this.width}px)`, offset: 1  }
-    ];
-    var nextAnimations = [];
-    var previousAnimations = [];
-    for (let i = 0; i < cards.length; i++) {
-      nextAnimations.push(new Animation(cards[i], nextKeyframes, opts));
-      previousAnimations.push(new Animation(cards[i], previousKeyframes, opts));
-    }
-    this.nextAnimation = new AnimationGroup(nextAnimations);
-    this.previousAnimation = new AnimationGroup(previousAnimations);
-    window.debugComponent = this;
-  }.on('didInsertElement'),
-
   // CPs
   effectClass: computed('effect', function() {
     return `effect-${this.effect}`;
@@ -53,11 +25,51 @@ export default Ember.Component.extend({
     return items.objectAt(index + 1);
   }),
 
+
+  // Initializer
+
+  // There is 2 animations.
+  // One is the one use to transition to the next card, in which the current disappears in the left
+  // and a new one appears from the right.
+  // The other is to transition to the previous card. The current card dissapears in the right
+  // and another card appears from the left.
+  // In each animation, only 2 cards should move.
+  setupAnimation: function() {
+    this.width = this.element.offsetWidth;
+    var animOpts = { duration: this.duration, fill: 'both' };
+    var prevKeyframes = [
+      { transform: `scale(1) translate(0px)`, offset: 0 },
+      { transform: `scale(0.9) translate(0px)`, offset: 0.15 },
+      { transform: `scale(0.9) translate(${this.width}px)`, offset: 0.85 },
+      { transform: `scale(1) translate(${this.width}px)`, offset: 1 }
+    ];
+    var nextKeyframes = [
+      { transform: `scale(1) translate(0px)`, offset: 0  },
+      { transform: `scale(0.9) translate(0px)`, offset: 0.15 },
+      { transform: `scale(0.9) translate(-${this.width}px)`, offset: 0.85 },
+      { transform: `scale(1) translate(-${this.width}px)`, offset: 1  }
+    ];
+    var a1 = new Animation(this.element.querySelector('#previous-card'), prevKeyframes, animOpts);
+    var a2 = new Animation(this.element.querySelector('#current-card'), prevKeyframes, animOpts);
+    this.previousPlayers = [document.timeline.play(a1), document.timeline.play(a2)];
+
+    var a3 = new Animation(this.element.querySelector('#current-card'), nextKeyframes, animOpts);
+    var a4 = new Animation(this.element.querySelector('#next-card'), nextKeyframes, animOpts);
+    this.nextPlayers = [document.timeline.play(a3), document.timeline.play(a4)];
+
+    window.previousPlayers = this.previousPlayers;
+    window.nextPlayers = this.nextPlayers;
+    this.previousPlayers.forEach(p => p.cancel());
+    this.nextPlayers.forEach(p => p.cancel());
+  }.on('didInsertElement'),
+
   // Observers
   resetAnimation: function() {
-    this.player.playbackRate = 0;
-    this.player.currentTime = 0;
-    this.player = null;
+    this.players.forEach(p => {
+      p.currentTime = 0; // This shouldn't be necesary. Another bug?
+      p.cancel()
+    });
+    this.players = null;
   }.observes('current'),
 
   // Event handling
@@ -67,10 +79,8 @@ export default Ember.Component.extend({
 
   touchMove: function(e) {
     this.gesture.push(e.originalEvent);
-    if (this.gesture.isHorizontal()) {
-      this.gesture.adquire();
-      this.player = this.getPlayer();
-      this.player.currentTime = Math.abs(this.gesture.deltaX) / this.width * this.duration;
+    if (this.mustTrack()) {
+      this.updateAnimation();
     }
   },
 
@@ -81,45 +91,57 @@ export default Ember.Component.extend({
   },
 
   // Functions
-  getPlayer: function() {
-    if (this.player) {
-      return this.player;
+  mustTrack: function() {
+    if (this.tracking) {
+      return true;
     }
-    var player;
-    if (this.gesture.deltaX > 0) {
-      player = document.timeline.play(this.previousAnimation);
-    } else {
-      player = document.timeline.play(this.nextAnimation);
+    this.tracking = this.gesture.isHorizontal();
+    return this.tracking;
+  },
+
+  initPlayers: function() {
+    if (!this.players) {
+      this.players = this.gesture.deltaX > 0 ? this.previousPlayers : this.nextPlayers;
+      this.players.forEach(p => { p.play(); p.pause(); });
     }
-    player.pause();
-    return player;
+  },
+
+  updateAnimation: function() {
+    this.initPlayers();
+    var currentTime = Math.abs(this.gesture.deltaX) / this.width * this.duration;
+    this.players.forEach(p => p.currentTime = currentTime);
   },
 
   finalizeAnimation: function() {
-    var progress = this.player.currentTime / this.duration;
+    var progress = this.players[0].currentTime / this.duration;
     if (progress === 0) {
       return;
     }
 
-    var speed = -this.gesture.speedX * this.duration / this.width / 1000;
-    var targetArticle = this.get(this.player.source === this.nextAnimation ? 'next' : 'previous');
+    var speed = this.gesture.speedX * this.duration / this.width / 1000;
+    var targetArticle = this.get(this.players === this.nextPlayers ? 'next' : 'previous');
+
     if (!targetArticle || progress < 0.5 && Math.abs(speed) < 1) {
       // abort animation
-      this.player.playbackRate = -1;
-      this.player.onfinish = () => {
-        this.player.pause();
-        this.player = null;
-      };
-    } else if (this.player.source === this.nextAnimation && (speed > 1 || progress > 0.5)) {
+      this.players.forEach(function(p) {
+        p.playbackRate = -1;
+        p.onfinish = () => p.pause();
+      });
+      Ember.run.next(()=>this.players = null);
+    } else if (this.players === this.nextPlayers && (speed > 1 || progress > 0.5)) {
       // Transition to next
-      this.player.playbackRate = Math.max(speed, 1);
-      this.player.onfinish = () => this.sendAction('onChange', this.get('next'));
+      this.players.forEach(function(p) {
+        p.playbackRate = Math.max(speed, 1);
+        p.onfinish = () => this.sendAction('onChange', targetArticle);
+      }, this);
     } else {
       // Transition to previous
-      this.player.playbackRate = Math.max(-speed, 1);
-      this.player.onfinish = () => this.sendAction('onChange', this.get('previous'));
+      this.players.forEach(function(p) {
+        p.playbackRate = Math.max(-speed, 1);
+        p.onfinish = () => this.sendAction('onChange', targetArticle);
+      }, this);
     }
 
-    this.player.play();
+    this.players.forEach(p => p.play());
   }
 });
