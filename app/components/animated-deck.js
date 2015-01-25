@@ -25,15 +25,7 @@ export default Ember.Component.extend({
     return items.objectAt(index + 1);
   }),
 
-
   // Initializer
-
-  // There is 2 animations.
-  // One is the one use to transition to the next card, in which the current disappears in the left
-  // and a new one appears from the right.
-  // The other is to transition to the previous card. The current card dissapears in the right
-  // and another card appears from the left.
-  // In each animation, only 2 cards should move.
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
     var animOpts = { duration: this.duration, fill: 'both' };
@@ -57,8 +49,6 @@ export default Ember.Component.extend({
     var a4 = new Animation(this.element.querySelector('#next-card'), nextKeyframes, animOpts);
     this.nextPlayers = [document.timeline.play(a3), document.timeline.play(a4)];
 
-    window.previousPlayers = this.previousPlayers;
-    window.nextPlayers = this.nextPlayers;
     this.previousPlayers.forEach(p => p.cancel());
     this.nextPlayers.forEach(p => p.cancel());
   }.on('didInsertElement'),
@@ -66,8 +56,8 @@ export default Ember.Component.extend({
   // Observers
   resetAnimation: function() {
     this.players.forEach(p => {
-      p.currentTime = 0; // This shouldn't be necesary. Another bug?
-      p.cancel()
+      p.currentTime = 0; // This shouldn't be necesary. Another bug in the polyfill?
+      p.cancel();
     });
     this.players = null;
   }.observes('current'),
@@ -88,6 +78,7 @@ export default Ember.Component.extend({
     e.preventDefault();
     this.finalizeAnimation();
     this.gesture = null;
+    this.tracking = false;
   },
 
   // Functions
@@ -102,7 +93,10 @@ export default Ember.Component.extend({
   initPlayers: function() {
     if (!this.players) {
       this.players = this.gesture.deltaX > 0 ? this.previousPlayers : this.nextPlayers;
-      this.players.forEach(p => { p.play(); p.pause(); });
+      this.players.forEach(function(p) {
+        p.play();
+        p.pause();
+      });
     }
   },
 
@@ -120,24 +114,23 @@ export default Ember.Component.extend({
 
     var speed = this.gesture.speedX * this.duration / this.width / 1000;
     var targetArticle = this.get(this.players === this.nextPlayers ? 'next' : 'previous');
-
     if (!targetArticle || progress < 0.5 && Math.abs(speed) < 1) {
       // abort animation
       this.players.forEach(function(p) {
         p.playbackRate = -1;
-        p.onfinish = () => p.pause();
+        p.onfinish = () => p.cancel();
       });
       Ember.run.next(()=>this.players = null);
     } else if (this.players === this.nextPlayers && (speed > 1 || progress > 0.5)) {
       // Transition to next
       this.players.forEach(function(p) {
-        p.playbackRate = Math.max(speed, 1);
+        p.playbackRate = Math.max(-speed, 1);
         p.onfinish = () => this.sendAction('onChange', targetArticle);
       }, this);
     } else {
       // Transition to previous
       this.players.forEach(function(p) {
-        p.playbackRate = Math.max(-speed, 1);
+        p.playbackRate = Math.max(speed, 1);
         p.onfinish = () => this.sendAction('onChange', targetArticle);
       }, this);
     }
