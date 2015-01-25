@@ -60,14 +60,20 @@ export default Ember.Component.extend({
       p.cancel();
     });
     this.players = null;
+    this.animating = false;
   }.observes('current'),
 
   // Event handling
   touchStart: function(e) {
+    if (this.animating) {
+      console.log('early exit because its being animated yet');
+      return;
+    }
     this.gesture = new Gesture(e.originalEvent);
   },
 
   touchMove: function(e) {
+    if (!this.gesture) { return; }
     this.gesture.push(e.originalEvent);
     if (this.mustTrack()) {
       this.updateAnimation();
@@ -75,6 +81,7 @@ export default Ember.Component.extend({
   },
 
   touchEnd: function(e) {
+    if (!this.gesture) { return; }
     e.preventDefault();
     this.finalizeAnimation();
     this.gesture = null;
@@ -83,11 +90,11 @@ export default Ember.Component.extend({
 
   // Functions
   mustTrack: function() {
-    if (this.tracking) {
-      return true;
+    if (!this.tracking) {
+      this.tracking = this.gesture.isHorizontal();
+      return this.tracking;
     }
-    this.tracking = this.gesture.isHorizontal();
-    return this.tracking;
+    return true;
   },
 
   initPlayers: function() {
@@ -97,6 +104,7 @@ export default Ember.Component.extend({
         p.play();
         p.pause();
       });
+      this.animating = true;
     }
   },
 
@@ -118,8 +126,11 @@ export default Ember.Component.extend({
       // abort animation
       this.players.forEach(function(p) {
         p.playbackRate = -1;
-        p.onfinish = () => p.cancel();
-      });
+        p.onfinish = () => {
+          p.cancel();
+          this.animating = false;
+        };
+      }, this);
       Ember.run.next(()=>this.players = null);
     } else if (this.players === this.nextPlayers && (speed > 1 || progress > 0.5)) {
       // Transition to next
