@@ -2,11 +2,12 @@ import Ember from 'ember';
 import Gesture from 'mobile-patterns/utils/gesture';
 
 var computed = Ember.computed;
+var aMap = Array.prototype.map;
 
 export default Ember.Component.extend({
   classNames: ['animated-deck'],
   classNameBindings: ['effectClass'],
-  duration: 600,
+  duration: 1000,
 
   // CPs
   effectClass: computed('effect', function() {
@@ -28,48 +29,28 @@ export default Ember.Component.extend({
   // Initializer
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
-    var animOpts = { duration: this.duration, fill: 'both' };
-    var prevKeyframes = [
-      { transform: `scale(1) translate(0px)`, offset: 0 },
-      { transform: `scale(0.9) translate(0px)`, offset: 0.15 },
-      { transform: `scale(0.9) translate(${this.width}px)`, offset: 0.85 },
-      { transform: `scale(1) translate(${this.width}px)`, offset: 1 }
+    var cards = this.element.querySelectorAll('.animated-card');
+    var opts = { duration: this.duration, fill: 'both' };
+    var keyframes = [
+      { transform: `scale(1) translate(${this.width}px)` },
+      { transform: `scale(0.9) translate(${this.width}px)` },
+      { transform: `scale(0.9) translate(0px)` },
+      { transform: `scale(1) translate(0px)` },
+      { transform: `scale(0.9) translate(0px)` },
+      { transform: `scale(0.9) translate(-${this.width}px)` },
+      { transform: `scale(1) translate(-${this.width}px)` },
     ];
-    var nextKeyframes = [
-      { transform: `scale(1) translate(0px)`, offset: 0  },
-      { transform: `scale(0.9) translate(0px)`, offset: 0.15 },
-      { transform: `scale(0.9) translate(-${this.width}px)`, offset: 0.85 },
-      { transform: `scale(1) translate(-${this.width}px)`, offset: 1  }
-    ];
-    var a1 = new Animation(this.element.querySelector('#previous-card'), prevKeyframes, animOpts);
-    var a2 = new Animation(this.element.querySelector('#current-card'), prevKeyframes, animOpts);
-    this.previousPlayers = [document.timeline.play(a1), document.timeline.play(a2)];
-
-    var a3 = new Animation(this.element.querySelector('#current-card'), nextKeyframes, animOpts);
-    var a4 = new Animation(this.element.querySelector('#next-card'), nextKeyframes, animOpts);
-    this.nextPlayers = [document.timeline.play(a3), document.timeline.play(a4)];
-
-    this.previousPlayers.forEach(p => p.cancel());
-    this.nextPlayers.forEach(p => p.cancel());
+    var group = new AnimationGroup(aMap.call(cards, c => new Animation(c, keyframes, opts)));
+    this.player = document.timeline.play(group);
+    this.player.pause();
+    this.player.currentTime = this.duration / 2;
   }.on('didInsertElement'),
-
-  // Observers
-  resetAnimation: function() {
-    this.players.forEach(p => {
-      p.currentTime = 0; // This shouldn't be necesary. Another bug in the polyfill?
-      p.cancel();
-    });
-    this.players = null;
-    this.animating = false;
-  }.observes('current'),
 
   // Event handling
   touchStart: function(e) {
-    if (this.animating) {
-      console.log('early exit because its being animated yet');
-      return;
+    if (!this.animating) {
+      this.gesture = new Gesture(e.originalEvent);
     }
-    this.gesture = new Gesture(e.originalEvent);
   },
 
   touchMove: function(e) {
@@ -88,6 +69,12 @@ export default Ember.Component.extend({
     this.tracking = false;
   },
 
+  // Observers
+  resetAnimation: function() {
+    this.player.currentTime = this.duration / 2;
+    this.animating = false;
+  }.observes('current'),
+
   // Functions
   mustTrack: function() {
     if (!this.tracking) {
@@ -97,55 +84,56 @@ export default Ember.Component.extend({
     return true;
   },
 
-  initPlayers: function() {
-    if (!this.players) {
-      this.players = this.gesture.deltaX > 0 ? this.previousPlayers : this.nextPlayers;
-      this.players.forEach(function(p) {
-        p.play();
-        p.pause();
-      });
-      this.animating = true;
-    }
-  },
-
   updateAnimation: function() {
-    this.initPlayers();
-    var currentTime = Math.abs(this.gesture.deltaX) / this.width * this.duration;
-    this.players.forEach(p => p.currentTime = currentTime);
+    this.player.currentTime = (-this.gesture.deltaX + this.width) / (this.width * 2) * this.duration;
   },
 
   finalizeAnimation: function() {
-    var progress = this.players[0].currentTime / this.duration;
-    if (progress === 0) {
+    if (this.gesture.deltaX === 0) {
       return;
     }
-
+    var progress = (-this.gesture.deltaX + this.width) / (this.width * 2);
     var speed = this.gesture.speedX * this.duration / this.width / 1000;
-    var targetArticle = this.get(this.players === this.nextPlayers ? 'next' : 'previous');
-    if (!targetArticle || progress < 0.5 && Math.abs(speed) < 1) {
-      // abort animation
-      this.players.forEach(function(p) {
-        p.playbackRate = -1;
-        p.onfinish = () => {
-          p.cancel();
-          this.animating = false;
-        };
-      }, this);
-      Ember.run.next(()=>this.players = null);
-    } else if (this.players === this.nextPlayers && (speed > 1 || progress > 0.5)) {
-      // Transition to next
-      this.players.forEach(function(p) {
-        p.playbackRate = Math.max(-speed, 1);
-        p.onfinish = () => this.sendAction('onChange', targetArticle);
-      }, this);
+    if (progress > 0.75 || speed < -1) {
+      // go to next
+      if (!this.get('next')) {
+        return this.bounceBack();
+      }
+      this.player.playbackRate = Math.max(1, -speed);
+      this.player.onfinish = () => {
+        this.sendAction('onChange', this.get('next'));
+        this.player.pause();
+      };
+      this.player.play();
+    } else if (progress < 0.25 || speed > 1) {
+      // go to previous
+      if (!this.get('previous')) {
+        return this.bounceBack();
+      }
+      this.player.playbackRate = Math.min(-1, speed);
+      this.player.onfinish = () => {
+        this.sendAction('onChange', this.get('previous'));
+        this.player.pause();
+      };
+      this.player.play();
     } else {
-      // Transition to previous
-      this.players.forEach(function(p) {
-        p.playbackRate = Math.max(speed, 1);
-        p.onfinish = () => this.sendAction('onChange', targetArticle);
-      }, this);
+      // to go same
+      this.bounceBack();
     }
+  },
 
-    this.players.forEach(p => p.play());
+  bounceBack: function() {
+    var progressDiff = (-this.gesture.deltaX + this.width) / (this.width * 2) - 0.5;
+    var frames = Math.ceil(Math.abs(progressDiff) * this.duration / 16.67);
+    var frameDelta = progressDiff / frames;
+    var tick = () => {
+      this.player.currentTime = this.player.currentTime - (frameDelta * this.duration);
+      if (--frames > 0) {
+        requestAnimationFrame(tick);
+      } else {
+        this.animating = false;
+      }
+    };
+    requestAnimationFrame(tick);
   }
 });
