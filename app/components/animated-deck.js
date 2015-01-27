@@ -136,7 +136,7 @@ export default Ember.Component.extend({
       if (!this.get('previous')) {
         return this.bounceBack();
       }
-      this.player.playbackRate = Math.min(-1, speed);
+      this.player.playbackRate = Math.min(-1, -speed);
       this.player.onfinish = () => {
         this.sendAction('onChange', this.get('previous'));
         this.player.pause();
