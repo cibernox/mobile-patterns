@@ -105,13 +105,15 @@ export default Ember.Component.extend({
       this.track = !this.neverTrackAgain && this.gesture.isHorizontal(20);
       if (!this.track) {
         this.neverTrackAgain = true;
+      } else {
+        this.initialOffset = this.gesture.deltaX;
       }
     }
     return !!this.track;
   },
 
   updateAnimation: function() {
-    this.player.currentTime = (-this.gesture.deltaX + this.width) / (this.width * 2) * this.duration;
+    this.player.currentTime = (-this.gesture.deltaX + this.initialOffset + this.width) / (this.width * 2) * this.duration;
   },
 
   finalizeAnimation: function() {
@@ -149,7 +151,7 @@ export default Ember.Component.extend({
   },
 
   bounceBack: function() {
-    var progressDiff = (-this.gesture.deltaX + this.width) / (this.width * 2) - 0.5;
+    var progressDiff = (-this.gesture.deltaX + this.initialOffset + this.width) / (this.width * 2) - 0.5;
     var frames = Math.ceil(Math.abs(progressDiff) * this.duration / 16.67);
     var frameDelta = progressDiff / frames;
     var tick = () => {
