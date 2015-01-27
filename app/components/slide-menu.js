@@ -4,6 +4,7 @@ import BezierEasing from 'mobile-patterns/utils/bezier-easing';
 
 export default Ember.Component.extend({
   inverseEasing: new BezierEasing(0, 0.42, 1, 0.58),
+  browserDetector: Ember.inject.service(),
   // Events
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
@@ -17,6 +18,9 @@ export default Ember.Component.extend({
 
   setupEventListeners: function(){
     this.width = this.element.offsetWidth;
+    if (this.get('browserDetector').isSafari) {
+      return;
+    }
     var rootNode = document.querySelector('#' + this.get('observed-element'));
     var self = this;
 
