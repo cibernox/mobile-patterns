@@ -90,6 +90,10 @@ class Gesture {
     return this.y - this.initY;
   }
 
+  get delta() {
+    return Math.sqrt(Math.pow(this.deltaX, 2) + Math.pow(this.deltaY, 2));
+  }
+
   get speedX() {
     var lastEvents = this.lastEvents;
     var initX    = lastEvents[0].x;

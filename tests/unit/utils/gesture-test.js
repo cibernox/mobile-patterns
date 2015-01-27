@@ -226,18 +226,25 @@ test('`Gesture#speedY` contains the speed of the gesture in the X axis', functio
   equal(gesture.speedY, 2000);
 });
 
-test('`Gesture#deltaX` contains the X delta between the beginning and the end of the gesture', function() {
+test('`Gesture#deltaX` contains the X delta between the beginning and the current point of the gesture', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   gesture.push(thirdEvent);
   equal(gesture.deltaX, 20);
 });
 
-test('`Gesture#deltaY` contains the X delta between the beginning and the end of the gesture', function() {
+test('`Gesture#deltaY` contains the X delta between the beginning and the current point of the gesture', function() {
   var gesture = new Gesture(firstEvent);
   gesture.push(secondEvent);
   gesture.push(thirdEvent);
   equal(gesture.deltaY, 40);
+});
+
+test('`Gesture#delta` contains the distance in px between the beginning and the current point of the gesture', function() {
+  var gesture = new Gesture(firstEvent);
+  gesture.push(secondEvent);
+  gesture.push(thirdEvent);
+  ok(gesture.delta - 44.731359 < 0.0001, 'Calculates the delta using Pythagoras theorem');
 });
 
 test('`Gesture#direction` returns the direction of the gesture in degrees (0-360)', function() {
