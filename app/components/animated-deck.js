@@ -39,11 +39,11 @@ export default Ember.Component.extend({
     var opts = { duration: this.duration, fill: 'both' };
     var keyframes = [
       { transform: `scale(1) translate(${this.width}px)` },
-      { transform: `scale(0.9) translate(${this.width}px)`, offset: 1/20 },
-      { transform: `scale(0.9) translate(0px)`, offset: 9/20 },
+      { transform: `scale(0.9) translate(${this.width}px)`, offset: 1.5/20 },
+      { transform: `scale(0.9) translate(0px)`, offset: 8.5/20 },
       { transform: `scale(1) translate(0px)`, offset: 10/20 },
-      { transform: `scale(0.9) translate(0px)`, offset: 11/20 },
-      { transform: `scale(0.9) translate(-${this.width}px)`, offset: 19/20 },
+      { transform: `scale(0.9) translate(0px)`, offset: 11.5/20 },
+      { transform: `scale(0.9) translate(-${this.width}px)`, offset: 18.5/20 },
       { transform: `scale(1) translate(-${this.width}px)` },
     ];
     var group = new AnimationGroup(aMap.call(cards, c => new Animation(c, keyframes, opts)));
