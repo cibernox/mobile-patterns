@@ -36,15 +36,8 @@ export default Ember.Component.extend({
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
     this.cards = this.element.querySelectorAll('.animated-card');
-    // var keyframes = this.generateKeyframes();
-    // var opts = this.generateAnimationOpts();
-    // var group = new AnimationGroup(
-    //   aMap.call(cards, (c, idx) => new Animation(c, keyframes, opts[idx])),
-    //   { duration: this.duration }
-    // );
     var group = new AnimationGroup(aMap.call(this.cards, (c, i) => this.generateAnimation(c, i)));
     this.player = document.timeline.play(group);
-    window.debugPlayer = this.player;
     this.player.pause();
     this.player.currentTime = this.duration / 2;
   }.on('didInsertElement'),
