@@ -13,7 +13,7 @@
     "ember-qunit": "0.1.8",
     "ember-qunit-notifications": "0.0.4",
     "qunit": "~1.15.0",
-    "web-animations-js": "web-animations/web-animations-js#9eb66d37bd8a4a64219f31584e5fec1c5258557a"
+    "web-animations-js": "web-animations/web-animations-js#master"
   },
   "resolutions": {
     "ember": "canary",
