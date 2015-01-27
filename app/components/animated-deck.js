@@ -99,7 +99,7 @@ export default Ember.Component.extend({
   // Functions
   mustTrack: function() {
     if (this.track === undefined && this.gesture.delta > 15) {
-      this.track = !this.neverTrackAgain && this.gesture.isHorizontal(20);
+      this.track = !this.neverTrackAgain && this.gesture.isHorizontal(25);
       if (!this.track) {
         this.neverTrackAgain = true;
       } else {
@@ -185,16 +185,16 @@ export default Ember.Component.extend({
           break;
         case 1:
           keyframes = [
-            { transform: `scale(1) translate(${1.5*this.width}px, 100px) rotate(20deg)`, opacity: 0 },
-            { transform: `scale(1) translate(0) rotate(0)`, opacity: 1 },
-            { transform: `scale(0.8) translate(0) rotate(0)`, opacity: 0 },
+            { transform: `scale(1) translate(${this.width}px, 0)`, opacity: 1 },
+            { transform: `scale(1) translate(0, 0)`, opacity: 1 },
+            { transform: `scale(0.8) translate(0, 0)`, opacity: 0 },
           ];
           break;
         case 2:
           keyframes = [
-            { transform: `scale(1) translate(0) rotate(25deg)`, opacity: 0 },
-            { transform: `scale(1) translate(0, 100px) rotate(25deg)`, opacity: 0 },
-            { transform: `scale(1) translate(${-this.width}px, 0) rotate(0deg)`, opacity: 1 },
+            { transform: `scale(1) translate(0, 0)`, opacity: 1 },
+            { transform: `scale(1) translate(0, 0)`, opacity: 1 },
+            { transform: `scale(1) translate(${-this.width}px, 0)`, opacity: 1 },
           ];
       }
     }

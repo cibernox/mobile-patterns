@@ -33,9 +33,14 @@
   }
   .effect-stack & {
     width: 50%;
+    will-change: transform, opacity;
+    // transform-origin: 50% 300px;
     &#previous-card {
       margin-right: -100vw;
     }
+    // &#next-card {
+    //   transform-origin: 0 100%;
+    // }
   }
 }
 
