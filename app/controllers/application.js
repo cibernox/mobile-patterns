@@ -22,9 +22,8 @@ export default Ember.Controller.extend({
   createAnimationGroup: function(){
     var group = new AnimationGroup(this.menuAnimations);
     var player = document.timeline.play(group);
-    player.pause();
-    player.currentTime = 0; // Workaround for bug
     player.onfinish = () => player.pause();
+    player.pause();
     this.set('menu-player', player);
   }
 });
