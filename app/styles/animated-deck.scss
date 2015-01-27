@@ -10,21 +10,45 @@
       margin-left: -100%;
     }
   }
+  &.effect-stack {
+    .cards {
+      @include clearfix;
+      width: 200%;
+    }
+  }
 }
 
 .animated-card {
   background-color: #eee;
   padding: 10px;
   float: left;
-  width: 33.33333%;
   &.placeholder {
     visibility: hidden;
   }
   // Efects
   .effect-expose & {
+    width: 33.33333%;
     transform-origin: 50% 300px;
     will-change: transform;
   }
+  .effect-stack & {
+    width: 50%;
+    &#previous-card {
+      margin-right: -100vw;
+    }
+  }
+}
+
+#previous-card {
+  z-index: 1;
+}
+
+#current-card {
+  z-index: 2;
+}
+
+#next-card {
+  z-index: 3;
 }
 
 // Notes for 3D animation

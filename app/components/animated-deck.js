@@ -36,10 +36,14 @@ export default Ember.Component.extend({
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
     var cards = this.element.querySelectorAll('.animated-card');
-    var opts = { duration: this.duration, fill: 'both' };
     var keyframes = this.generateKeyframes();
-    var group = new AnimationGroup(aMap.call(cards, c => new Animation(c, keyframes, opts)));
+    var opts = this.generateAnimationOpts();
+    var group = new AnimationGroup(
+      aMap.call(cards, (c, idx) => new Animation(c, keyframes, opts[idx])),
+      { duration: this.duration }
+    );
     this.player = document.timeline.play(group);
+    window.debugPlayer = this.player;
     this.player.pause();
     this.player.currentTime = this.duration / 2;
   }.on('didInsertElement'),
@@ -170,7 +174,25 @@ export default Ember.Component.extend({
       ];
     } else if (this.effect === 'stack') {
       return [
-        // Not defined yet.
+        { transform: `scale(1) translate(${1.2*this.width}px, 100px) rotate(25deg)` },
+        { transform: `scale(1) translate(0px) rotate(0)`, offset: 10/20 },
+        { transform: `scale(0.7) translate(0) rotate(0)` },
+      ];
+    }
+  },
+
+  generateAnimationOpts: function() {
+    if (this.effect === 'expose') {
+      return [
+        { duration: this.duration, fill: 'both' },
+        { duration: this.duration, fill: 'both' },
+        { duration: this.duration, fill: 'both' }
+      ]
+    } else if (this.effect === 'stack') {
+      return [
+        { duration: this.duration, fill: 'both', delay: -this.duration/2 },
+        { duration: this.duration, fill: 'both', delay: 0 },
+        { duration: this.duration, fill: 'both', delay: this.duration/2 }
       ];
     }
   }
