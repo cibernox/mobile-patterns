@@ -1,7 +1,7 @@
 @import 'utility-mixins';
 
 .animated-deck {
-  overflow-x: hidden;
+  overflow: hidden;
   background: url(/images/cloth-pattern.png);
   &.effect-expose {
     .cards {

@@ -3,10 +3,16 @@ import Gesture from 'mobile-patterns/utils/gesture';
 
 var computed = Ember.computed;
 var aMap = Array.prototype.map;
+var aForEach = Array.prototype.forEach;
+
+function adjustHeight() {
+  this.set('style', `height: ${this.element.querySelector('#current-card').offsetHeight}px`);
+}
 
 export default Ember.Component.extend({
   classNames: ['animated-deck'],
   classNameBindings: ['effectClass'],
+  attributeBindings: ['style'],
   duration: 1000,
 
   // CPs
@@ -46,6 +52,19 @@ export default Ember.Component.extend({
     this.player.currentTime = this.duration / 2;
   }.on('didInsertElement'),
 
+  adjustHeight: function() {
+    Ember.run.scheduleOnce('afterRender', this, adjustHeight);
+  }.on('didInsertElement'),
+
+  watchImageLoad: function() {
+    var resizeOnImageLoad = e => {
+      e.target.removeEventListener('load', resizeOnImageLoad);
+      this.adjustHeight();
+    }
+    var images = this.element.querySelectorAll('#current-card img');
+    aForEach.call(images, img => img.addEventListener('load', resizeOnImageLoad));
+  }.on('didInsertElement'),
+
   // Event handling
   touchStart: function(e) {
     if (!this.animating) {
@@ -73,6 +92,7 @@ export default Ember.Component.extend({
   resetAnimation: function() {
     this.player.currentTime = this.duration / 2;
     this.animating = false;
+    this.adjustHeight();
   }.observes('current'),
 
   // Functions
