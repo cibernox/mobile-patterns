@@ -9,14 +9,16 @@ test('`Gesture#push` appends the given event to the gesture', function() {
 
   equal(gesture.eventsCount, 0);
   equal(gesture.last, null);
-  gesture.push({timestamp: 123, touches: [{pageX: 1, pageY: 2}]});
+  gesture.push({timeStamp: 123, touches: [{pageX: 1, pageY: 2}]});
   equal(gesture.eventsCount, 1);
-  equal(gesture.last, 'sample-event');
+  deepEqual(gesture.last, { timeStamp: 123, x: 1, y: 2 });
 });
 
 test('`Gesture#push` calls preventDefault on the given element when defaultPrevented is set to true', function() {
   var gesture = new Gesture();
   var evtNotPrevented = {
+    timeStamp: 123,
+    touches: [{ pageX: 1, pageY: 2 }],
     preventDefault: function() {
       ok(false, 'This event must not be prevented');
     }
@@ -25,6 +27,8 @@ test('`Gesture#push` calls preventDefault on the given element when defaultPreve
 
   gesture.defaultPrevented = true;
   var evtPrevented = {
+    timeStamp: 123,
+    touches: [{ pageX: 1, pageY: 2 }],
     preventDefault: function() {
       ok(true, 'This event must be prevented');
     }
@@ -35,6 +39,8 @@ test('`Gesture#push` calls preventDefault on the given element when defaultPreve
 test('`Gesture#push` calls stopPropagation on the given element when propagationStopped is set to true', function() {
   var gesture = new Gesture();
   var evtNotStopped = {
+    timeStamp: 123,
+    touches: [{ pageX: 1, pageY: 2 }],
     stopPropagation: function() {
       ok(false, 'The propagation of this event must not be stopped');
     }
@@ -43,6 +49,8 @@ test('`Gesture#push` calls stopPropagation on the given element when propagation
 
   gesture.propagationStopped = true;
   var evtStopped = {
+    timeStamp: 123,
+    touches: [{ pageX: 1, pageY: 2 }],
     stopPropagation: function() {
       ok(true, 'The propagation of this event must be stopped');
     }
@@ -150,27 +158,27 @@ module('Gesture - getters', {
 });
 
 test('`Gesture#eventsCount` contains the number of captured events', function() {
-  var gesture = new Gesture('event');
-  gesture.push('other event');
+  var gesture = new Gesture(firstEvent);
+  gesture.push(secondEvent);
   equal(gesture.eventsCount, 2, 'This gesture contains 2 events');
 });
 
 test('`Gesture#last` contains the last captured event', function() {
-  var gesture = new Gesture('event');
-  gesture.push('other event');
-  equal(gesture.last, 'other event');
+  var gesture = new Gesture(firstEvent);
+  gesture.push(secondEvent);
+  deepEqual(gesture.last, { timeStamp: 1419263004610, x: 110, y: 270 });
 });
 
 test('`Gesture#first` contains the first captured event', function() {
-  var gesture = new Gesture('event');
-  gesture.push('other event');
-  equal(gesture.first, 'event');
+  var gesture = new Gesture(firstEvent);
+  gesture.push(secondEvent);
+  deepEqual(gesture.first, { timeStamp: 1419263004600, x: 100, y: 250 });
 });
 
 test('`Gesture#events` contains all the captured events', function() {
-  var gesture = new Gesture('event');
-  gesture.push('other event');
-  deepEqual(gesture.events, ['event', 'other event']);
+  var gesture = new Gesture(firstEvent);
+  gesture.push(secondEvent);
+  deepEqual(gesture.events, [{ timeStamp: 1419263004600, x: 100, y: 250 }, { timeStamp: 1419263004610, x: 110, y: 270 }]);
 });
 
 test('`Gesture#duration` contains the duration of the gesture in milliseconds', function() {

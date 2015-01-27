@@ -6,6 +6,7 @@ import {
 moduleForComponent('animated-deck', 'AnimatedDeckComponent', {
   // specify the other units that are required for this test
   // needs: ['component:foo', 'helper:bar']
+  needs: ['component:animated-card']
 });
 
 test('it renders', function() {

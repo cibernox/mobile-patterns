@@ -60,7 +60,7 @@ export default Ember.Component.extend({
     var resizeOnImageLoad = e => {
       e.target.removeEventListener('load', resizeOnImageLoad);
       this.adjustHeight();
-    }
+    };
     var images = this.element.querySelectorAll('#current-card img');
     aForEach.call(images, img => img.addEventListener('load', resizeOnImageLoad));
   }.on('didInsertElement'),
@@ -98,6 +98,8 @@ export default Ember.Component.extend({
   // Functions
   mustTrack: function() {
     if (!this.tracking) {
+      // let isHorizontal = this.gesture.isHorizontal();
+      // let isSignificative =
       this.tracking = this.gesture.isHorizontal();
       return this.tracking;
     }
