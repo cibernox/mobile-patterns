@@ -35,11 +35,16 @@ export default Ember.Component.extend({
   // Initializers
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
-    var cards = this.element.querySelectorAll('.animated-card');
-    var opts = { duration: this.duration, fill: 'both' };
-    var keyframes = this.generateKeyframes();
-    var group = new AnimationGroup(aMap.call(cards, c => new Animation(c, keyframes, opts)));
+    this.cards = this.element.querySelectorAll('.animated-card');
+    // var keyframes = this.generateKeyframes();
+    // var opts = this.generateAnimationOpts();
+    // var group = new AnimationGroup(
+    //   aMap.call(cards, (c, idx) => new Animation(c, keyframes, opts[idx])),
+    //   { duration: this.duration }
+    // );
+    var group = new AnimationGroup(aMap.call(this.cards, (c, i) => this.generateAnimation(c, i)));
     this.player = document.timeline.play(group);
+    window.debugPlayer = this.player;
     this.player.pause();
     this.player.currentTime = this.duration / 2;
   }.on('didInsertElement'),
@@ -157,21 +162,44 @@ export default Ember.Component.extend({
     requestAnimationFrame(tick);
   },
 
-  generateKeyframes: function() {
+  generateAnimation: function(card, index) {
+    var keyframes;
     if (this.effect === 'expose') {
-      return [
+      keyframes = [
         { transform: `scale(1) translate(${this.width}px)` },
         { transform: `scale(0.9) translate(${this.width}px)`, offset: 1.5/20 },
         { transform: `scale(0.9) translate(0px)`, offset: 8.5/20 },
         { transform: `scale(1) translate(0px)`, offset: 10/20 },
         { transform: `scale(0.9) translate(0px)`, offset: 11.5/20 },
         { transform: `scale(0.9) translate(-${this.width}px)`, offset: 18.5/20 },
-        { transform: `scale(1) translate(-${this.width}px)` },
+        { transform: `scale(1) translate(-${this.width}px)` }
       ];
     } else if (this.effect === 'stack') {
-      return [
-        // Not defined yet.
-      ];
+      switch (index) {
+        case 0:
+          keyframes = [
+            { transform: `scale(1)`, opacity: 1 },
+            { transform: `scale(0.8)`, opacity: 0 },
+            { transform: `scale(0)`, opacity: 0 },
+          ];
+          break;
+        case 1:
+          keyframes = [
+            { transform: `scale(1) translate(${1.5*this.width}px, 100px) rotate(20deg)`, opacity: 0 },
+            { transform: `scale(1) translate(0) rotate(0)`, opacity: 1 },
+            { transform: `scale(0.8) translate(0) rotate(0)`, opacity: 0 },
+          ];
+          break;
+        case 2:
+          keyframes = [
+            { transform: `scale(1) translate(0) rotate(25deg)`, opacity: 0 },
+            { transform: `scale(1) translate(0, 100px) rotate(25deg)`, opacity: 0 },
+            { transform: `scale(1) translate(${-this.width}px, 0) rotate(0deg)`, opacity: 1 },
+          ];
+      }
     }
+    var opts = { duration: this.duration, fill: 'both' };
+    return new Animation(card, keyframes, opts);
   }
 });
+
