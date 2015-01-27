@@ -27,28 +27,13 @@
   }
 }
 
-
-// .animated-deck {
-//   overflow-x: hidden;
-//   background: url(/images/cloth-pattern.png);
-//   .cards {
-//     overflow-x: hidden;
-//     @include clearfix;
-//     width: 100vw;
-//   }
+// Notes for 3D animation
+// .cards-container {
+//   -webkit-perspective: 700px;
+//   -webkit-perspective-origin-x: $device-width / 2;
+//   -webkit-perspective-origin-y: "Not sure, probably also vertically centered"
 // }
 
-// .animated-card {
-//   background-color: #eee;
-//   padding: 10px;
-//   float: left;
-//   margin-right: -100%;
-//   width: inherit;
-//   &.placeholder {
-//     visibility: hidden;
-//   }
-// }
-
-// #next-card {
-//   transform-origin: 0 100%;
+// .card {
+//   -webkit-transform: translate3d(0, 0, valor-z);
 // }

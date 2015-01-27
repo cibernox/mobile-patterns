@@ -37,15 +37,7 @@ export default Ember.Component.extend({
     this.width = this.element.offsetWidth;
     var cards = this.element.querySelectorAll('.animated-card');
     var opts = { duration: this.duration, fill: 'both' };
-    var keyframes = [
-      { transform: `scale(1) translate(${this.width}px)` },
-      { transform: `scale(0.9) translate(${this.width}px)`, offset: 1.5/20 },
-      { transform: `scale(0.9) translate(0px)`, offset: 8.5/20 },
-      { transform: `scale(1) translate(0px)`, offset: 10/20 },
-      { transform: `scale(0.9) translate(0px)`, offset: 11.5/20 },
-      { transform: `scale(0.9) translate(-${this.width}px)`, offset: 18.5/20 },
-      { transform: `scale(1) translate(-${this.width}px)` },
-    ];
+    var keyframes = this.generateKeyframes();
     var group = new AnimationGroup(aMap.call(cards, c => new Animation(c, keyframes, opts)));
     this.player = document.timeline.play(group);
     this.player.pause();
@@ -163,5 +155,23 @@ export default Ember.Component.extend({
       }
     };
     requestAnimationFrame(tick);
+  },
+
+  generateKeyframes: function() {
+    if (this.effect === 'expose') {
+      return [
+        { transform: `scale(1) translate(${this.width}px)` },
+        { transform: `scale(0.9) translate(${this.width}px)`, offset: 1.5/20 },
+        { transform: `scale(0.9) translate(0px)`, offset: 8.5/20 },
+        { transform: `scale(1) translate(0px)`, offset: 10/20 },
+        { transform: `scale(0.9) translate(0px)`, offset: 11.5/20 },
+        { transform: `scale(0.9) translate(-${this.width}px)`, offset: 18.5/20 },
+        { transform: `scale(1) translate(-${this.width}px)` },
+      ];
+    } else if (this.effect === 'stack') {
+      return [
+        // Not defined yet.
+      ];
+    }
   }
 });
