@@ -145,8 +145,14 @@ test('`Gesture#isHorizontal` returns true if the gesture is horizontal with a er
   gesture.push({ touches: [{pageX: 100, pageY: 250}] });
   gesture.push({ touches: [{pageX: 140, pageY: 255}] });
   gesture.push({ touches: [{pageX: 180, pageY: 260}] });
-  ok(gesture.isHorizontal()); // The error margin defalts to ± 15°
-  ok(!gesture.isHorizontal(2)); // The error margin is set to ± 2°
+  ok(gesture.isHorizontal(), 'The gesture is horizontal with an error margin of 15deg'); // The error margin defalts to ± 15°
+  ok(!gesture.isHorizontal(2), 'The gesture is not horizontal with an error margin of 2deg'); // The error margin is set to ± 2°
+
+  var gesture2 = new Gesture();
+  gesture2.push({ touches: [{pageX: 250, pageY: 100}] });
+  gesture2.push({ touches: [{pageX: 255, pageY: 140}] });
+  gesture2.push({ touches: [{pageX: 260, pageY: 180}] });
+  ok(!gesture2.isHorizontal(), 'The new gesture is not horizontal');
 });
 
 module('Gesture - getters', {

@@ -45,8 +45,8 @@ class Gesture {
   }
 
   isHorizontal(margin = 15) {
-    var mod = this.direction % 90;
-    return mod < margin || mod > (90 - margin);
+    var mod = this.direction % 180;
+    return (mod < 90 + margin) && (mod > 90 - margin);
   }
 
   // Getters

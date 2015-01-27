@@ -32,7 +32,7 @@ export default Ember.Component.extend({
     return items.objectAt(index + 1);
   }),
 
-  // Initializer
+  // Initializers
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
     var cards = this.element.querySelectorAll('.animated-card');
@@ -76,6 +76,7 @@ export default Ember.Component.extend({
     if (!this.gesture) { return; }
     this.gesture.push(e.originalEvent);
     if (this.mustTrack()) {
+      this.gesture.adquire();
       this.updateAnimation();
     }
   },
@@ -83,9 +84,11 @@ export default Ember.Component.extend({
   touchEnd: function(e) {
     if (!this.gesture) { return; }
     e.preventDefault();
-    this.finalizeAnimation();
+    if (this.track) {
+      this.finalizeAnimation();
+    }
     this.gesture = null;
-    this.tracking = false;
+    this.track = undefined;
   },
 
   // Observers
@@ -97,13 +100,10 @@ export default Ember.Component.extend({
 
   // Functions
   mustTrack: function() {
-    if (!this.tracking) {
-      // let isHorizontal = this.gesture.isHorizontal();
-      // let isSignificative =
-      this.tracking = this.gesture.isHorizontal();
-      return this.tracking;
+    if (this.track === undefined && this.gesture.delta > 15) {
+      this.track = this.gesture.isHorizontal();
     }
-    return true;
+    return !!this.track;
   },
 
   updateAnimation: function() {
