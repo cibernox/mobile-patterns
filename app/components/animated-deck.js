@@ -89,6 +89,7 @@ export default Ember.Component.extend({
     }
     this.gesture = null;
     this.track = undefined;
+    this.neverTrackAgain = false;
   },
 
   // Observers
@@ -101,7 +102,10 @@ export default Ember.Component.extend({
   // Functions
   mustTrack: function() {
     if (this.track === undefined && this.gesture.delta > 15) {
-      this.track = this.gesture.isHorizontal();
+      this.track = !this.neverTrackAgain && this.gesture.isHorizontal(20);
+      if (!this.track) {
+        this.neverTrackAgain = true;
+      }
     }
     return !!this.track;
   },
