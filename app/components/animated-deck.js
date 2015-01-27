@@ -119,7 +119,7 @@ export default Ember.Component.extend({
       return;
     }
     var progress = (-this.gesture.deltaX + this.width) / (this.width * 2);
-    var speed = this.gesture.speedX * this.duration / this.width / 1000;
+    var speed = this.gesture.speedX * (this.duration / 2) / this.width / this.duration;
     if (progress > 0.75 || speed < -1) {
       // go to next
       if (!this.get('next')) {
