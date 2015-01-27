@@ -21,13 +21,13 @@ export default Ember.Component.extend({
   }),
 
   previous: computed('items.[]', 'current', function() {
-    var items = this.get('items');
+    var items = this.get('items') || [];
     var index = items.indexOf(this.get('current'));
     return items.objectAt(index - 1);
   }),
 
   next: computed('items.[]', 'current', function() {
-    var items = this.get('items');
+    var items = this.get('items') || [];
     var index = items.indexOf(this.get('current'));
     return items.objectAt(index + 1);
   }),
