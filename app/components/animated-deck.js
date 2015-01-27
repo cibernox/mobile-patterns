@@ -178,7 +178,7 @@ export default Ember.Component.extend({
           break;
         case 1:
           keyframes = [
-            { transform: `scale(1) translate(${this.width}px, 50px) rotate(15deg)`, opacity: 1 },
+            { transform: `scale(1) translate(${this.width}px, 50px) rotate(5deg)`, opacity: 1 },
             { transform: `scale(1) translate(0, 0) rotate(0)`, opacity: 1 },
             { transform: `scale(0.8) translate(0, -15%) rotate(0)`, opacity: 0 },
           ];
@@ -186,7 +186,7 @@ export default Ember.Component.extend({
         case 2:
           keyframes = [
             { transform: `scale(1) translate(0, 0) rotate(0)`, opacity: 1 },
-            { transform: `scale(1) translate(0, 50px) rotate(15deg)`, opacity: 1 },
+            { transform: `scale(1) translate(0, 50px) rotate(5deg)`, opacity: 1 },
             { transform: `scale(1) translate(${-this.width}px, 0) rotate(0)`, opacity: 1 },
           ];
       }
