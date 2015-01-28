@@ -29,11 +29,9 @@
   .effect-expose & {
     width: 33.33333%;
     transform-origin: 50% 300px;
-    will-change: transform;
   }
   .effect-stack & {
     width: 50%;
-    will-change: transform, opacity;
     transform-origin: 50% 100%;
     &#previous-card {
       margin-right: -100vw;

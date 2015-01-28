@@ -17,7 +17,8 @@ module.exports = function(environment) {
         // e.g. 'with-controller': true
         'ember-htmlbars-component-generation': true,
         'ember-htmlbars-attribute-syntax': true,
-        'ember-metal-injected-properties': true
+        'ember-metal-injected-properties': true,
+        'new-computed-syntax': true
       }
     },
 

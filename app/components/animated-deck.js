@@ -161,9 +161,9 @@ export default Ember.Component.extend({
       keyframes = [
         { transform: `scale(1) translate(${this.width}px)` },
         { transform: `scale(0.9) translate(${this.width}px)`, offset: 1.5/20 },
-        { transform: `scale(0.9) translate(0px)`, offset: 8.5/20 },
-        { transform: `scale(1) translate(0px)`, offset: 10/20 },
-        { transform: `scale(0.9) translate(0px)`, offset: 11.5/20 },
+        { transform: `scale(0.9) translate(0)`, offset: 8.5/20 },
+        { transform: `scale(1) translate(0)`, offset: 10/20 },
+        { transform: `scale(0.9) translate(0)`, offset: 11.5/20 },
         { transform: `scale(0.9) translate(-${this.width}px)`, offset: 18.5/20 },
         { transform: `scale(1) translate(-${this.width}px)` }
       ];
