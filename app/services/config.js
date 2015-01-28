@@ -7,7 +7,9 @@ export default Ember.Object.extend({
       return (localStorage && localStorage.deckEffect) || this.deckEffects[0];
     },
     set: function(key, value) {
-      localStorage && localStorage.deckEffect = value;
+      if (localStorage) {
+        localStorage.deckEffect = value;
+      }
       return value;
     }
   }),
