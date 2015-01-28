@@ -9,6 +9,7 @@ Router.map(function() {
   this.resource("news", function(){
     this.route("show", { path: "/:article_id" });
   });
+  this.route("config");
 });
 
 export default Router;
