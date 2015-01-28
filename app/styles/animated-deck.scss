@@ -35,23 +35,10 @@
   }
   .effect-stack & {
     width: 50%;
-    transform-origin: 50% 100%;
     &#previous-card {
       margin-right: -100vw;
     }
   }
-}
-
-#previous-card {
-  z-index: 1;
-}
-
-#current-card {
-  z-index: 2;
-}
-
-#next-card {
-  z-index: 3;
 }
 
 // Notes for 3D animation
