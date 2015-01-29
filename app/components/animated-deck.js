@@ -152,23 +152,23 @@ export default Ember.Component.extend({
       switch (index) {
         case 0:
           keyframes = [
-            { transform: `scale(1) translate(0, 0)`, opacity: 1 },
-            { transform: `scale(0.8) translate(0, 0)`, opacity: 0 },
-            { transform: `scale(0) translate(0, 0)`, opacity: 0 },
+            { transform: `scale(1) translate(0, 0)`, opacity: 1, visibility: 'visible' },
+            { transform: `scale(0.8) translate(0, 0)`, opacity: 0, visibility: 'hidden' },
+            { transform: `scale(0) translate(0, 0)`, opacity: 0, visibility: 'hidden' },
           ];
           break;
         case 1:
           keyframes = [
-            { transform: `scale(1) translate(${this.width + 25}px, 50px) rotate(5deg)`, opacity: 1 },
-            { transform: `scale(1) translate(0, 0) rotate(0)`, opacity: 1 },
-            { transform: `scale(0.8) translate(0, 0) rotate(0)`, opacity: 0 },
+            { transform: `scale(1) translate(${this.width + 25}px, 50px) rotate(5deg)`, opacity: 1, visibility: 'hidden' },
+            { transform: `scale(1) translate(0, 0) rotate(0)`, opacity: 1, visibility: 'visible' },
+            { transform: `scale(0.8) translate(0, 0) rotate(0)`, opacity: 0, visibility: 'hidden' },
           ];
           break;
         case 2:
           keyframes = [
-            { transform: `scale(1) translate(25px, 0) rotate(0)`, opacity: 1 },
-            { transform: `scale(1) translate(25px, 50px) rotate(5deg)`, opacity: 1 },
-            { transform: `scale(1) translate(${-this.width}px, 0) rotate(0)`, opacity: 1 },
+            { transform: `scale(1) translate(25px, 0) rotate(0)`, opacity: 0, visibility: 'hidden' },
+            { transform: `scale(1) translate(25px, 50px) rotate(5deg)`, opacity: 1, visibility: 'hidden' },
+            { transform: `scale(1) translate(${-this.width}px, 0) rotate(0)`, opacity: 1, visibility: 'visible' },
           ];
       }
     }
