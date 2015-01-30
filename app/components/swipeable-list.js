@@ -26,20 +26,17 @@ export default Ember.Component.extend({
     },
 
     animate: function(gesture) {
-      var progress = (-gesture.deltaX + this.initialOffset) / this.width;
+      var progress = (-gesture.deltaX + gesture.initialOffset) / this.width;
       this.player.currentTime = this.inverseEasing(progress) * this.duration;
     },
 
     finalize: function(gesture) {
-      var progress = (-gesture.deltaX + this.initialOffset) / this.width;
-      var speed = -this.gesture.speedX / this.width;
+      var progress = (-gesture.deltaX + gesture.initialOffset) / this.width;
+      var speed = -gesture.speedX / this.width;
 
       if (speed > 1 || progress > 0.5) {
         this.player.playbackRate = Math.max(1, speed);
-        this.player.onfinish = () => {
-          var article = this.get('selection');
-          this.get('controller').transitionToRoute('news.show', article);
-        }
+        this.player.onfinish = () => this.sendAction("select", this.get('selection'));
       } else {
         this.player.playbackRate = -1;
         this.player.onfinish = () => this.player.pause();

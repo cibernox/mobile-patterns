@@ -19,7 +19,7 @@ export default Ember.Component.extend({
 
   touchEnd: function() {
     if (this.track) {
-      this.sendAction('finalize', this.gesture);
+      this.sendAction('release', this.gesture);
     }
     this.gesture = null;
     this.track = undefined;
@@ -33,7 +33,7 @@ export default Ember.Component.extend({
       if (!this.track) {
         this.neverTrackAgain = true;
       } else {
-        this.initialOffset = this.gesture.deltaX;
+        this.gesture.initialOffset = this.gesture.deltaX;
         this.sendAction('select', this.get('article'));
       }
     }
