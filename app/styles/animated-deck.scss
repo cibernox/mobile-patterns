@@ -20,8 +20,6 @@
 }
 
 .animated-card {
-  background-color: #eee;
-  padding: 10px;
   float: left;
   height: calc(100vh - #{$app-header-height});
   overflow-y: scroll;

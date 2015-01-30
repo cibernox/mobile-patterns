@@ -1,8 +1,12 @@
-<div id="news-index">
+<swipeable-list id="news-index" as |list|>
   {{#each model as |article|}}
-    {{#link-to "news.show" article class="article-summary"}}
-      <img class="thumbnail" src="{{article.thumbnailUrl}}">
-      <header class="header"><h2>{{article.header}}</h2></header>
-    {{/link-to}}
+    <article-summary article={{article}} select="select" swipe="animate" release="finalize" as |art|>
+      <img class="thumbnail" src="{{art.thumbnailUrl}}">
+      <header class="header"><h2>{{art.header}}</h2></header>
+    </article-summary>
   {{/each}}
-</div>
+  <div class="article-detail clone">
+    <header><h2>{{list.selection.header}}</h2></header>
+    <div class="article-body">{{{list.selection.body}}}</div>
+  </div>
+</swipeable-list>

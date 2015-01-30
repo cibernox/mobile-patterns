@@ -1,7 +1,11 @@
+@import 'constants';
+
 // News index
 #news-index {
   background-color: #eee;
   padding: 10px;
+  height: calc(100vh - #{$app-header-height});
+  overflow: scroll;
 }
 
 .article-summary {
@@ -25,8 +29,19 @@
   }
 }
 
-// News show
+.article-detail {
+  background-color: #eee;
+  padding: 10px;
+  #news-index &.clone {
+    position: fixed;
+    top: $app-header-height;
+    height: calc(100vh - #{$app-header-height});
+    left: 100%;
+    width: 100%
+  }
+}
 
+// News show
 .article-body {
   text-align: justify;
   img {
