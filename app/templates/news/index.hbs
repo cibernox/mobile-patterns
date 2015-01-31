@@ -1,6 +1,16 @@
-<swipeable-list id="news-index" items={{model}} item-component="article-summary" select="show" as |list|>
+{{!-- <swipeable-list id="news-index" items={{model}} item-component="article-summary" select="show" as |list|>
   <div class="article-detail clone">
     <header><h2>{{list.selection.header}}</h2></header>
     <div class="article-body">{{{list.selection.body}}}</div>
   </div>
 </swipeable-list>
+ --}}
+
+ <div id="news-index">
+  {{#each model as |article|}}
+    {{#link-to "news.show" article class="article-summary"}}
+      <img class="thumbnail" src="{{article.thumbnailUrl}}">
+      <header class="header"><h2>{{article.header}}</h2></header>
+    {{/link-to}}
+  {{/each}}
+</div>
