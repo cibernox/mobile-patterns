@@ -53,14 +53,16 @@
 // IDEA: Maybe a `fail` event should be triggered??
 //
 
-class Gesture {
-  constructor(event = null){
-    this.events = [];
-    this.defaultPrevented = false;
-    this.propagationStopped = false;
-    if (event) {
-      this.push(event);
+
+/* global EventEmitter */
+class Gesture extends EventEmitter {
+  constructor(opts = {}) {
+    for (let key in opts) {
+      this[key] = opts[key];
     }
+    this.events = this.events || [];
+    this.defaultPrevented = this.defaultPrevented || false;
+    this.propagationStopped = this.defaultPrevented || false;
   }
 
   // Methods
@@ -77,113 +79,137 @@ class Gesture {
     }
   }
 
-  preventDefault(thisArg, condFn) {
-    var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
-    var result = func ? func(this) : true;
-    this.defaultPrevented = result;
-    return result;
-  }
 
-  stopPropagation(thisArg, condFn) {
-    var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
-    var result = func ? func(this) : true;
-    this.propagationStopped = result;
-    return result;
-  }
+  // constructor(event = null){
+  //   this.events = [];
+  //   this.defaultPrevented = false;
+  //   this.propagationStopped = false;
+  //   if (event) {
+  //     this.push(event);
+  //   }
+  // }
 
-  adquire(thisArg, condFn) {
-    var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
-    var result = func ? func(this) : true;
-    this.defaultPrevented = result;
-    this.propagationStopped = result;
-    return result;
-  }
+  // // Methods
+  // push(event) {
+  //   var touch = event.touches[0];
+  //   var summary = { timeStamp: event.timeStamp, x: touch.pageX, y: touch.pageY };
+  //   this.events.push(summary);
+  //   this.last = summary;
+  //   if (this.defaultPrevented) {
+  //     event.preventDefault();
+  //   }
+  //   if (this.propagationStopped) {
+  //     event.stopPropagation();
+  //   }
+  // }
 
-  isHorizontal(margin = 15) {
-    var mod = this.direction % 180;
-    return (mod < 90 + margin) && (mod > 90 - margin);
-  }
+  // preventDefault(thisArg, condFn) {
+  //   var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
+  //   var result = func ? func(this) : true;
+  //   this.defaultPrevented = result;
+  //   return result;
+  // }
 
-  // Getters
-  get eventsCount() {
-    return this.events.length;
-  }
+  // stopPropagation(thisArg, condFn) {
+  //   var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
+  //   var result = func ? func(this) : true;
+  //   this.propagationStopped = result;
+  //   return result;
+  // }
 
-  get duration() {
-    return this.last.timeStamp - this.first.timeStamp;
-  }
+  // adquire(thisArg, condFn) {
+  //   var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
+  //   var result = func ? func(this) : true;
+  //   this.defaultPrevented = result;
+  //   this.propagationStopped = result;
+  //   return result;
+  // }
 
-  get first(){
-    return this.events[0];
-  }
+  // isHorizontal(margin = 15) {
+  //   var mod = this.direction % 180;
+  //   return (mod < 90 + margin) && (mod > 90 - margin);
+  // }
 
-  get x(){
-    return this.last.x;
-  }
+  // // Getters
+  // get eventsCount() {
+  //   return this.events.length;
+  // }
 
-  get y(){
-    return this.last.y;
-  }
+  // get duration() {
+  //   return this.last.timeStamp - this.first.timeStamp;
+  // }
 
-  get initX() {
-    return this.first.x;
-  }
+  // get first(){
+  //   return this.events[0];
+  // }
 
-  get initY() {
-    return this.first.y;
-  }
+  // get x(){
+  //   return this.last.x;
+  // }
 
-  get lastEvents() {
-    return this.events.slice(Math.max(this.eventsCount - 5, 0), this.eventsCount);
-  }
+  // get y(){
+  //   return this.last.y;
+  // }
 
-  get deltaX() {
-    return this.x - this.initX;
-  }
+  // get initX() {
+  //   return this.first.x;
+  // }
 
-  get deltaY() {
-    return this.y - this.initY;
-  }
+  // get initY() {
+  //   return this.first.y;
+  // }
 
-  get delta() {
-    return Math.sqrt(Math.pow(this.deltaX, 2) + Math.pow(this.deltaY, 2));
-  }
+  // get lastEvents() {
+  //   return this.events.slice(Math.max(this.eventsCount - 5, 0), this.eventsCount);
+  // }
 
-  get speedX() {
-    var lastEvents = this.lastEvents;
-    var initX    = lastEvents[0].x;
-    var initTime = lastEvents[0].timeStamp;
-    var lastX    = lastEvents[lastEvents.length - 1].x;
-    var lastTime = lastEvents[lastEvents.length - 1].timeStamp;
+  // get deltaX() {
+  //   return this.x - this.initX;
+  // }
 
-    return (lastX - initX) / (lastTime - initTime) * 1000 || 0;
-  }
+  // get deltaY() {
+  //   return this.y - this.initY;
+  // }
 
-  get speedY() {
-    var lastEvents = this.lastEvents;
-    var initY    = lastEvents[0].y;
-    var initTime = lastEvents[0].timeStamp;
-    var lastY    = lastEvents[lastEvents.length - 1].y;
-    var lastTime = lastEvents[lastEvents.length - 1].timeStamp;
+  // get delta() {
+  //   return Math.sqrt(Math.pow(this.deltaX, 2) + Math.pow(this.deltaY, 2));
+  // }
 
-    return (lastY - initY) / (lastTime - initTime) * 1000 || 0;
-  }
+  // get speedX() {
+  //   var lastEvents = this.lastEvents;
+  //   var initX    = lastEvents[0].x;
+  //   var initTime = lastEvents[0].timeStamp;
+  //   var lastX    = lastEvents[lastEvents.length - 1].x;
+  //   var lastTime = lastEvents[lastEvents.length - 1].timeStamp;
 
-  get direction() {
-    var x = this.deltaX;
-    var y = -this.deltaY;
-    var radians = Math.acos(Math.abs(y) / Math.sqrt(x*x + y*y));
-    var degrees = radians * 180 / Math.PI;
-    if (x >= 0 && y >= 0) {
-      return degrees;         // 1st cuadrant
-    } else if (x >= 0 && y < 0) {
-      return 180 - degrees;   // 2nd cuadrant
-    } else if (x < 0 && y < 0) {
-      return 180 + degrees;   // 3rd cuadrant
-    } else {
-      return 360 - degrees;   // 4th cuadrant
-    }
-  }
+  //   return (lastX - initX) / (lastTime - initTime) * 1000 || 0;
+  // }
+
+  // get speedY() {
+  //   var lastEvents = this.lastEvents;
+  //   var initY    = lastEvents[0].y;
+  //   var initTime = lastEvents[0].timeStamp;
+  //   var lastY    = lastEvents[lastEvents.length - 1].y;
+  //   var lastTime = lastEvents[lastEvents.length - 1].timeStamp;
+
+  //   return (lastY - initY) / (lastTime - initTime) * 1000 || 0;
+  // }
+
+  // get direction() {
+  //   var x = this.deltaX;
+  //   var y = -this.deltaY;
+  //   var radians = Math.acos(Math.abs(y) / Math.sqrt(x*x + y*y));
+  //   var degrees = radians * 180 / Math.PI;
+  //   if (x >= 0 && y >= 0) {
+  //     return degrees;         // 1st cuadrant
+  //   } else if (x >= 0 && y < 0) {
+  //     return 180 - degrees;   // 2nd cuadrant
+  //   } else if (x < 0 && y < 0) {
+  //     return 180 + degrees;   // 3rd cuadrant
+  //   } else {
+  //     return 360 - degrees;   // 4th cuadrant
+  //   }
+  // }
 }
 
 export default Gesture;
