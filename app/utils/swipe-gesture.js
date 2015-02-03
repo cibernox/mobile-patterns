@@ -12,31 +12,45 @@ export default class SwipeGesture extends Gesture {
 
   push(e) {
     if (this._ignoring) {
-      return;
+      return this;
     }
-    if (this._tracking && e.type === 'touchend') {
+    if (this._started && e.type === 'touchend') {
       this.emit('end', this);
-      return;
+      return this;
     }
 
     super.push(e);
 
-    if (!this._warned && this.deltaX >= this.warnLength && this.isHorizontal()) {
+    if (this._mustIgnore()) {
+      this._ignoring = true;
+      return this;
+    }
+
+    if (!this._warned && this._mustWarn()) {
       this._warned = true;
       this.emit('warn', this);
     }
-    if (!this._tracking && this.deltaX >= this.minLength) {
-      if (this.isHorizontal()) {
-        this._tracking = true;
-        this.emit('start', this);
-        return;
-      } else {
-        this._ignoring = true;
-      }
+    if (!this._started && this._mustStart()) {
+      this._started = true;
+      this.emit('start', this);
+      return this;
     }
-    if (this._tracking) {
+    if (this._started) {
       this.emit('progress', this);
     }
     return this;
+  }
+
+  // Private
+  _mustIgnore() {
+    return !this._tracking && this.deltaX >= this.minLength && !this.isHorizontal();
+  }
+
+  _mustStart() {
+    return this.deltaX >= this.minLength && this.isHorizontal();
+  }
+
+  _mustWarn() {
+    return this.deltaX >= this.warnLength && this.isHorizontal();
   }
 }
