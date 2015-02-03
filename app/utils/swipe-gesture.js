@@ -39,13 +39,6 @@
 // - exclusive: Wheter this gesture, once possitively detected as a swipe, should be defaultPrevented
 //              or propagationStopped. Defaults to true.
 //
-// - trackOffset: When a gesture is possitively detected as a swipe, it has already advanced at
-//                least the `minLength`. If `trackOffset` is true (the default behavior), all events
-//                previous to the one that surpassed the `minLength` will be ignored, meaning that
-//                when we ask for the `length`, `start` or `speed` of that gesture, that event will
-//                be considered the first one to all practical effects.
-//
-//
 // Other non configurable behavior:
 //
 // A swipe gesture is a one-try gesture. If by the time the gesture surpasses the `minLength` the
@@ -91,7 +84,10 @@ export default class SwipeGesture extends Gesture {
     }
     if (!this._started && this._mustStart()) {
       this._started = true;
-      this.startOffset = this.initX - this.x;
+      this.startOffset = this.deltaX;
+      if (this.exclusive) {
+        this.adquire();
+      }
       this.emit('start', this);
       return this;
     }

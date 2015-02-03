@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import Gesture from 'mobile-patterns/utils/gesture';
+import SwipeGesture from 'mobile-patterns/utils/swipe-gesture';
 
 var computed = Ember.computed;
 var aMap = Array.prototype.map;
@@ -8,6 +8,7 @@ export default Ember.Component.extend({
   classNames: ['animated-deck'],
   classNameBindings: ['effectClass'],
   attributeBindings: ['style'],
+  gesture: new SwipeGesture(),
   duration: 1000,
 
   // CPs
@@ -16,83 +17,57 @@ export default Ember.Component.extend({
   }),
 
   previous: computed('items.[]', 'current', function() {
-    var items = this.get('items') || [];
-    var index = items.indexOf(this.get('current'));
+    let items = this.get('items') || [];
+    let index = items.indexOf(this.get('current'));
     return items.objectAt(index - 1);
   }),
 
   next: computed('items.[]', 'current', function() {
-    var items = this.get('items') || [];
-    var index = items.indexOf(this.get('current'));
+    let items = this.get('items') || [];
+    let index = items.indexOf(this.get('current'));
     return items.objectAt(index + 1);
   }),
+
+  // Observers
+  resetAnimation: function() {
+    this.player.currentTime = this.duration / 2;
+  }.observes('current'),
 
   // Initializers
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
     this.cards = this.element.querySelectorAll('.animated-card');
-    var group = new AnimationGroup(aMap.call(this.cards, (c, i) => this.generateAnimation(c, i)));
+    let group = new AnimationGroup(aMap.call(this.cards, (c, i) => this.generateAnimation(c, i)));
     this.player = document.timeline.play(group);
     this.player.pause();
     this.player.currentTime = this.duration / 2;
+    this.gesture.on('progress', () => this.updateAnimation());
+    this.gesture.on('end', () => this.finalizeAnimation());
   }.on('didInsertElement'),
 
   // Event handling
   touchStart: function(e) {
-    if (!this.animating) {
-      this.gesture = new Gesture(e.originalEvent);
-    }
-  },
-
-  touchMove: function(e) {
-    if (!this.gesture) { return; }
     this.gesture.push(e.originalEvent);
-    if (this.mustTrack()) {
-      this.gesture.adquire();
-      this.updateAnimation();
-    }
   },
-
+  touchMove: function(e) {
+    this.gesture.push(e.originalEvent);
+  },
   touchEnd: function(e) {
-    if (!this.gesture) { return; }
-    e.preventDefault();
-    if (this.track) {
-      this.finalizeAnimation();
-    }
-    this.gesture = null;
-    this.track = undefined;
-    this.neverTrackAgain = false;
+    this.gesture.push(e.originalEvent);
+    this.gesture.clear();
   },
-
-  // Observers
-  resetAnimation: function() {
-    this.player.currentTime = this.duration / 2;
-    this.animating = false;
-  }.observes('current'),
 
   // Functions
-  mustTrack: function() {
-    if (this.track === undefined && this.gesture.delta > 15) {
-      this.track = !this.neverTrackAgain && this.gesture.isHorizontal(25);
-      if (!this.track) {
-        this.neverTrackAgain = true;
-      } else {
-        this.initialOffset = this.gesture.deltaX;
-      }
-    }
-    return !!this.track;
-  },
-
   updateAnimation: function() {
-    this.player.currentTime = (-this.gesture.deltaX + this.initialOffset + this.width) / (this.width * 2) * this.duration;
+    this.player.currentTime = (-this.gesture.deltaX + this.gesture.startOffset + this.width) / (this.width * 2) * this.duration;
   },
 
   finalizeAnimation: function() {
     if (this.gesture.deltaX === 0) {
       return;
     }
-    var progress = (-this.gesture.deltaX + this.width) / (this.width * 2);
-    var speed = this.gesture.speedX * (this.duration / 2) / this.width / this.duration;
+    let progress = (-this.gesture.deltaX + this.gesture.startOffset + this.width) / (this.width * 2);
+    let speed = this.gesture.speedX * (this.duration / 2) / this.width / this.duration;
     if (progress > 0.75 || speed < -1) {
       // go to next
       if (!this.get('next')) {
@@ -122,10 +97,10 @@ export default Ember.Component.extend({
   },
 
   bounceBack: function() {
-    var progressDiff = (-this.gesture.deltaX + this.initialOffset + this.width) / (this.width * 2) - 0.5;
-    var frames = Math.ceil(Math.abs(progressDiff) * this.duration / 16.67);
-    var frameDelta = progressDiff / frames;
-    var tick = () => {
+    let progressDiff = (-this.gesture.deltaX + this.gesture.startOffset + this.width) / (this.width * 2) - 0.5;
+    let frames = Math.ceil(Math.abs(progressDiff) * this.duration / 16.67);
+    let frameDelta = progressDiff / frames;
+    let tick = () => {
       this.player.currentTime = this.player.currentTime - (frameDelta * this.duration);
       if (--frames > 0) {
         requestAnimationFrame(tick);
