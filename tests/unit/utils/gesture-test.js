@@ -1,19 +1,21 @@
 import Gesture from 'mobile-patterns/utils/gesture';
 
+var gesture;
+
 module('Gesture - constructor');
 
 test('sets the proper default values', function() {
-  var gesture = new Gesture({abc: 123});
+  gesture = new Gesture({abc: 123});
   deepEqual(gesture.events, [], 'it has no events');
   ok(!gesture.defaultPrevented, 'defaultPrevented is false');
   ok(!gesture.propagationStopped, 'propagationStopped is false');
   equal(gesture.abc, 123, 'Any property given in the initializer is setted');
 });
 
-module('Gesture - methods');
+module('Gesture - push');
 
-test('`Gesture#push` appends the given event to the gesture', function() {
-  var gesture = new Gesture();
+test('appends the given event to the gesture', function() {
+  gesture = new Gesture();
 
   equal(gesture.events.length, 0);
   equal(gesture.last, null);
@@ -22,8 +24,8 @@ test('`Gesture#push` appends the given event to the gesture', function() {
   deepEqual(gesture.last, { timeStamp: 123, x: 1, y: 2 });
 });
 
-test('`Gesture#push` calls preventDefault on the given element when defaultPrevented is set to true', function() {
-  var gesture = new Gesture();
+test('calls preventDefault on the given element when defaultPrevented is set to true', function() {
+  gesture = new Gesture();
   var evtNotPrevented = {
     timeStamp: 123,
     touches: [{ pageX: 1, pageY: 2 }],
@@ -44,8 +46,8 @@ test('`Gesture#push` calls preventDefault on the given element when defaultPreve
   gesture.push(evtPrevented);
 });
 
-test('`Gesture#push` calls stopPropagation on the given element when propagationStopped is set to true', function() {
-  var gesture = new Gesture();
+test('calls stopPropagation on the given element when propagationStopped is set to true', function() {
+  gesture = new Gesture();
   var evtNotStopped = {
     timeStamp: 123,
     touches: [{ pageX: 1, pageY: 2 }],
@@ -66,63 +68,142 @@ test('`Gesture#push` calls stopPropagation on the given element when propagation
   gesture.push(evtStopped);
 });
 
-// var firstEvent, secondEvent, thirdEvent;
+module('Gesture - first and last', {
+  setup: function() {
+    gesture = new Gesture();
+    gesture.push({ timeStamp: 123, touches: [{ pageX: 1, pageY: 2 }] });
+    gesture.push({ timeStamp: 234, touches: [{ pageX: 5, pageY: 6 }] });
+  }
+});
 
-// module('Gesture - methods');
+test('first contains the first captured event', function() {
+  deepEqual(gesture.first, { timeStamp: 123, x: 1, y: 2 });
+});
 
-// test('`Gesture#push` appends the given event to the gesture', function() {
-//   var gesture = new Gesture();
+test('last contains the last captured event', function() {
+  deepEqual(gesture.last, { timeStamp: 234, x: 5, y: 6 });
+});
 
-//   equal(gesture.eventsCount, 0);
-//   equal(gesture.last, null);
-//   gesture.push({timeStamp: 123, touches: [{pageX: 1, pageY: 2}]});
-//   equal(gesture.eventsCount, 1);
-//   deepEqual(gesture.last, { timeStamp: 123, x: 1, y: 2 });
-// });
+module('Gesture - coordinates', {
+  setup: function() {
+    gesture = new Gesture();
+    gesture.push({ timeStamp: 123, touches: [{ pageX: 1, pageY: 2 }] });
+    gesture.push({ timeStamp: 234, touches: [{ pageX: 5, pageY: 6 }] });
+  }
+});
 
-// test('`Gesture#push` calls preventDefault on the given element when defaultPrevented is set to true', function() {
-//   var gesture = new Gesture();
-//   var evtNotPrevented = {
-//     timeStamp: 123,
-//     touches: [{ pageX: 1, pageY: 2 }],
-//     preventDefault: function() {
-//       ok(false, 'This event must not be prevented');
-//     }
-//   };
-//   gesture.push(evtNotPrevented);
+test('x contains the pageX of the last event', function() {
+  equal(gesture.x, 5);
+});
 
-//   gesture.defaultPrevented = true;
-//   var evtPrevented = {
-//     timeStamp: 123,
-//     touches: [{ pageX: 1, pageY: 2 }],
-//     preventDefault: function() {
-//       ok(true, 'This event must be prevented');
-//     }
-//   };
-//   gesture.push(evtPrevented);
-// });
+test('y contains the pageY of the last event', function() {
+  equal(gesture.y, 6);
+});
 
-// test('`Gesture#push` calls stopPropagation on the given element when propagationStopped is set to true', function() {
-//   var gesture = new Gesture();
-//   var evtNotStopped = {
-//     timeStamp: 123,
-//     touches: [{ pageX: 1, pageY: 2 }],
-//     stopPropagation: function() {
-//       ok(false, 'The propagation of this event must not be stopped');
-//     }
-//   };
-//   gesture.push(evtNotStopped);
+test('initX contains the pageX of the first event', function() {
+  equal(gesture.initX, 1);
+});
 
-//   gesture.propagationStopped = true;
-//   var evtStopped = {
-//     timeStamp: 123,
-//     touches: [{ pageX: 1, pageY: 2 }],
-//     stopPropagation: function() {
-//       ok(true, 'The propagation of this event must be stopped');
-//     }
-//   };
-//   gesture.push(evtStopped);
-// });
+test('initY contains the pageX of the first event', function() {
+  equal(gesture.initY, 2);
+});
+
+module('Gesture - deltas', {
+  setup: function() {
+    gesture = new Gesture();
+    gesture.push({ touches: [{pageX: 100, pageY: 250}], timeStamp: 1419263004600 });
+    gesture.push({ touches: [{pageX: 110, pageY: 270}], timeStamp: 1419263004610 });
+    gesture.push({ touches: [{pageX: 120, pageY: 290}], timeStamp: 1419263004620 });
+  }
+});
+
+test('deltaX contains the X delta between the beginning and the current point of the gesture', function() {
+  equal(gesture.deltaX, 20);
+});
+
+test('deltaY contains the X delta between the beginning and the current point of the gesture', function() {
+  equal(gesture.deltaY, 40);
+});
+
+test('delta contains the distance in px between the beginning and the current point of the gesture', function() {
+  ok(gesture.delta - 44.731359 < 0.0001, 'Calculates the delta using Pythagoras theorem');
+});
+
+module('Gesture - direction');
+
+test('returns the direction of the gesture in degrees (0-360)', function() {
+  // Gesture to the 1st cuandrant
+  var gesture1 = new Gesture();
+  gesture1.push({ touches: [{pageX: 100, pageY: 270}] });
+  gesture1.push({ touches: [{pageX: 110, pageY: 250}] });
+  equal(gesture1.direction, 26.56505117707799);
+
+  // Gesture to the 2st cuandrant
+  var gesture2 = new Gesture();
+  gesture2.push({ touches: [{pageX: 100, pageY: 250}] });
+  gesture2.push({ touches: [{pageX: 110, pageY: 270}] });
+  equal(gesture2.direction, 153.43494882292202);
+
+  // Gesture to the 3rd cuandrant
+  var gesture3 = new Gesture();
+  gesture3.push({ touches: [{pageX: 110, pageY: 250}] });
+  gesture3.push({ touches: [{pageX: 100, pageY: 270}] });
+  equal(gesture3.direction, 206.56505117707799);
+
+  // Gesture to the 4th cuandrant
+  var gesture4 = new Gesture();
+  gesture4.push({ touches: [{pageX: 110, pageY: 270}] });
+  gesture4.push({ touches: [{pageX: 100, pageY: 250}] });
+  equal(gesture4.direction, 333.43494882292202);
+});
+
+module('Gesture - isHorizontal');
+
+test('returns true if the gesture is horizontal with a error margin smaller than the given one', function() {
+  var gesture = new Gesture();
+  gesture.push({ touches: [{pageX: 100, pageY: 250}] });
+  gesture.push({ touches: [{pageX: 140, pageY: 255}] });
+  gesture.push({ touches: [{pageX: 180, pageY: 260}] });
+  ok(gesture.isHorizontal(), 'The gesture is horizontal with an error margin of 15deg'); // The error margin defalts to ± 15°
+  ok(!gesture.isHorizontal(2), 'The gesture is not horizontal with an error margin of 2deg'); // The error margin is set to ± 2°
+
+  var gesture2 = new Gesture();
+  gesture2.push({ touches: [{pageX: 250, pageY: 100}] });
+  gesture2.push({ touches: [{pageX: 255, pageY: 140}] });
+  gesture2.push({ touches: [{pageX: 260, pageY: 180}] });
+  ok(!gesture2.isHorizontal(), 'The new gesture is not horizontal');
+});
+
+module('Gesture - speed', {
+  setup: function() {
+    gesture = new Gesture();
+    gesture.push({ touches: [{pageX: 100, pageY: 250}], timeStamp: 1419263004600 });
+    gesture.push({ touches: [{pageX: 110, pageY: 270}], timeStamp: 1419263004610 });
+    gesture.push({ touches: [{pageX: 120, pageY: 290}], timeStamp: 1419263004620 });
+  }
+});
+
+test('speedX contains the speed of the gesture in the X axis', function() {
+  equal(gesture.speedX, 1000);
+});
+
+test('speedY contains the speed of the gesture in the X axis', function() {
+  equal(gesture.speedY, 2000);
+});
+
+module('Gesture - duration', {
+  setup: function() {
+    gesture = new Gesture();
+    gesture.push({ touches: [{pageX: 100, pageY: 250}], timeStamp: 1419263004600 });
+    gesture.push({ touches: [{pageX: 110, pageY: 270}], timeStamp: 1419263004610 });
+    gesture.push({ touches: [{pageX: 120, pageY: 290}], timeStamp: 1419263004620 });
+  }
+});
+
+test('contains the duration of the gesture in milliseconds', function() {
+  equal(gesture.duration, 20);
+});
+
 
 // test('`Gesture#preventDefault` sets the defaultPrevented flag to true if the given condition is met', function() {
 //   var gesture = new Gesture();
@@ -204,139 +285,4 @@ test('`Gesture#push` calls stopPropagation on the given element when propagation
 //     equal(this, 'given-context', 'Inside the function, the context has been bound correctly');
 //     equal(g.constructor, Gesture, 'The condition function receives the gesture');
 //   });
-// });
-
-// test('`Gesture#isHorizontal` returns true if the gesture is horizontal with a error margin smaller than the given one', function() {
-//   var gesture = new Gesture();
-//   gesture.push({ touches: [{pageX: 100, pageY: 250}] });
-//   gesture.push({ touches: [{pageX: 140, pageY: 255}] });
-//   gesture.push({ touches: [{pageX: 180, pageY: 260}] });
-//   ok(gesture.isHorizontal(), 'The gesture is horizontal with an error margin of 15deg'); // The error margin defalts to ± 15°
-//   ok(!gesture.isHorizontal(2), 'The gesture is not horizontal with an error margin of 2deg'); // The error margin is set to ± 2°
-
-//   var gesture2 = new Gesture();
-//   gesture2.push({ touches: [{pageX: 250, pageY: 100}] });
-//   gesture2.push({ touches: [{pageX: 255, pageY: 140}] });
-//   gesture2.push({ touches: [{pageX: 260, pageY: 180}] });
-//   ok(!gesture2.isHorizontal(), 'The new gesture is not horizontal');
-// });
-
-// module('Gesture - getters', {
-//   setup: function(){
-//     firstEvent  = { touches: [{pageX: 100, pageY: 250}], timeStamp: 1419263004600 };
-//     secondEvent = { touches: [{pageX: 110, pageY: 270}], timeStamp: 1419263004610 };
-//     thirdEvent  = { touches: [{pageX: 120, pageY: 290}], timeStamp: 1419263004620 };
-//   }
-// });
-
-// test('`Gesture#eventsCount` contains the number of captured events', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   equal(gesture.eventsCount, 2, 'This gesture contains 2 events');
-// });
-
-// test('`Gesture#last` contains the last captured event', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   deepEqual(gesture.last, { timeStamp: 1419263004610, x: 110, y: 270 });
-// });
-
-// test('`Gesture#first` contains the first captured event', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   deepEqual(gesture.first, { timeStamp: 1419263004600, x: 100, y: 250 });
-// });
-
-// test('`Gesture#events` contains all the captured events', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   deepEqual(gesture.events, [{ timeStamp: 1419263004600, x: 100, y: 250 }, { timeStamp: 1419263004610, x: 110, y: 270 }]);
-// });
-
-// test('`Gesture#duration` contains the duration of the gesture in milliseconds', function() {
-//   var gesture = new Gesture(firstEvent);
-//   equal(gesture.duration, 0);
-//   gesture.push(secondEvent);
-//   equal(gesture.duration, 10);
-// });
-
-// test('`Gesture#x` contains the pageX of the last event', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   equal(gesture.x, 110);
-// });
-
-// test('`Gesture#y` contains the pageY of the last event', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   equal(gesture.y, 270);
-// });
-
-// test('`Gesture#initX` contains the pageX of the first event', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   equal(gesture.initX, 100);
-// });
-
-// test('`Gesture#initY` contains the pageX of the first event', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   equal(gesture.initY, 250);
-// });
-
-// test('`Gesture#speedX` contains the speed of the gesture in the X axis', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   gesture.push(thirdEvent);
-//   equal(gesture.speedX, 1000);
-// });
-
-// test('`Gesture#speedY` contains the speed of the gesture in the X axis', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   gesture.push(thirdEvent);
-//   equal(gesture.speedY, 2000);
-// });
-
-// test('`Gesture#deltaX` contains the X delta between the beginning and the current point of the gesture', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   gesture.push(thirdEvent);
-//   equal(gesture.deltaX, 20);
-// });
-
-// test('`Gesture#deltaY` contains the X delta between the beginning and the current point of the gesture', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   gesture.push(thirdEvent);
-//   equal(gesture.deltaY, 40);
-// });
-
-// test('`Gesture#delta` contains the distance in px between the beginning and the current point of the gesture', function() {
-//   var gesture = new Gesture(firstEvent);
-//   gesture.push(secondEvent);
-//   gesture.push(thirdEvent);
-//   ok(gesture.delta - 44.731359 < 0.0001, 'Calculates the delta using Pythagoras theorem');
-// });
-
-// test('`Gesture#direction` returns the direction of the gesture in degrees (0-360)', function() {
-//   // Gesture to the 1st cuandrant
-//   var gesture1 = new Gesture({ touches: [{pageX: 100, pageY: 270}] });
-//   gesture1.push({ touches: [{pageX: 110, pageY: 250}] });
-//   equal(gesture1.direction, 26.56505117707799);
-
-//   // Gesture to the 2st cuandrant
-//   var gesture2 = new Gesture({ touches: [{pageX: 100, pageY: 250}] });
-//   gesture2.push({ touches: [{pageX: 110, pageY: 270}] });
-//   equal(gesture2.direction, 153.43494882292202);
-
-//   // Gesture to the 3rd cuandrant
-//   var gesture3 = new Gesture({ touches: [{pageX: 110, pageY: 250}] });
-//   gesture3.push({ touches: [{pageX: 100, pageY: 270}] });
-//   equal(gesture3.direction, 206.56505117707799);
-
-//   // Gesture to the 4th cuandrant
-//   var gesture4 = new Gesture({ touches: [{pageX: 110, pageY: 270}] });
-//   gesture4.push({ touches: [{pageX: 100, pageY: 250}] });
-//   equal(gesture4.direction, 333.43494882292202);
 // });
