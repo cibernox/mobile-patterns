@@ -167,32 +167,32 @@ class Gesture extends EventEmitter {
     this.last = null;
   }
 
+  preventDefault(thisArg, condFn) {
+    var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
+    var result = func ? func(this) : true;
+    this.defaultPrevented = result;
+    return result;
+  }
+
+  stopPropagation(thisArg, condFn) {
+    var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
+    var result = func ? func(this) : true;
+    this.propagationStopped = result;
+    return result;
+  }
+
+  adquire(thisArg, condFn) {
+    var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
+    var result = func ? func(this) : true;
+    this.defaultPrevented = result;
+    this.propagationStopped = result;
+    return result;
+  }
+
   // Private methods
   _getLastEvents() {
     return this.events.slice(Math.max(this.events.length - 5, 0), this.events.length);
   }
-
-  // preventDefault(thisArg, condFn) {
-  //   var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
-  //   var result = func ? func(this) : true;
-  //   this.defaultPrevented = result;
-  //   return result;
-  // }
-
-  // stopPropagation(thisArg, condFn) {
-  //   var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
-  //   var result = func ? func(this) : true;
-  //   this.propagationStopped = result;
-  //   return result;
-  // }
-
-  // adquire(thisArg, condFn) {
-  //   var func = arguments.length === 2 ? condFn.bind(thisArg) : thisArg;
-  //   var result = func ? func(this) : true;
-  //   this.defaultPrevented = result;
-  //   this.propagationStopped = result;
-  //   return result;
-  // }
 }
 
 export default Gesture;
