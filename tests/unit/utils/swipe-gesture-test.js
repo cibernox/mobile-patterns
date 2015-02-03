@@ -121,3 +121,42 @@ test('if the gesture is not horizontal by the time the minLength is surpassed, t
   swipe.push({ timeStamp: 567, touches: [{ pageX: 35, pageY: 10 }] });
   setTimeout(assert.async, 1);
 });
+
+module('SwipeGesture - progress event');
+
+test('is fired when an event is added to a tracked gesture', function(assert) {
+  expect(2);
+  var eventsCount = 0;
+  swipe = new SwipeGesture();
+
+  swipe.on('progress', function(gesture) {
+    equal(++eventsCount, 1, 'The event that triggers the start event does not trigger a progress event');
+    equal(gesture.x, 35, 'The gesture contains the last event');
+    setTimeout(assert.async, 1);
+  });
+
+  swipe.push({ timeStamp: 123, touches: [{ pageX: 0, pageY: 10 }] });
+  swipe.push({ timeStamp: 234, touches: [{ pageX: 10, pageY: 10 }] });
+  swipe.push({ timeStamp: 345, touches: [{ pageX: 19, pageY: 10 }] });
+  swipe.push({ timeStamp: 456, touches: [{ pageX: 30, pageY: 10 }] });
+  swipe.push({ timeStamp: 567, touches: [{ pageX: 35, pageY: 10 }] });
+});
+
+module('SwipeGesture - end event');
+
+test('is fired when a tracked event finalized', function(assert) {
+  expect(2);
+  var eventsCount = 0;
+  swipe = new SwipeGesture();
+
+  swipe.on('end', function(gesture) {
+    equal(++eventsCount, 1, 'The event that triggers the start event does not trigger a progress event');
+    equal(gesture.x, 31, 'The last event is the previous one');
+    setTimeout(assert.async, 1);
+  });
+
+  swipe.push({ type: 'touchstart', timeStamp: 123, touches: [{ pageX: 0, pageY: 10 }] });
+  swipe.push({ type: 'touchmove', timeStamp: 234, touches: [{ pageX: 30, pageY: 10 }] });
+  swipe.push({ type: 'touchmove', timeStamp: 345, touches: [{ pageX: 31, pageY: 11 }] });
+  swipe.push({ type: 'touchend', timeStamp: 456, touches: [{ pageX: 35, pageY: 10}] });
+});

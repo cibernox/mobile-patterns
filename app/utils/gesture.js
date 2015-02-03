@@ -140,9 +140,6 @@ class Gesture extends EventEmitter {
 
   // Methods
   push(event) {
-    if (this._ignoring) {
-      return
-    }
     let touch = event.touches[0];
     let summary = { timeStamp: event.timeStamp, x: touch.pageX, y: touch.pageY };
     this.events.push(summary);
@@ -152,18 +149,6 @@ class Gesture extends EventEmitter {
     }
     if (this.propagationStopped) {
       event.stopPropagation();
-    }
-    if (!this._warned && this.deltaX >= this.warnLength && this.isHorizontal()) {
-      this._warned = true;
-      this.emit('warn', this);
-    }
-    if (!this._tracking && this.deltaX >= this.minLength) {
-      if (this.isHorizontal()) {
-        this._tracking = true;
-        this.emit('start', this);
-      } else {
-        this._ignoring = true;
-      }
     }
   }
 

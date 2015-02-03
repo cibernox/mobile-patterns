@@ -204,7 +204,6 @@ test('contains the duration of the gesture in milliseconds', function() {
   equal(gesture.duration, 20);
 });
 
-
 // test('`Gesture#preventDefault` sets the defaultPrevented flag to true if the given condition is met', function() {
 //   var gesture = new Gesture();
 //   ok(!gesture.defaultPrevented, 'Newly created gestures are not default prevented');

@@ -10,5 +10,31 @@ export default class SwipeGesture extends Gesture {
     super(opts);
   }
 
+  push(e) {
+    if (this._ignoring) {
+      return
+    }
+    if (this._tracking && e.type === 'touchend') {
+      this.emit('end', this);
+    }
 
+    super.push(e);
+
+    if (!this._warned && this.deltaX >= this.warnLength && this.isHorizontal()) {
+      this._warned = true;
+      this.emit('warn', this);
+    }
+    if (!this._tracking && this.deltaX >= this.minLength) {
+      if (this.isHorizontal()) {
+        this._tracking = true;
+        this.emit('start', this);
+        return;
+      } else {
+        this._ignoring = true;
+      }
+    }
+    if (this._tracking) {
+      this.emit('progress', this);
+    }
+  }
 }
