@@ -1,5 +1,4 @@
 import Ember from 'ember';
-// import SwipeGesture from 'mobile-patterns/utils/swipe-gesture';
 import Gesture from 'mobile-patterns/utils/gesture';
 import BezierEasing from 'mobile-patterns/utils/bezier-easing';
 

@@ -4,7 +4,7 @@
 .animated-deck {
   overflow: hidden;
   background: url(/images/cloth-pattern.png);
-  &.effect-expose {
+  &.effect-expose, &.effect-slide {
     .cards {
       @include clearfix;
       width: 300%;
@@ -27,7 +27,7 @@
     visibility: hidden;
   }
   // Efects
-  .effect-expose & {
+  .effect-expose &, .effect-slide & {
     width: 33.33333%;
     transform-origin: 50% 300px;
   }

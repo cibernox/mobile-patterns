@@ -9,7 +9,7 @@ export default Ember.Component.extend({
   classNameBindings: ['effectClass'],
   attributeBindings: ['style'],
   gesture: new SwipeGesture(),
-  duration: 1000,
+  duration: 800,
 
   // CPs
   effectClass: computed('effect', function() {
@@ -113,15 +113,21 @@ export default Ember.Component.extend({
 
   generateAnimation: function(card, index) {
     var keyframes;
-    if (this.effect === 'expose') {
+    if (this.effect === 'slide') {
       keyframes = [
-        { transform: `scale(1) translate(${this.width}px)` },
-        { transform: `scale(0.9) translate(${this.width}px)`, offset: 1.5/20 },
-        { transform: `scale(0.9) translate(0)`, offset: 8.5/20 },
-        { transform: `scale(1) translate(0)`, offset: 10/20 },
-        { transform: `scale(0.9) translate(0)`, offset: 11.5/20 },
-        { transform: `scale(0.9) translate(-${this.width}px)`, offset: 18.5/20 },
-        { transform: `scale(1) translate(-${this.width}px)` }
+        { transform: `translate3d(${this.width}px, 0, 0)` },
+        { transform: `translate3d(0, 0, 0)` },
+        { transform: `translate3d(-${this.width}px, 0, 0)` }
+      ];
+    } else if (this.effect === 'expose') {
+      keyframes = [
+        { transform: `scale(1) translate(${this.width}px, 0)` },
+        { transform: `scale(0.9) translate(${this.width}px, 0)`, offset: 1.5/20 },
+        { transform: `scale(0.9) translate(0, 0)`, offset: 8.5/20 },
+        { transform: `scale(1) translate(0, 0)`, offset: 10/20 },
+        { transform: `scale(0.9) translate(0, 0)`, offset: 11.5/20 },
+        { transform: `scale(0.9) translate(-${this.width}px, 0)`, offset: 18.5/20 },
+        { transform: `scale(1) translate(-${this.width}px, 0)` }
       ];
     } else if (this.effect === 'stack') {
       switch (index) {

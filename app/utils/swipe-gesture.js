@@ -52,7 +52,7 @@ export default class SwipeGesture extends Gesture {
   constructor(opts = {}) {
     opts.minLength   = opts.minLength === undefined && 20 || opts.minLength;
     opts.warnLength  = opts.warnLength === undefined && 10 || opts.warnLength;
-    opts.errorMargin = opts.errorMargin === undefined && 20 || opts.errorMargin;
+    opts.errorMargin = opts.errorMargin === undefined && 25 || opts.errorMargin;
     opts.exclusive   = opts.exclusive === undefined && true || false;
     super(opts);
   }
