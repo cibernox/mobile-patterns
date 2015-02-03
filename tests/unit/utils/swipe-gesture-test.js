@@ -23,6 +23,30 @@ test('returns the swipe so we can chain calls', function() {
   equal(returnValue, swipe, 'push returns the swipe gesture itself');
 });
 
+test('if the trackOffset is enabled (the default), all events but the one that makes the gesture a swipe are removed', function() {
+  swipe = new SwipeGesture();
+  swipe.push({ timeStamp: 123, touches: [{ pageX: 0, pageY: 10 }] });
+  swipe.push({ timeStamp: 234, touches: [{ pageX: 5, pageY: 10 }] });
+  swipe.push({ timeStamp: 345, touches: [{ pageX: 19, pageY: 10 }] });
+  deepEqual(swipe.first, { timeStamp: 123, x: 0, y: 10 }, 'The first event is the still the original event');
+  swipe.push({ timeStamp: 456, touches: [{ pageX: 20, pageY: 10 }] });
+  swipe.push({ timeStamp: 567, touches: [{ pageX: 25, pageY: 10 }] });
+  deepEqual(swipe.first, { timeStamp: 456, x: 20, y: 10 }, 'The first event is the the first one that make this gesture a swipe');
+  deepEqual(swipe.last, { timeStamp: 567, x: 25, y: 10 }, 'The last event is one added more recently');
+});
+
+test('if the trackOffset is disabled, all events but the one that makes the gesture a swipe are removed', function() {
+  swipe = new SwipeGesture({trackOffset: false});
+  swipe.push({ timeStamp: 123, touches: [{ pageX: 0, pageY: 10 }] });
+  swipe.push({ timeStamp: 234, touches: [{ pageX: 5, pageY: 10 }] });
+  swipe.push({ timeStamp: 345, touches: [{ pageX: 19, pageY: 10 }] });
+  deepEqual(swipe.first, { timeStamp: 123, x: 0, y: 10 }, 'The first event is the still the original event');
+  swipe.push({ timeStamp: 456, touches: [{ pageX: 20, pageY: 10 }] });
+  swipe.push({ timeStamp: 567, touches: [{ pageX: 25, pageY: 10 }] });
+  deepEqual(swipe.first, { timeStamp: 123, x: 0, y: 10 }, 'The first event is still the same');
+  deepEqual(swipe.last, { timeStamp: 567, x: 25, y: 10 }, 'The last event is one added more recently');
+});
+
 module('SwipeGesture - warn event');
 
 test('is fired once for horizontal gestures when the warn length is surpassed', function(assert) {

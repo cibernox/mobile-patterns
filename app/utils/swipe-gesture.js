@@ -5,8 +5,8 @@ export default class SwipeGesture extends Gesture {
     opts.minLength   = opts.minLength === undefined && 20 || opts.minLength;
     opts.warnLength  = opts.warnLength === undefined && 10 || opts.warnLength;
     opts.errorMargin = opts.errorMargin === undefined && 20 || opts.errorMargin;
-    opts.exclusive   = !!opts.exclusive || true;
-    opts.trackOffset = !!opts.trackOffset || true;
+    opts.exclusive   = opts.exclusive === undefined && true || false;
+    opts.trackOffset = opts.trackOffset === undefined && true || false;
     super(opts);
   }
 
@@ -32,6 +32,9 @@ export default class SwipeGesture extends Gesture {
     }
     if (!this._started && this._mustStart()) {
       this._started = true;
+      if (this.trackOffset) {
+        this.events = [this.last];
+      }
       this.emit('start', this);
       return this;
     }
