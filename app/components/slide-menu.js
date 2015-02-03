@@ -1,10 +1,12 @@
 import Ember from 'ember';
-import Gesture from 'mobile-patterns/utils/gesture';
+import SwipeGesture from 'mobile-patterns/utils/swipe-gesture';
 import BezierEasing from 'mobile-patterns/utils/bezier-easing';
 
 export default Ember.Component.extend({
   inverseEasing: new BezierEasing(0, 0.42, 1, 0.58),
   browserDetector: Ember.inject.service(),
+  gesture: new SwipeGesture(),
+
   // Events
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
@@ -16,36 +18,17 @@ export default Ember.Component.extend({
     this.sendAction('action', animation);
   }.on('didInsertElement'),
 
-  setupEventListeners: function(){
-    this.width = this.element.offsetWidth;
-    if (this.get('browserDetector').isSafari) {
-      return;
+  setupEventListeners: function() {
+    if (!this.get('browserDetector').isSafari) {
+      let rootNode = document.querySelector('#' + this.get('observed-element'));
+      rootNode.addEventListener('touchstart', e => this.gesture.push(e), true);
+      rootNode.addEventListener('touchmove', e => this.gesture.push(e), true);
+      rootNode.addEventListener('touchend', e => this.gesture.push(e), true);
+      this.gesture.on('progress', swipe => {
+        this.player.currentTime = this.inverseEasing(Math.min(swipe.x / this.width, 1)) * this.duration;
+      });
+      this.gesture.on('end', () => this.completeExpansion());
     }
-    var rootNode = document.querySelector('#' + this.get('observed-element'));
-    var self = this;
-
-    function handleTouchStart(evt) {
-      var progress = self.player.currentTime / self.duration;
-      self.gesture = new Gesture(evt);
-      if (progress === 1 || self.gesture.initX <= 20) {
-        self.gesture.adquire();
-        self.offset = Math.max(0, progress * self.width - self.gesture.initX);
-        rootNode.addEventListener('touchmove', handleTouchMove);
-        rootNode.addEventListener('touchend', handleTouchEnd);
-      }
-    }
-    function handleTouchMove(evt) {
-      self.gesture.push(evt);
-      var newProgress = Math.min((self.gesture.x + self.offset) / self.width, 1);
-      self.player.currentTime = self.inverseEasing(newProgress) * self.duration;
-    }
-    function handleTouchEnd() {
-      rootNode.removeEventListener('touchmove', handleTouchMove);
-      rootNode.removeEventListener('touchend', handleTouchEnd);
-      self.completeExpansion();
-    }
-
-    rootNode.addEventListener('touchstart', handleTouchStart, true);
   }.on('didInsertElement'),
 
   completeExpansion: function(){
@@ -61,5 +44,6 @@ export default Ember.Component.extend({
       this.player.playbackRate = Math.max(speed, 1);
     }
     this.player.play();
+    this.gesture.clear();
   }
 });
