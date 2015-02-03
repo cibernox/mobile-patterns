@@ -21,21 +21,26 @@ export default Ember.Component.extend({
   setupEventListeners: function() {
     if (!this.get('browserDetector').isSafari) {
       let rootNode = document.querySelector('#' + this.get('observed-element'));
-      rootNode.addEventListener('touchstart', e => this.gesture.push(e), true);
-      rootNode.addEventListener('touchmove', e => this.gesture.push(e), true);
-      rootNode.addEventListener('touchend', e => this.gesture.push(e), true);
+      let handler = e => this.gesture.push(e);
+
+      rootNode.addEventListener('touchstart', e => {
+        if (e.touches[0].pageX < 20 || this.player.currentTime === this.duration) {
+          handler(e);
+          rootNode.addEventListener('touchmove', handler, true);
+          rootNode.addEventListener('touchend', handler, true);
+        }
+      }, true);
+
       this.gesture.on('progress', swipe => {
-        // var offset = swipe.initX;
-        // // debugger;
-        // console.log('offset', offset);
-        // var progress = Math.min((swipe.x - offset) / this.width, 1);
-        // console.log('progress', progress);
         var progress = Math.min(swipe.x / this.width, 1);
         this.player.currentTime = this.inverseEasing(progress) * this.duration;
       });
-      this.gesture.on('end', () => {
+
+      this.gesture.on('end', swipe => {
         this.completeExpansion();
-        this.gesture.clear();
+        swipe.clear();
+        rootNode.removeEventListener('touchmove', handler, true);
+        rootNode.removeEventListener('touchend', handler, true);
       });
     }
   }.on('didInsertElement'),
