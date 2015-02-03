@@ -57,12 +57,13 @@
 /* global EventEmitter */
 class Gesture extends EventEmitter {
   constructor(opts = {}) {
+    opts.defaultPrevented = opts.defaultPrevented || false;
+    opts.propagationStopped = opts.defaultPrevented || false;
+    this._originalOpts = opts;
     for (let key in opts) {
       this[key] = opts[key];
     }
-    this.events = this.events || [];
-    this.defaultPrevented = this.defaultPrevented || false;
-    this.propagationStopped = this.defaultPrevented || false;
+    this.events = [];
   }
 
   // Properties
@@ -156,6 +157,14 @@ class Gesture extends EventEmitter {
   isHorizontal(margin = 15) {
     let mod = this.direction % 180;
     return (mod < 90 + margin) && (mod > 90 - margin);
+  }
+
+  clear() {
+    for (let key in this._originalOpts) {
+      this[key] = this._originalOpts[key];
+    }
+    this.events = [];
+    this.last = null;
   }
 
   // Private methods

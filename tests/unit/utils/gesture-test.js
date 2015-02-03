@@ -210,6 +210,26 @@ test('contains the duration of the gesture in milliseconds', function() {
   equal(gesture.duration, 20);
 });
 
+module('Gesture - clear', {
+  setup: function() {
+    gesture = new Gesture({abc: 123});
+    gesture.push({ touches: [{pageX: 100, pageY: 250}], timeStamp: 1419263004600 });
+    gesture.push({ touches: [{pageX: 110, pageY: 270}], timeStamp: 1419263004610 });
+    gesture.push({ touches: [{pageX: 120, pageY: 290}], timeStamp: 1419263004620 });
+    gesture.abc = 234;
+  }
+});
+
+test('returns the gesture to the state it had when it was initialized', function() {
+  gesture.clear();
+  deepEqual(gesture.events, [], 'There is not events');
+  ok(!gesture.defaultPrevented);
+  ok(!gesture.propagationStopped);
+  ok(!gesture.first, null, 'There is no first event');
+  ok(!gesture.last, null, 'There is no last event');
+  equal(gesture.abc, 123, 'Other properties are restored l');
+});
+
 // test('`Gesture#preventDefault` sets the defaultPrevented flag to true if the given condition is met', function() {
 //   var gesture = new Gesture();
 //   ok(!gesture.defaultPrevented, 'Newly created gestures are not default prevented');

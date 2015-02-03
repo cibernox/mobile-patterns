@@ -12,10 +12,11 @@ export default class SwipeGesture extends Gesture {
 
   push(e) {
     if (this._ignoring) {
-      return
+      return;
     }
     if (this._tracking && e.type === 'touchend') {
       this.emit('end', this);
+      return;
     }
 
     super.push(e);
