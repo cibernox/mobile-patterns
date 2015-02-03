@@ -36,5 +36,6 @@ export default class SwipeGesture extends Gesture {
     if (this._tracking) {
       this.emit('progress', this);
     }
+    return this;
   }
 }

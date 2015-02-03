@@ -15,6 +15,13 @@ test('initializes the default values', function() {
   ok(!swipe.propagationStopped, 'propagationStopped is false by default');
 });
 
+module('SwipeGesture - push');
+
+test('returns the swipe so we can chain calls', function() {
+  swipe = new SwipeGesture();
+  var returnValue = swipe.push({timeStamp: 123, touches: [{pageX: 1, pageY: 2}]});
+  equal(returnValue, swipe, 'push returns the swipe gesture itself');
+});
 
 module('SwipeGesture - warn event');
 
@@ -68,7 +75,6 @@ test('if the gesture is not horizontal by the time the warnLength is surpassed b
   swipe.push({ timeStamp: 567, touches: [{ pageX: 15, pageY: 10 }] });
   setTimeout(assert.async, 1);
 });
-
 
 module('SwipeGesture - start event');
 

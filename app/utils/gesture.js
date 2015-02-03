@@ -150,6 +150,7 @@ class Gesture extends EventEmitter {
     if (this.propagationStopped) {
       event.stopPropagation();
     }
+    return this;
   }
 
   isHorizontal(margin = 15) {

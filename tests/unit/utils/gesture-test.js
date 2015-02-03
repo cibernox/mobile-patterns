@@ -68,6 +68,12 @@ test('calls stopPropagation on the given element when propagationStopped is set 
   gesture.push(evtStopped);
 });
 
+test('returns the gesture so we can chain calls', function() {
+  gesture = new Gesture();
+  var returnValue = gesture.push({timeStamp: 123, touches: [{pageX: 1, pageY: 2}]});
+  equal(returnValue, gesture, 'push returns the gesture itself');
+});
+
 module('Gesture - first and last', {
   setup: function() {
     gesture = new Gesture();
