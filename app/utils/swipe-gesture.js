@@ -14,8 +14,13 @@ export default class SwipeGesture extends Gesture {
     if (this._ignoring) {
       return this;
     }
-    if (this._started && e.type === 'touchend') {
-      this.emit('end', this);
+    if (e.type === 'touchend') {
+      //
+      // TODO: Test this bit.
+      //
+      if (this._started) {
+        this.emit('end', this);
+      }
       return this;
     }
 
@@ -33,7 +38,7 @@ export default class SwipeGesture extends Gesture {
     if (!this._started && this._mustStart()) {
       this._started = true;
       if (this.trackOffset) {
-        this.events = [this.last];
+        this.startOffset = this.initX - this.x;
       }
       this.emit('start', this);
       return this;
@@ -44,16 +49,28 @@ export default class SwipeGesture extends Gesture {
     return this;
   }
 
+  clear() {
+    //
+    // TODO: Add tests
+    //
+    //
+    super.clear();
+    this._ignoring = false;
+    this._warned = false;
+    this._started = false;
+    this.startOffset = null;
+  }
+
   // Private
   _mustIgnore() {
-    return !this._tracking && this.deltaX >= this.minLength && !this.isHorizontal();
+    return !this._started && Math.abs(this.deltaX) >= this.minLength && !this.isHorizontal();
   }
 
   _mustStart() {
-    return this.deltaX >= this.minLength && this.isHorizontal();
+    return Math.abs(this.deltaX) >= this.minLength && this.isHorizontal();
   }
 
   _mustWarn() {
-    return this.deltaX >= this.warnLength && this.isHorizontal();
+    return Math.abs(this.deltaX) >= this.warnLength && this.isHorizontal();
   }
 }

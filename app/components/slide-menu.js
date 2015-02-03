@@ -25,9 +25,18 @@ export default Ember.Component.extend({
       rootNode.addEventListener('touchmove', e => this.gesture.push(e), true);
       rootNode.addEventListener('touchend', e => this.gesture.push(e), true);
       this.gesture.on('progress', swipe => {
-        this.player.currentTime = this.inverseEasing(Math.min(swipe.x / this.width, 1)) * this.duration;
+        // var offset = swipe.initX;
+        // // debugger;
+        // console.log('offset', offset);
+        // var progress = Math.min((swipe.x - offset) / this.width, 1);
+        // console.log('progress', progress);
+        var progress = Math.min(swipe.x / this.width, 1);
+        this.player.currentTime = this.inverseEasing(progress) * this.duration;
       });
-      this.gesture.on('end', () => this.completeExpansion());
+      this.gesture.on('end', () => {
+        this.completeExpansion();
+        this.gesture.clear();
+      });
     }
   }.on('didInsertElement'),
 
@@ -44,6 +53,5 @@ export default Ember.Component.extend({
       this.player.playbackRate = Math.max(speed, 1);
     }
     this.player.play();
-    this.gesture.clear();
   }
 });
