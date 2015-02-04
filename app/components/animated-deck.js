@@ -37,6 +37,7 @@ export default Ember.Component.extend(GestureListenerMixin, {
     this.player.cancel();
     this.set('animatingToPrevious', false);
     this.set('animatingToNext', false);
+    this.element.querySelector('#current-card').scrollTop = 0;
   }.observes('current'),
 
   // Initializers
