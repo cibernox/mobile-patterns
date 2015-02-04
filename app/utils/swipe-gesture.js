@@ -92,6 +92,7 @@ export default class SwipeGesture extends Gesture {
       return this;
     }
     if (this._started) {
+      // TODO: Verify that when a swipe starts in once direcction, it can't change that direcction.
       this.emit('progress', this);
     }
     return this;
