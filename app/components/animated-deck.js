@@ -31,6 +31,8 @@ export default Ember.Component.extend({
   // Observers
   resetAnimation: function() {
     this.player.currentTime = this.duration / 2;
+    this.set('animatingToPrevious', false);
+    this.set('animatingToNext', false);
   }.observes('current'),
 
   // Initializers
@@ -41,6 +43,7 @@ export default Ember.Component.extend({
     this.player = document.timeline.play(group);
     this.player.pause();
     this.player.currentTime = this.duration / 2;
+    this.gesture.on('warn', () => this.prepareAnimation());
     this.gesture.on('progress', () => this.updateAnimation());
     this.gesture.on('end', () => this.finalizeAnimation());
   }.on('didInsertElement'),
@@ -58,6 +61,50 @@ export default Ember.Component.extend({
   },
 
   // Functions
+  prepareAnimation: function() {
+    // if (this.animating) { return; }
+    // this.animating = true;
+    // var opts = { duration: this.duration, fill: 'both' };
+    // var keyframes, group;
+    // if (this.gesture.deltaX > 0) {
+    //   // animating to previous
+    //   this.set('animatingToPrevious', true);
+    //   this.set('animatingToNext', false);
+    //   keyframes = [
+    //     { transform: `scale(1) translate(0)`, offset: 0 },
+    //     { transform: `scale(0.9) translate(0)`, offset: 1.5/10 },
+    //     { transform: `scale(0.9) translate(${this.width}px, 0)`, offset: 8.5/10 },
+    //     { transform: `scale(1) translate(${this.width}px, 0)`, offset: 1 }
+    //   ];
+    // } else {
+    //   // Animating to next
+    //   this.set('animatingToPrevious', false);
+    //   this.set('animatingToNext', true);
+    //   keyframes = [
+    //     { transform: `scale(1) translate(0)`, offset: 0 },
+    //     { transform: `scale(0.9) translate(0)`, offset: 1.5/10 },
+    //     { transform: `scale(0.9) translate(-${this.width}px, 0)`, offset: 8.5/10 },
+    //     { transform: `scale(1) translate(-${this.width}px, 0)`, offset: 1 }
+    //   ];
+    // }
+    // Ember.run.schedule('afterRender', this, function() {
+    //   if (this.animatingToPrevious) {
+    //     var group = new AnimationGroup([
+    //       new Animation(this.element.querySelector('#current-card'), keyframes, opts),
+    //       new Animation(this.element.querySelector('#previous-card'), keyframes, opts),
+    //     ]);
+    //   } else {
+    //     var group = new AnimationGroup([
+    //       new Animation(this.element.querySelector('#current-card'), keyframes, opts),
+    //       new Animation(this.element.querySelector('#next-card'), keyframes, opts),
+    //     ]);
+    //   }
+    //   this.player = document.timeline.play(group);
+    //   this.player.pause();
+    // });
+  },
+
+
   updateAnimation: function() {
     this.player.currentTime = (-this.gesture.deltaX + this.gesture.startOffset + this.width) / (this.width * 2) * this.duration;
   },
@@ -105,7 +152,8 @@ export default Ember.Component.extend({
       if (--frames > 0) {
         requestAnimationFrame(tick);
       } else {
-        this.animating = false;
+        this.set('animatingToPrevious', false);
+        this.set('animatingToNext', false);
       }
     };
     requestAnimationFrame(tick);
