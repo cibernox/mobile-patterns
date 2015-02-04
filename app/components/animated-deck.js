@@ -69,38 +69,30 @@ export default Ember.Component.extend({
   // Functions
   prepareAnimation: function() {
     let opts = { duration: this.duration, fill: 'both' };
-    let keyframes;
+    let currentCardkeyframes, otherCardkeyframes;
     if (this.gesture.deltaX < 0) {
       // Animate to next
       this.set('animatingToPrevious', false);
       this.set('animatingToNext', true);
-      keyframes = [
-        { transform: `scale(1) translate(0)`, offset: 0 },
-        { transform: `scale(0.9) translate(0)`, offset: 1.5/10 },
-        { transform: `scale(0.9) translate(-${this.width}px, 0)`, offset: 8.5/10 },
-        { transform: `scale(1) translate(-${this.width}px, 0)`, offset: 1 }
-      ];
+      currentCardkeyframes = this.getKeyframes({card: 'current', direction: 'next'});
+      otherCardkeyframes = this.getKeyframes({card: 'next', direction: 'next'});
     } else {
       // Animate to previous
       this.set('animatingToPrevious', true);
       this.set('animatingToNext', false);
-      keyframes = [
-        { transform: `scale(1) translate(0,0)`, offset: 0 },
-        { transform: `scale(0.9) translate(0,0)`, offset: 1.5/10 },
-        { transform: `scale(0.9) translate(${this.width}px, 0)`, offset: 8.5/10 },
-        { transform: `scale(1) translate(${this.width}px, 0)`, offset: 1 }
-      ];
+      currentCardkeyframes = this.getKeyframes({card: 'current', direction: 'previous'});
+      otherCardkeyframes = this.getKeyframes({card: 'previous', direction: 'previous'});
     }
     Ember.run.schedule('afterRender', this, function() {
       if (this.animatingToPrevious) {
         var group = new AnimationGroup([
-          new Animation(this.element.querySelector('#current-card'), keyframes, opts),
-          new Animation(this.element.querySelector('#previous-card'), keyframes, opts),
+          new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
+          new Animation(this.element.querySelector('#previous-card'), otherCardkeyframes, opts),
         ]);
       } else {
         var group = new AnimationGroup([
-          new Animation(this.element.querySelector('#current-card'), keyframes, opts),
-          new Animation(this.element.querySelector('#next-card'), keyframes, opts),
+          new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
+          new Animation(this.element.querySelector('#next-card'), otherCardkeyframes, opts),
         ]);
       }
       this.player = document.timeline.play(group);
@@ -146,50 +138,44 @@ export default Ember.Component.extend({
     requestAnimationFrame(tick);
   },
 
-  // generateAnimation: function(card, index) {
-  //   var keyframes;
-  //   if (this.effect === 'slide') {
-  //     keyframes = [
-  //       { transform: `translate3d(${this.width}px, 0, 0)` },
-  //       { transform: `translate3d(0, 0, 0)` },
-  //       { transform: `translate3d(-${this.width}px, 0, 0)` }
-  //     ];
-  //   } else if (this.effect === 'expose') {
-  //     keyframes = [
-  //       { transform: `scale(1) translate(${this.width}px, 0)` },
-  //       { transform: `scale(0.9) translate(${this.width}px, 0)`, offset: 1.5/20 },
-  //       { transform: `scale(0.9) translate(0, 0)`, offset: 8.5/20 },
-  //       { transform: `scale(1) translate(0, 0)`, offset: 10/20 },
-  //       { transform: `scale(0.9) translate(0, 0)`, offset: 11.5/20 },
-  //       { transform: `scale(0.9) translate(-${this.width}px, 0)`, offset: 18.5/20 },
-  //       { transform: `scale(1) translate(-${this.width}px, 0)` }
-  //     ];
-  //   } else if (this.effect === 'stack') {
-  //     switch (index) {
-  //       case 0:
-  //         keyframes = [
-  //           { transform: `scale(1) translate(0, 0)`, opacity: 1, visibility: 'visible' },
-  //           { transform: `scale(0.8) translate(0, 0)`, opacity: 0, visibility: 'hidden' },
-  //           { transform: `scale(0) translate(0, 0)`, opacity: 0, visibility: 'hidden' },
-  //         ];
-  //         break;
-  //       case 1:
-  //         keyframes = [
-  //           { transform: `scale(1) translate(${this.width + 25}px, 50px) rotate(5deg)`, opacity: 1, visibility: 'hidden' },
-  //           { transform: `scale(1) translate(0, 0) rotate(0)`, opacity: 1, visibility: 'visible' },
-  //           { transform: `scale(0.8) translate(0, 0) rotate(0)`, opacity: 0, visibility: 'hidden' },
-  //         ];
-  //         break;
-  //       case 2:
-  //         keyframes = [
-  //           { transform: `scale(1) translate(25px, 0) rotate(0)`, opacity: 0, visibility: 'hidden' },
-  //           { transform: `scale(1) translate(25px, 50px) rotate(5deg)`, opacity: 1, visibility: 'hidden' },
-  //           { transform: `scale(1) translate(${-this.width}px, 0) rotate(0)`, opacity: 1, visibility: 'visible' },
-  //         ];
-  //     }
-  //   }
-  //   var opts = { duration: this.duration, fill: 'both' };
-  //   return new Animation(card, keyframes, opts);
-  // }
+  getKeyframes: function({ card, direction }) {
+    if (this.effect === 'slide') {
+      if (direction === 'next') {
+        return [{ transform: `translate(0, 0)` }, { transform: `translate(-${this.width}px, 0)` }];
+      } else {
+        return [{ transform: `translate(0,0)` }, { transform: `translate(${this.width}px, 0)` }];
+      }
+    } else if (this.effect === 'expose') {
+      if (direction === 'next') {
+        return [
+          { transform: `scale(1) translate(0,0)` },
+          { transform: `scale(0.9) translate(0,0)`, offset: 1.5/10 },
+          { transform: `scale(0.9) translate(-${this.width}px, 0)`, offset: 8.5/10 },
+          { transform: `scale(1) translate(-${this.width}px, 0)` }
+        ];
+      } else {
+        return [
+          { transform: `scale(1) translate(0,0)` },
+          { transform: `scale(0.9) translate(0,0)`, offset: 1.5/10 },
+          { transform: `scale(0.9) translate(${this.width}px, 0)`, offset: 8.5/10 },
+          { transform: `scale(1) translate(${this.width}px, 0)` }
+        ];
+      }
+    } else if (this.effect === 'stack') {
+      if (direction === 'next') {
+        if (card === 'current') {
+          return [{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(0.8)', opacity: 0 }];
+        } else {
+          return [{ transform: `translate(0,0)` }, { transform: `translate(-${this.width}px, 0)` }];
+        }
+      } else if (direction === 'previous') {
+        if (card === 'current') {
+          return [{ transform: `translate(0,0)` }, { transform: `translate(${this.width}px, 0)` }];
+        } else {
+          return [{ transform: 'scale(0.8)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }];
+        }
+      }
+    }
+  }
 });
 

@@ -18,6 +18,10 @@
     &#next-card { left: 100%; }
     &#previous-card { left: -100%; }
   }
+  .effect-stack & {
+    position: absolute;
+    &#next-card { left: 100%; }
+  }
 }
 
 
