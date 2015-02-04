@@ -39,10 +39,20 @@ export default Ember.Component.extend({
   // Initializers
   setupAnimation: function() {
     this.width = this.element.offsetWidth;
-    this.gesture.on('warn', () => this.prepareAnimation());
-    this.gesture.on('progress', () => this.updateAnimation());
-    this.gesture.on('end', () => this.finalizeAnimation());
+    this._onGestureWarn = () => this.prepareAnimation();
+    this._onGestureProgress = () => this.updateAnimation();
+    this._onGestureEnd = () => this.finalizeAnimation();
+    this.gesture.on('warn', this._onGestureWarn);
+    this.gesture.on('progress', this._onGestureProgress);
+    this.gesture.on('end', this._onGestureEnd);
   }.on('didInsertElement'),
+
+  cleanup: function() {
+    this.player.cancel();
+    this.gesture.off('warn', this._onGestureWarn);
+    this.gesture.off('progress', this._onGestureProgress);
+    this.gesture.off('end', this._onGestureEnd);
+  }.on('willDestroyElement'),
 
   // Event handling
   touchStart: function(e) {
