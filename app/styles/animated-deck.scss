@@ -14,6 +14,7 @@
   overflow-y: scroll;
   .effect-expose &, .effect-slide & {
     position: absolute;
+    will-change: transform;
     &#next-card { left: 100%; }
     &#previous-card { left: -100%; }
   }
