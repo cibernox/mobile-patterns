@@ -1,15 +1,18 @@
 import Ember from 'ember';
 import SwipeGesture from 'mobile-patterns/utils/swipe-gesture';
+import GestureListenerMixin from 'mobile-patterns/mixins/gesture-listener';
 
 var computed = Ember.computed;
 var aMap = Array.prototype.map;
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(GestureListenerMixin, {
   classNames: ['animated-deck'],
   classNameBindings: ['effectClass'],
-  attributeBindings: ['style'],
+  duration: 500,
   gesture: new SwipeGesture(),
-  duration: 800,
+  gestureWarn: 'prepareAnimation',
+  gestureProgress: 'updateAnimation',
+  gestureEnd: 'finalizeAnimation',
 
   // CPs
   effectClass: computed('effect', function() {
@@ -37,21 +40,12 @@ export default Ember.Component.extend({
   }.observes('current'),
 
   // Initializers
-  setupAnimation: function() {
+  cacheWidth: function() {
     this.width = this.element.offsetWidth;
-    this._onGestureWarn = () => this.prepareAnimation();
-    this._onGestureProgress = () => this.updateAnimation();
-    this._onGestureEnd = () => this.finalizeAnimation();
-    this.gesture.on('warn', this._onGestureWarn);
-    this.gesture.on('progress', this._onGestureProgress);
-    this.gesture.on('end', this._onGestureEnd);
   }.on('didInsertElement'),
 
   cleanup: function() {
     this.player.cancel();
-    this.gesture.off('warn', this._onGestureWarn);
-    this.gesture.off('progress', this._onGestureProgress);
-    this.gesture.off('end', this._onGestureEnd);
   }.on('willDestroyElement'),
 
   // Event handling
