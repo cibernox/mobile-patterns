@@ -108,7 +108,7 @@ export default Ember.Component.extend({
     let speed = Math.abs(this.gesture.speedX) / this.width;
     let target = this.get(this.animatingToPrevious ? 'previous' : 'next');
     if (target && (progress > 0.5 || speed > 1)) {
-      this.player.playbackRate = speed;
+      this.player.playbackRate = Math.max(speed, 1);
       this.player.onfinish = () => {
         this.sendAction('onChange', target);
         this.player.pause();
