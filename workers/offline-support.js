@@ -35,18 +35,14 @@ self.addEventListener('fetch', function(event) {
         var cachedResponse = caches.match(cacheRequest);
         if (/\/api\//.test(cacheRequest.url)) {
           return cachedResponse.then(function(response) {
-            var responseClone = response.clone();
-            var clone2 = response.clone();
-            var clone3 = response.clone();
-            clone2.blob().then(function(blob) {
-              debugger;
-            });
-            clone2.arrayBuffer().then(function(ab) {
-              debugger;
-            });
-            return new Promise(function(resolve, reject) {
-              resolve(responseClone);
-            });
+            // var responseClone = response.clone();
+            return response.blob().then(function(blob) {
+              var headers = { 'x-service-worker-offline-support': 'true' };
+              for (var tuple of response.headers) {
+                headers[tuple[0]] = tuple[1];
+              }
+              return new Response(blob, { headers: headers });
+            })
           });
         } else {
           return cachedResponse;
