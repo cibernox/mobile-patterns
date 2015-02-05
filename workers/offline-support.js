@@ -34,10 +34,24 @@ self.addEventListener('fetch', function(event) {
 
         var cachedResponse = caches.match(cacheRequest);
         if (/\/api\//.test(cacheRequest.url)) {
-          debugger;
+          return cachedResponse.then(function(response) {
+            var responseClone = response.clone();
+            var clone2 = response.clone();
+            var clone3 = response.clone();
+            clone2.blob().then(function(blob) {
+              debugger;
+            });
+            clone2.arrayBuffer().then(function(ab) {
+              debugger;
+            });
+            return new Promise(function(resolve, reject) {
+              resolve(responseClone);
+            });
+          });
+        } else {
+          return cachedResponse;
         }
 
-        return cachedResponse;
       })
   );
 });
