@@ -46,7 +46,7 @@ export default Ember.Component.extend(GestureListenerMixin, {
   }.on('didInsertElement'),
 
   cleanup: function() {
-    this.player.cancel();
+    this.player && this.player.cancel();
   }.on('willDestroyElement'),
 
   // Event handling
