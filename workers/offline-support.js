@@ -32,10 +32,12 @@ self.addEventListener('fetch', function(event) {
       }).catch(function(err) {
         // when fetch times out or fails
 
-        // Return the promise which
-        // resolves on a match in cache for the current request
-        // ot rejects if no matches are found
-        return caches.match(cacheRequest);
+        var cachedResponse = caches.match(cacheRequest);
+        if (/\/api\//.test(cacheRequest.url)) {
+          debugger;
+        }
+
+        return cachedResponse;
       })
   );
 });
