@@ -1,12 +1,15 @@
 /* global require, module */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
+var pickFiles = require('broccoli-static-compiler');
 
 var app = new EmberApp();
 
 app.import('bower_components/web-animations-js/web-animations-next.min.js');
 app.import('bower_components/bezier-easing/bezier-easing.js');
 app.import('bower_components/eventEmitter/EventEmitter.min.js');
+
+var workers = pickFiles('workers', {srcDir: '/', files: ['*.js'], destDir: '/' });
 
 // Use `app.import` to add additional libraries to the generated
 // output files.
@@ -21,4 +24,4 @@ app.import('bower_components/eventEmitter/EventEmitter.min.js');
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
 
-module.exports = app.toTree();
+module.exports = app.toTree(workers);
