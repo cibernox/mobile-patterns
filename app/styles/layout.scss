@@ -12,6 +12,10 @@
   height: $app-header-height;
   display: flex;
   > * { flex: 1; }
+  > .signal-icon {
+    max-width: 2rem;
+    margin-right: 0.5rem;
+  }
 }
 
 #app-title {

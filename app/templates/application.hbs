@@ -1,6 +1,9 @@
 <header id="app-header">
   <toggle-menu id="toggle-main-menu" action="setupAnimation" player={{menu-player}} duration={{menuAnimationDuration}}></toggle-menu>
   {{#link-to 'application'}}<h1 id="app-title">Mobile Patterns</h1>{{/link-to}}
+  {{#if networkMonitorService.offline}}
+  <img class="signal-icon" src="/images/no-signal-white.svg" alt="no-signal">
+  {{/if}}
 </header>
 <slide-menu id="app-menu" observed-element="mobile-patterns" action="setupAnimation" player={{menu-player}} duration={{menuAnimationDuration}}>
   {{link-to "Landing" "index" class="menu-item"}}
