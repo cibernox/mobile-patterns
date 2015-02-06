@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+var localStorage = window.localStorage;
+
 export default Ember.Object.extend({
   deckEffects: ['slide', 'expose', 'stack'],
   deckEffect: Ember.computed({

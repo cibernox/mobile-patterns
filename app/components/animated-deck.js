@@ -46,7 +46,9 @@ export default Ember.Component.extend(GestureListenerMixin, {
   }.on('didInsertElement'),
 
   cleanup: function() {
-    this.player && this.player.cancel();
+    if (this.player) {
+      this.player.cancel();
+    }
   }.on('willDestroyElement'),
 
   // Event handling
@@ -79,13 +81,14 @@ export default Ember.Component.extend(GestureListenerMixin, {
       otherCardkeyframes = this.getKeyframes({card: 'previous', direction: 'previous'});
     }
     Ember.run.schedule('afterRender', this, function() {
+      var group;
       if (this.animatingToPrevious) {
-        var group = new AnimationGroup([
+        group = new AnimationGroup([
           new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
           new Animation(this.element.querySelector('#previous-card'), otherCardkeyframes, opts),
         ]);
       } else {
-        var group = new AnimationGroup([
+        group = new AnimationGroup([
           new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
           new Animation(this.element.querySelector('#next-card'), otherCardkeyframes, opts),
         ]);

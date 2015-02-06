@@ -4,7 +4,8 @@
     "window",
     "-Promise",
     "Animation",
-    "AnimationGroup"
+    "AnimationGroup",
+    "requestAnimationFrame"
   ],
   "browser": true,
   "boss": true,

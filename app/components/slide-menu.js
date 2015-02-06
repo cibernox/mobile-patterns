@@ -24,6 +24,18 @@ export default Ember.Component.extend({
     }
     let rootNode = document.querySelector('#' + this.get('observed-element'));
 
+    let handleTouchMove = evt => {
+      this.gesture.push(evt);
+      let newProgress = Math.min((this.gesture.x + this.offset) / this.width, 1);
+      this.player.currentTime = this.inverseEasing(newProgress) * this.duration;
+    };
+
+    let handleTouchEnd = () => {
+      rootNode.removeEventListener('touchmove', handleTouchMove);
+      rootNode.removeEventListener('touchend', handleTouchEnd);
+      this.completeExpansion();
+    };
+
     let handleTouchStart = evt => {
       var progress = this.player.currentTime / this.duration;
       this.gesture = new Gesture().push(evt);
@@ -33,19 +45,7 @@ export default Ember.Component.extend({
         rootNode.addEventListener('touchmove', handleTouchMove);
         rootNode.addEventListener('touchend', handleTouchEnd);
       }
-    }
-
-    let handleTouchMove = evt => {
-      this.gesture.push(evt);
-      let newProgress = Math.min((this.gesture.x + this.offset) / this.width, 1);
-      this.player.currentTime = this.inverseEasing(newProgress) * this.duration;
-    }
-
-    let handleTouchEnd = () => {
-      rootNode.removeEventListener('touchmove', handleTouchMove);
-      rootNode.removeEventListener('touchend', handleTouchEnd);
-      this.completeExpansion();
-    }
+    };
 
     rootNode.addEventListener('touchstart', handleTouchStart, true);
   }.on('didInsertElement'),
