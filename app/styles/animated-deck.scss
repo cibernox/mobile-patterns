@@ -20,8 +20,12 @@
     &#previous-card { left: -100%; }
   }
   .effect-stack & {
+    will-change: transform;
     position: absolute;
     &#next-card { left: 100%; }
+  }
+  .card-loading-icon {
+    margin: 50% auto;
   }
 }
 
