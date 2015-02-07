@@ -1,4 +1,4 @@
-<animated-deck items={{news}} current={{model}} item-class="article-detail" effect={{config.deckEffect}} onChange="transitionToSibling" as |card|>
+<animated-deck current={{model}} item-class="article-detail" effect={{config.deckEffect}} onChange="transitionToSibling" as |card|>
   <header><h2>{{card.content.header}}</h2></header>
   <div class="article-body">{{{card.content.body}}}</div>
 </animated-deck>

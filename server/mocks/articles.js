@@ -56,11 +56,14 @@ module.exports = function(app) {
   });
 
   articlesRouter.get('/:id', function(req, res) {
-    res.send({
-      'articles': {
-        id: req.params.id
-      }
-    });
+    var article = articlesFixtures.filter(function(art) { return art.id == req.params.id })[0];
+    if (article) {
+      setTimeout(function() {
+        res.send({ 'articles': article });
+      }, 1500);
+    } else {
+      res.status(404).end();
+    }
   });
 
   articlesRouter.put('/:id', function(req, res) {

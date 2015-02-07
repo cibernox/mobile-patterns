@@ -5,10 +5,10 @@ export default Ember.Route.extend({
     return this.store.find('article', params.article_id);
   },
 
-  setupController: function(controller, model) {
-    this._super(controller, model);
-    controller.set('news', this.modelFor('news'));
-  },
+  // setupController: function(controller, model) {
+  //   this._super(controller, model);
+  //   controller.set('news', this.modelFor('news'));
+  // },
 
   actions: {
     transitionToSibling: function(article) {

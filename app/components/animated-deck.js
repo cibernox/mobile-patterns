@@ -19,17 +19,20 @@ export default Ember.Component.extend(GestureListenerMixin, {
     return `effect-${this.effect}`;
   }),
 
-  previous: computed('items.[]', 'current', function() {
-    let items = this.get('items') || [];
-    let index = items.indexOf(this.get('current'));
-    return items.objectAt(index - 1);
-  }),
+  previous: computed.alias('current.previousArticle.content'),
+  // previous: computed('current.previousArticle', function() {
+  //   // let items = this.get('items') || [];
+  //   // let index = items.indexOf(this.get('current'));
+  //   // return items.objectAt(index - 1);
+  //   return this.get()
+  // }),
 
-  next: computed('items.[]', 'current', function() {
-    let items = this.get('items') || [];
-    let index = items.indexOf(this.get('current'));
-    return items.objectAt(index + 1);
-  }),
+  next: computed.alias('current.nextArticle.content'),
+  // next: computed('items.[]', 'current', function() {
+  //   // let items = this.get('items') || [];
+  //   // let index = items.indexOf(this.get('current'));
+  //   // return items.objectAt(index + 1);
+  // }),
 
   // Observers
   resetAnimation: function() {
