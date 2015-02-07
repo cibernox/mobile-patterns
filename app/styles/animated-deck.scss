@@ -12,6 +12,7 @@
   height: calc(100vh - #{$app-header-height});
   width: 100%;
   overflow-y: scroll;
+  &.placeholder { display: none; }
   .effect-expose &, .effect-slide & {
     position: absolute;
     will-change: transform;
