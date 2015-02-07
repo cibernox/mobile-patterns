@@ -5,9 +5,7 @@ export default DS.RESTAdapter.extend({
   namespace: ENV.apiNamespace,
   ajaxSuccess: function(jqXHR, jsonPayload) {
     var monitor = this.get('networkMonitorService');
-    if (jqXHR.getResponseHeader('x-service-worker-offline-support') === 'true') {
-      jsonPayload.meta = jsonPayload.meta || {};
-      jsonPayload.meta['x-service-worker-offline-support'] = true;
+    if (jsonPayload.meta && jsonPayload.meta.offlineSupportWorker) {
       monitor.registerOfflineSuccess();
     } else {
       monitor.registerOnlineSuccess();

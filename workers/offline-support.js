@@ -33,15 +33,14 @@ self.addEventListener('fetch', function(event) {
         // when fetch times out or fails
 
         var cachedResponse = caches.match(cacheRequest);
+
         if (/\/api\//.test(cacheRequest.url)) {
           return cachedResponse.then(function(response) {
-            // var responseClone = response.clone();
-            return response.blob().then(function(blob) {
-              var headers = { 'x-service-worker-offline-support': 'true' };
-              for (var tuple of response.headers) {
-                headers[tuple[0]] = tuple[1];
-              }
-              return new Response(blob, { headers: headers });
+            return response.json().then(function(json) {
+              json.meta = json.meta || {};
+              json.meta.offlineSupportWorker = true;
+              var blob = new Blob([JSON.stringify(json)], { type: 'application/json' })
+              return new Response(blob, { headers: response.headers });
             })
           });
         } else {
