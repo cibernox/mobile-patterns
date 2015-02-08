@@ -1,18 +1,19 @@
 import Ember from 'ember';
-import SwipeGesture from 'mobile-patterns/utils/swipe-gesture';
-import GestureListenerMixin from 'mobile-patterns/mixins/gesture-listener';
+// import SwipeGesture from 'mobile-patterns/utils/swipe-gesture';
+// import GestureListenerMixin from 'mobile-patterns/mixins/gesture-listener';
 
 var computed = Ember.computed;
 var aMap = Array.prototype.map;
 
-export default Ember.Component.extend(GestureListenerMixin, {
+// export default Ember.Component.extend(GestureListenerMixin, {
+export default Ember.Component.extend({
   classNames: ['animated-deck'],
   classNameBindings: ['effectClass'],
   duration: 500,
-  gesture: new SwipeGesture(),
-  gestureWarn: 'prepareAnimation',
-  gestureProgress: 'updateAnimation',
-  gestureEnd: 'finalizeAnimation',
+  // gesture: new SwipeGesture(),
+  // gestureWarn: 'prepareAnimation',
+  // gestureProgress: 'updateAnimation',
+  // gestureEnd: 'finalizeAnimation',
 
   // CPs
   effectClass: computed('effect', function() {
@@ -20,19 +21,8 @@ export default Ember.Component.extend(GestureListenerMixin, {
   }),
 
   previous: computed.alias('current.previousArticle.content'),
-  // previous: computed('current.previousArticle', function() {
-  //   // let items = this.get('items') || [];
-  //   // let index = items.indexOf(this.get('current'));
-  //   // return items.objectAt(index - 1);
-  //   return this.get()
-  // }),
 
   next: computed.alias('current.nextArticle.content'),
-  // next: computed('items.[]', 'current', function() {
-  //   // let items = this.get('items') || [];
-  //   // let index = items.indexOf(this.get('current'));
-  //   // return items.objectAt(index + 1);
-  // }),
 
   // Observers
   resetAnimation: function() {
@@ -55,72 +45,74 @@ export default Ember.Component.extend(GestureListenerMixin, {
   }.on('willDestroyElement'),
 
   // Event handling
-  touchStart: function(e) {
-    this.gesture.push(e.originalEvent);
-  },
-  touchMove: function(e) {
-    this.gesture.push(e.originalEvent);
-  },
-  touchEnd: function(e) {
-    this.gesture.push(e.originalEvent);
-    this.gesture.clear();
-  },
+  // touchStart: function(e) {
+  //   this.gesture.push(e.originalEvent);
+  // },
+  // touchMove: function(e) {
+  //   this.gesture.push(e.originalEvent);
+  // },
+  // touchEnd: function(e) {
+  //   this.gesture.push(e.originalEvent);
+  //   this.gesture.clear();
+  // },
 
   // Functions
-  prepareAnimation: function() {
-    let opts = { duration: this.duration, fill: 'both' };
-    let currentCardkeyframes, otherCardkeyframes;
-    if (this.gesture.deltaX < 0) {
-      // Animate to next
-      this.set('animatingToPrevious', false);
-      this.set('animatingToNext', true);
-      currentCardkeyframes = this.getKeyframes({card: 'current', direction: 'next'});
-      otherCardkeyframes = this.getKeyframes({card: 'next', direction: 'next'});
-    } else {
-      // Animate to previous
-      this.set('animatingToPrevious', true);
-      this.set('animatingToNext', false);
-      currentCardkeyframes = this.getKeyframes({card: 'current', direction: 'previous'});
-      otherCardkeyframes = this.getKeyframes({card: 'previous', direction: 'previous'});
-    }
-    Ember.run.schedule('afterRender', this, function() {
-      var group;
-      if (this.animatingToPrevious) {
-        group = new AnimationGroup([
-          new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
-          new Animation(this.element.querySelector('#previous-card'), otherCardkeyframes, opts),
-        ]);
+  actions: {
+    prepareAnimation: function(gesture) {
+      let opts = { duration: this.duration, fill: 'both' };
+      let currentCardkeyframes, otherCardkeyframes;
+      if (gesture.deltaX < 0) {
+        // Animate to next
+        this.set('animatingToPrevious', false);
+        this.set('animatingToNext', true);
+        currentCardkeyframes = this.getKeyframes({card: 'current', direction: 'next'});
+        otherCardkeyframes = this.getKeyframes({card: 'next', direction: 'next'});
       } else {
-        group = new AnimationGroup([
-          new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
-          new Animation(this.element.querySelector('#next-card'), otherCardkeyframes, opts),
-        ]);
+        // Animate to previous
+        this.set('animatingToPrevious', true);
+        this.set('animatingToNext', false);
+        currentCardkeyframes = this.getKeyframes({card: 'current', direction: 'previous'});
+        otherCardkeyframes = this.getKeyframes({card: 'previous', direction: 'previous'});
       }
-      this.player = document.timeline.play(group);
-      this.player.pause();
-    });
-  },
-
-  updateAnimation: function() {
-    let progress = Math.abs(-this.gesture.deltaX + this.gesture.startOffset) / this.width;
-    this.player.currentTime = progress * this.duration;
-  },
-
-  finalizeAnimation: function() {
-    let progress = Math.abs(-this.gesture.deltaX + this.gesture.startOffset) / this.width;
-    let speed = Math.abs(this.gesture.speedX) / this.width;
-    let target = this.get(this.animatingToPrevious ? 'previous' : 'next');
-    if (target && (progress > 0.5 || speed > 1)) {
-      this.player.playbackRate = Math.max(speed, 1);
-      this.player.onfinish = () => {
-        this.sendAction('onChange', target);
+      Ember.run.schedule('afterRender', this, function() {
+        var group;
+        if (this.animatingToPrevious) {
+          group = new AnimationGroup([
+            new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
+            new Animation(this.element.querySelector('#previous-card'), otherCardkeyframes, opts),
+          ]);
+        } else {
+          group = new AnimationGroup([
+            new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
+            new Animation(this.element.querySelector('#next-card'), otherCardkeyframes, opts),
+          ]);
+        }
+        this.player = document.timeline.play(group);
         this.player.pause();
-      };
-    } else {
-      this.player.playbackRate = -1;
-      this.player.onfinish = () => this.player.pause();
-    }
-    this.player.play();
+      });
+    },
+
+    updateAnimation: function(gesture) {
+      let progress = Math.abs(-gesture.deltaX + gesture.startOffset) / this.width;
+      this.player.currentTime = progress * this.duration;
+    },
+
+    finalizeAnimation: function(gesture) {
+      let progress = Math.abs(-gesture.deltaX + gesture.startOffset) / this.width;
+      let speed = Math.abs(gesture.speedX) / this.width;
+      let target = this.get(this.animatingToPrevious ? 'previous' : 'next');
+      if (target && (progress > 0.5 || speed > 1)) {
+        this.player.playbackRate = Math.max(speed, 1);
+        this.player.onfinish = () => {
+          this.sendAction('onChange', target);
+          this.player.pause();
+        };
+      } else {
+        this.player.playbackRate = -1;
+        this.player.onfinish = () => this.player.pause();
+      }
+      this.player.play();
+    },
   },
 
   getKeyframes: function({ card, direction }) {
