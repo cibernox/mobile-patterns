@@ -1,28 +1,19 @@
 import Ember from 'ember';
-// import SwipeGesture from 'mobile-patterns/utils/swipe-gesture';
-// import GestureListenerMixin from 'mobile-patterns/mixins/gesture-listener';
 
 var computed = Ember.computed;
 var aMap = Array.prototype.map;
 
-// export default Ember.Component.extend(GestureListenerMixin, {
 export default Ember.Component.extend({
   classNames: ['animated-deck'],
   classNameBindings: ['effectClass'],
   duration: 500,
-  // gesture: new SwipeGesture(),
-  // gestureWarn: 'prepareAnimation',
-  // gestureProgress: 'updateAnimation',
-  // gestureEnd: 'finalizeAnimation',
 
   // CPs
+  previous: computed.alias('current.previousArticle.content'),
+  next: computed.alias('current.nextArticle.content'),
   effectClass: computed('effect', function() {
     return `effect-${this.effect}`;
   }),
-
-  previous: computed.alias('current.previousArticle.content'),
-
-  next: computed.alias('current.nextArticle.content'),
 
   // Observers
   resetAnimation: function() {
@@ -43,18 +34,6 @@ export default Ember.Component.extend({
       this.player.cancel();
     }
   }.on('willDestroyElement'),
-
-  // Event handling
-  // touchStart: function(e) {
-  //   this.gesture.push(e.originalEvent);
-  // },
-  // touchMove: function(e) {
-  //   this.gesture.push(e.originalEvent);
-  // },
-  // touchEnd: function(e) {
-  //   this.gesture.push(e.originalEvent);
-  //   this.gesture.clear();
-  // },
 
   // Functions
   actions: {

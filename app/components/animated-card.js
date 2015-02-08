@@ -5,24 +5,30 @@ import GestureListenerMixin from 'mobile-patterns/mixins/gesture-listener';
 export default Ember.Component.extend(GestureListenerMixin, {
   classNames: ['animated-card'],
   classNameBindings: ['content::placeholder'],
-
+  gesture: new SwipeGesture(),
   gestureWarn: 'prepareAnimation',
   gestureProgress: 'updateAnimation',
   gestureEnd: 'finalizeAnimation',
 
-  gesture: new SwipeGesture(),
-
   touchStart: function(e) {
-    this.gesture.push(e.originalEvent);
+    if (this.get('content.isLoaded')) {
+      this.cardPrepared = true;
+      this.gesture.push(e.originalEvent);
+    }
   },
 
   touchMove: function(e) {
-    this.gesture.push(e.originalEvent);
+    if (this.cardPrepared) {
+      this.gesture.push(e.originalEvent);
+    }
   },
 
   touchEnd: function(e) {
-    this.gesture.push(e.originalEvent);
-    this.gesture.clear();
+    if (this.cardPrepared) {
+      this.gesture.push(e.originalEvent);
+      this.gesture.clear();
+      this.cardPrepared = false;
+    }
   },
 
   prepareAnimation: function() {
@@ -35,6 +41,5 @@ export default Ember.Component.extend(GestureListenerMixin, {
 
   finalizeAnimation: function() {
     this.sendAction('gestureEnd', this.gesture);
-  },
-
+  }
 });
