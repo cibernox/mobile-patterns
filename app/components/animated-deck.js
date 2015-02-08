@@ -120,22 +120,6 @@ export default Ember.Component.extend(GestureListenerMixin, {
     this.player.play();
   },
 
-  bounceBack: function() {
-    let progressDiff = (-this.gesture.deltaX + this.gesture.startOffset + this.width) / (this.width * 2) - 0.5;
-    let frames = Math.ceil(Math.abs(progressDiff) * this.duration / 16.67);
-    let frameDelta = progressDiff / frames;
-    let tick = () => {
-      this.player.currentTime = this.player.currentTime - (frameDelta * this.duration);
-      if (--frames > 0) {
-        requestAnimationFrame(tick);
-      } else {
-        this.set('animatingToPrevious', false);
-        this.set('animatingToNext', false);
-      }
-    };
-    requestAnimationFrame(tick);
-  },
-
   getKeyframes: function({ card, direction }) {
     if (this.effect === 'slide') {
       if (direction === 'next') {
