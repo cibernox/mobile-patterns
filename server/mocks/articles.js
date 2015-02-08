@@ -46,9 +46,9 @@ module.exports = function(app) {
 
 
   articlesRouter.get('/', function(req, res) {
-    res.send({
-      'articles': articlesFixtures
-    });
+    setTimeout(function() {
+      res.send({ 'articles': articlesFixtures });
+    }, 1500);
   });
 
   articlesRouter.post('/', function(req, res) {
