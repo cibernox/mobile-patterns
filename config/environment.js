@@ -18,6 +18,7 @@ module.exports = function(environment) {
         'ember-htmlbars-component-generation': true,
         'ember-htmlbars-attribute-syntax': true,
         'ember-metal-injected-properties': true,
+        'ember-htmlbars-inline-if-helper': true,
         'new-computed-syntax': true
       }
     },
