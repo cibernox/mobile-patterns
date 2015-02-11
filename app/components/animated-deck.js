@@ -1,7 +1,6 @@
 import Ember from 'ember';
 
 var computed = Ember.computed;
-var aMap = Array.prototype.map;
 
 export default Ember.Component.extend({
   classNames: ['animated-deck'],

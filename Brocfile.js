@@ -3,7 +3,11 @@
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var pickFiles = require('broccoli-static-compiler');
 
-var app = new EmberApp();
+var app = new EmberApp({
+  'vendorFiles': {
+    'handlebars.js': null
+  }
+});
 
 app.import('bower_components/web-animations-js/web-animations-next.min.js');
 app.import('bower_components/bezier-easing/bezier-easing.js');
