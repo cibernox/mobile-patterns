@@ -4,6 +4,8 @@
 .animated-deck {
   background: #555 url(/images/cloth-pattern.png);
   height: calc(100vh - #{$app-header-height});
+  position: relative;
+  overflow-x: hidden;
 }
 
 .animated-card {
