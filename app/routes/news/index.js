@@ -2,9 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   model: function() {
-    return this.store.find('article').then(function(articles) {
-      return articles.sortBy('id');
-    });
+    return this.store.find('article').then(articles => articles.sortBy('id'));
   },
 
   actions: {
