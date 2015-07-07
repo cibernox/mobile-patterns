@@ -8,6 +8,7 @@ export default Ember.Component.extend({
 
   // Events
   setupAnimation: function() {
+    this.duration = this.get('duration');
     this.width = this.element.offsetWidth;
     var animation = new KeyframeEffect(
       this.element,
