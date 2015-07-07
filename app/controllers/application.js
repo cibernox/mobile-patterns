@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
 
     collapseMenu: function() {
       var player = this.get('menu-player');
-      if (player.currentTime !== 0) {
+      if (player.currentTime !== 0 && player.playState === 'paused') {
         player.playbackRate = -1;
         player.play();
       }

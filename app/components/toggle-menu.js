@@ -23,6 +23,9 @@ export default Ember.Component.extend({
 
   click: function(){
     var player = this.get('player');
+    if (player.playState !== 'paused'){
+      return;
+    }
     if (player.currentTime === 0) {
       player.playbackRate = 1;
     } else {
