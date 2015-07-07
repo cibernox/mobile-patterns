@@ -1,19 +1,15 @@
 /* global require, module */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
-var pickFiles = require('broccoli-static-compiler');
+var funnel = require('broccoli-funnel');
 
-var app = new EmberApp({
-  'vendorFiles': {
-    'handlebars.js': null
-  }
-});
+var app = new EmberApp();
 
 app.import('bower_components/web-animations-js/web-animations-next.min.js');
 app.import('bower_components/bezier-easing/bezier-easing.js');
 app.import('bower_components/eventEmitter/EventEmitter.min.js');
 
-var workers = pickFiles('workers', {srcDir: '/', files: ['*.js'], destDir: '/' });
+var workers = funnel('workers');
 
 // Use `app.import` to add additional libraries to the generated
 // output files.
