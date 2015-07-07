@@ -11,12 +11,13 @@ export default Ember.Component.extend({
   previous: computed.alias('current.previousArticle.content'),
   next: computed.alias('current.nextArticle.content'),
   effectClass: computed('effect', function() {
+    this.effect = this.get('effect');
     return `effect-${this.effect}`;
   }),
 
   // Observers
   resetAnimation: function() {
-    if (this.player){
+    if(this.player){
       this.player.currentTime = 0;
       this.player.cancel();
       this.set('animatingToPrevious', false);
