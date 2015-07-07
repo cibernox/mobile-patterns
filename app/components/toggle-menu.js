@@ -3,22 +3,22 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   setupAnimation: function() {
     var opts = { duration: this.duration, fill: 'both' };
-    var a1 = new Animation(
+    var a1 = new KeyframeEffect(
       this.element.querySelector('#hamburger-stroke-top'),
       [{ transform: 'rotate(0deg) translate(0,0)' }, { transform: 'rotate(45deg) translate(7px, 5.5px)' }],
       opts
     );
-    var a2 = new Animation(
+    var a2 = new KeyframeEffect(
       this.element.querySelector('#hamburger-stroke-middle'),
       [{ opacity: 1 }, { opacity: 0 }],
       opts
     );
-    var a3 = new Animation(
+    var a3 = new KeyframeEffect(
       this.element.querySelector('#hamburger-stroke-bottom'),
       [{ transform: 'rotate(0deg) translate(0,0)' }, { transform: 'rotate(-45deg) translate(7px, -5.5px)' }],
       opts
     );
-    this.sendAction('action', new AnimationGroup([a1, a2, a3]));
+    this.sendAction('action', new GroupEffect([a1, a2, a3]));
   }.on('didInsertElement'),
 
   click: function(){

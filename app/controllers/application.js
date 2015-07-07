@@ -20,7 +20,7 @@ export default Ember.Controller.extend({
   },
 
   createAnimationGroup: function(){
-    var group = new AnimationGroup(this.menuAnimations);
+    var group = new GroupEffect(this.menuAnimations);
     var player = document.timeline.play(group);
     player.onfinish = () => player.pause();
     player.pause();
