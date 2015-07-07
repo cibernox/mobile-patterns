@@ -19,7 +19,7 @@ self.addEventListener('fetch', function(event) {
         var responseToCache = response.clone();
 
         // and update the cache
-        window.caches.open(self.CACHE_NAME).then(function(cache) {
+        caches.open(self.CACHE_NAME).then(function(cache) {
           // Clone the request again to use it
           // as the key for our cache
           var cacheSaveRequest = event.request.clone();
@@ -32,7 +32,7 @@ self.addEventListener('fetch', function(event) {
       }).catch(function(err) {
         // when fetch times out or fails
 
-        var cachedResponse = window.caches.match(cacheRequest);
+        var cachedResponse = caches.match(cacheRequest);
 
         if (/\/api\//.test(cacheRequest.url)) {
           return cachedResponse.then(function(response) {

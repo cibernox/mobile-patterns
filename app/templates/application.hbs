@@ -4,7 +4,7 @@
     {{#link-to 'application'}}<h1 id="app-title">Mobile Patterns</h1>{{/link-to}}
     <img class="signal-icon" src="/images/no-signal-white.svg" alt="no-signal" style="visibility: {{if networkMonitorService.offline "visible" "hidden"}}">
   </header>
-  {{#slide-menu id="app-menu" observed-element="reader" action="setupAnimation" player=menu-player duration=menuAnimationDuration}}
+  {{#slide-menu id="app-menu" observed-element="mobile-patterns" action="setupAnimation" player=menu-player duration=menuAnimationDuration}}
     {{link-to "Newspaper" "news" class="menu-item"}}
     {{link-to "Config" "config" class="menu-item"}}
   {{/slide-menu}}

@@ -23,6 +23,7 @@ export default Ember.Component.extend({
 
   click: function(){
     var player = this.get('player');
+    console.log(player);
     if (player.playState !== 'paused'){
       return;
     }

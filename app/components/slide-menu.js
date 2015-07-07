@@ -20,6 +20,7 @@ export default Ember.Component.extend({
 
   setupEventListeners: function(){
     this.width = this.element.offsetWidth;
+    this.player = this.get('player');
     if (this.get('browserDetector').isSafari) {
       return;
     }

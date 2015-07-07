@@ -1,7 +1,7 @@
 /* global EventEmitter */
 class Gesture extends EventEmitter {
   constructor(opts = {}) {
-    opts.defaultPrevented = opts.defaultPrevented || false;
+    // opts.defaultPrevented = opts.defaultPrevented || false;
     opts.propagationStopped = opts.defaultPrevented || false;
     super(opts);
     this._originalOpts = opts;
