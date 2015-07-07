@@ -16,11 +16,13 @@ export default Ember.Component.extend({
 
   // Observers
   resetAnimation: function() {
-    this.player.currentTime = 0;
-    this.player.cancel();
-    this.set('animatingToPrevious', false);
-    this.set('animatingToNext', false);
-    this.element.querySelector('#current-card').scrollTop = 0;
+    if (this.player){
+      this.player.currentTime = 0;
+      this.player.cancel();
+      this.set('animatingToPrevious', false);
+      this.set('animatingToNext', false);
+      this.element.querySelector('#current-card').scrollTop = 0;
+    }
   }.observes('current'),
 
   // Initializers
