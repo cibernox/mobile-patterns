@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export default Ember.Object.extend({
+export default Ember.Service.extend({
   deckEffects: ['slide', 'expose', 'stack'],
   deckEffect: Ember.computed({
     get: function() {

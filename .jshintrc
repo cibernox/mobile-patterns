@@ -3,8 +3,8 @@
     "document",
     "window",
     "-Promise",
-    "Animation",
-    "AnimationGroup",
+    "KeyframeEffect",
+    "GroupEffect",
     "requestAnimationFrame"
   ],
   "browser": true,

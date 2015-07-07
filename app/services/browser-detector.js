@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export default Ember.Object.extend({
+export default Ember.Service.extend({
   get isIOS() {
     if (this._isIOS === undefined) {
       var userAgent = window.navigator.userAgent.toLowerCase();

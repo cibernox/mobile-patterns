@@ -11,16 +11,19 @@ export default Ember.Component.extend({
   previous: computed.alias('current.previousArticle.content'),
   next: computed.alias('current.nextArticle.content'),
   effectClass: computed('effect', function() {
+    this.effect = this.get('effect');
     return `effect-${this.effect}`;
   }),
 
   // Observers
   resetAnimation: function() {
-    this.player.currentTime = 0;
-    this.player.cancel();
-    this.set('animatingToPrevious', false);
-    this.set('animatingToNext', false);
-    this.element.querySelector('#current-card').scrollTop = 0;
+    if(this.player){
+      this.player.currentTime = 0;
+      this.player.cancel();
+      this.set('animatingToPrevious', false);
+      this.set('animatingToNext', false);
+      this.element.querySelector('#current-card').scrollTop = 0;
+    }
   }.observes('current'),
 
   // Initializers
@@ -55,14 +58,14 @@ export default Ember.Component.extend({
       Ember.run.schedule('afterRender', this, function() {
         var group;
         if (this.animatingToPrevious) {
-          group = new AnimationGroup([
-            new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
-            new Animation(this.element.querySelector('#previous-card'), otherCardkeyframes, opts),
+          group = new GroupEffect([
+            new KeyframeEffect(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
+            new KeyframeEffect(this.element.querySelector('#previous-card'), otherCardkeyframes, opts),
           ]);
         } else {
-          group = new AnimationGroup([
-            new Animation(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
-            new Animation(this.element.querySelector('#next-card'), otherCardkeyframes, opts),
+          group = new GroupEffect([
+            new KeyframeEffect(this.element.querySelector('#current-card'), currentCardkeyframes, opts),
+            new KeyframeEffect(this.element.querySelector('#next-card'), otherCardkeyframes, opts),
           ]);
         }
         this.player = document.timeline.play(group);
@@ -133,4 +136,3 @@ export default Ember.Component.extend({
     }
   }
 });
-

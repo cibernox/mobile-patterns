@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
 
     collapseMenu: function() {
       var player = this.get('menu-player');
-      if (player.currentTime !== 0) {
+      if (player.currentTime !== 0 && player.playState === 'paused') {
         player.playbackRate = -1;
         player.play();
       }
@@ -20,7 +20,7 @@ export default Ember.Controller.extend({
   },
 
   createAnimationGroup: function(){
-    var group = new AnimationGroup(this.menuAnimations);
+    var group = new GroupEffect(this.menuAnimations);
     var player = document.timeline.play(group);
     player.onfinish = () => player.pause();
     player.pause();

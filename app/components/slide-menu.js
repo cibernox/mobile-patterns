@@ -8,8 +8,9 @@ export default Ember.Component.extend({
 
   // Events
   setupAnimation: function() {
+    this.duration = this.get('duration');
     this.width = this.element.offsetWidth;
-    var animation = new Animation(
+    var animation = new KeyframeEffect(
       this.element,
       [{ transform: 'translateX(0)' }, { transform: `translateX(${this.width}px)` }],
       { duration: this.duration, fill: 'both', easing: 'cubic-bezier(0.42, 0, 0.58, 1)' }
@@ -19,6 +20,7 @@ export default Ember.Component.extend({
 
   setupEventListeners: function(){
     this.width = this.element.offsetWidth;
+    this.player = this.get('player');
     if (this.get('browserDetector').isSafari) {
       return;
     }
