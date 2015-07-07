@@ -1,16 +1,15 @@
-<div elementId="reader" id="reader">
+<div elementId="mobile-patterns" id="mobile-patterns">
   <header id="app-header">
-    <toggle-menu id="toggle-main-menu" action="setupAnimation" player={{menu-player}} duration={{menuAnimationDuration}}></toggle-menu>
+    {{#toggle-menu id="toggle-main-menu" action="setupAnimation"  player=menu-player duration=menuAnimationDuration}}{{/toggle-menu}}
     {{#link-to 'application'}}<h1 id="app-title">Mobile Patterns</h1>{{/link-to}}
-    <img class="signal-icon" src="/images/no-signal-white.svg" alt="no-signal" style="visibility: {{if networkMonitorService.offline "visible" "hidden"}}"/>
+    <img class="signal-icon" src="/images/no-signal-white.svg" alt="no-signal" style="visibility: {{if networkMonitorService.offline "visible" "hidden"}}">
   </header>
-  <slide-menu id="app-menu" observed-element="mobile-patterns" action="setupAnimation" player={{menu-player}} duration={{menuAnimationDuration}}>
-    {{link-to "Landing" "index" class="menu-item"}}
+  {{#slide-menu id="app-menu" observed-element="reader" action="setupAnimation" player=menu-player duration=menuAnimationDuration}}
     {{link-to "Newspaper" "news" class="menu-item"}}
     {{link-to "Config" "config" class="menu-item"}}
-  </slide-menu>
+  {{/slide-menu}}
   <div id="app-content">
     {{outlet}}
   </div>
-  <content-overlay id="content-overlay" duration={{menuAnimationDuration}} action="setupAnimation"></content-overlay>
-<div>
+  {{content-overlay id="content-overlay" duration=menuAnimationDuration action="setupAnimation"}}
+</div>
