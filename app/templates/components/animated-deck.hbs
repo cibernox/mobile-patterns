@@ -1,7 +1,7 @@
 {{#if animatingToPrevious}}
-  <animated-card id="previous-card" content={{previous}} as |card|>{{yield card}}</animated-card>
+  {{#animated-card id="previous-card" content=previous as |card|}}{{yield card}}{{/animated-card}}
 {{/if}}
-<animated-card id="current-card" content={{current}} as |card|>{{yield card}}</animated-card>
+{{#animated-card id="current-card" content=current as |card|}}{{yield card}}{{/animated-card}}
 {{#if animatingToNext}}
-  <animated-card id="next-card" content={{next}} as |card|>{{yield card}}</animated-card>
+  {{#animated-card id="next-card" content=next as |card|}}{{yield card}}{{/animated-card}}
 {{/if}}
